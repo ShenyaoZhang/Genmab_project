@@ -24,26 +24,35 @@ This project analyzes risk factors for Cytokine Release Syndrome (CRS) in patien
 ### Project Structure
 
 ```
-capstone_part1/
-├── test.py                    # Initial FAERS API data retrieval
-├── extract_crs_data.py        # Structured variable extraction from FAERS
-├── data_extractors.py         # Eudravigilance & JADER extraction modules
-├── causal_analysis.py         # Causal inference analysis
-├── nlp_analysis.py            # NLP/BERT narrative analysis
-├── interactive_dashboard.py   # Streamlit interactive dashboard
-├── main.py                    # Pipeline orchestrator
-├── requirements.txt           # Python dependencies
+Genmab_project/
+├── capstone_part1/
+│   ├── test.py                    # Initial FAERS API data retrieval
+│   ├── extract_crs_data.py        # Structured variable extraction from FAERS
+│   ├── data_extractors.py         # Eudravigilance & JADER extraction modules
+│   ├── causal_analysis.py         # Causal inference analysis
+│   ├── nlp_analysis.py            # NLP/BERT narrative analysis
+│   ├── interactive_dashboard.py   # Streamlit interactive dashboard
+│   ├── main.py                    # Pipeline orchestrator
+│   ├── requirements.txt           # Python dependencies
+│   │
+│   ├── fda_drug_events.json       # Raw FAERS API response
+│   ├── crs_extracted_data.json    # Extracted structured FAERS data
+│   ├── multi_source_crs_data.json # Combined multi-source dataset (786 records)
+│   ├── causal_analysis_results.json
+│   ├── narrative_features.json
+│   │
+│   ├── causal_analysis_report.txt
+│   ├── nlp_analysis_report.txt
+│   ├── executive_summary.txt
+│   └── METHODOLOGY.md             # This file
 │
-├── fda_drug_events.json       # Raw FAERS API response
-├── crs_extracted_data.json    # Extracted structured FAERS data
-├── multi_source_crs_data.json # Combined multi-source dataset
-├── causal_analysis_results.json
-├── narrative_features.json
+├── Run Line Listing Report.csv    # Eudravigilance data (175 reports)
 │
-├── causal_analysis_report.txt
-├── nlp_analysis_report.txt
-├── executive_summary.txt
-└── METHODOLOGY.md             # This file
+└── jader_data/                    # JADER data directory
+    ├── demo202511.csv             # Demographics (~998K records)
+    ├── drug202511.csv             # Drug information (~4.8M records)
+    ├── reac202511.csv             # Adverse reactions (~1.6M records)
+    └── hist202511.csv             # Medical history (~1.9M records)
 ```
 
 ---
@@ -54,6 +63,7 @@ capstone_part1/
 - **Access**: Public API at `https://api.fda.gov/drug/event.json`
 - **Status**: ✅ Fully implemented
 - **Coverage**: United States, global submissions
+- **Records**: 100 CRS cases
 
 ```python
 # API Query
@@ -66,13 +76,26 @@ params = {
 
 ### 2.2 Eudravigilance (European Medicines Agency)
 - **Access**: Manual download from https://www.adrreports.eu/
-- **Status**: 📋 Extraction code ready, requires manual data download
+- **Status**: ✅ Fully implemented with real data
 - **Coverage**: European Union member states
+- **Records**: 39 CRS cases (from 175 total Epcoritamab reports)
+- **File**: `Run Line Listing Report.csv`
 
 ### 2.3 JADER (Japanese Adverse Drug Event Report)
-- **Access**: Public CSV files from PMDA website
-- **Status**: 📋 Extraction code ready, requires manual data download
+- **Access**: Public CSV files from PMDA website (https://www.pmda.go.jp/)
+- **Status**: ✅ Fully implemented with real data
 - **Coverage**: Japan
+- **Records**: 647 CRS cases (from 964 total Epcoritamab cases)
+- **Files**: `demo202511.csv`, `drug202511.csv`, `reac202511.csv`, `hist202511.csv`
+
+### 2.4 Combined Dataset Summary
+
+| Source | Total Records | CRS Cases |
+|--------|---------------|-----------|
+| FAERS (US) | 100 | 100 |
+| Eudravigilance (EU) | 175 | 39 |
+| JADER (Japan) | 964 | 647 |
+| **Combined** | - | **786** |
 
 ---
 
@@ -138,7 +161,36 @@ params = {
 | 803 | Week | × (1/52) |
 | 804 | Day | × (1/365) |
 
-### 3.3 Extracted Variables Schema
+### 3.3 JADER Data Structure (Japanese)
+
+JADER uses separate CSV files with Japanese column names:
+
+| File | Contents | Key Columns |
+|------|----------|-------------|
+| `demo*.csv` | Demographics | 識別番号 (Case ID), 性別 (Sex), 年齢 (Age) |
+| `drug*.csv` | Drug information | 識別番号, 医薬品（一般名）, 医薬品（販売名）, 医薬品の関与 |
+| `reac*.csv` | Adverse reactions | 識別番号, 有害事象 (PT), 転帰 (Outcome) |
+| `hist*.csv` | Medical history | 識別番号, 原疾患等 |
+
+**Drug involvement codes (医薬品の関与):**
+- `被疑薬` = Suspect drug
+- `併用薬` = Concomitant drug
+
+**Outcome codes (転帰):**
+- `回復` = Recovered
+- `未回復` = Not recovered
+- `死亡` = Fatal
+- `不明` = Unknown
+
+**Epcoritamab search terms:**
+- English: `EPCORITAMAB`, `TEPKINLY`
+- Japanese: `エプコリタマブ（遺伝子組換え）`, `エプキンリ`
+
+**CRS search terms:**
+- English: `Cytokine release syndrome`, `CRS`
+- Japanese: `サイトカイン放出症候群`
+
+### 3.4 Extracted Variables Schema
 
 ```json
 {
@@ -452,7 +504,17 @@ python interactive_dashboard.py --terminal
 
 ## 7. Key Findings
 
-### 7.1 Causal Risk Factors
+### 7.1 Multi-Source Dataset Summary
+
+The analysis uses **786 real CRS cases** from three pharmacovigilance databases:
+
+| Source | CRS Records | Outcomes Distribution |
+|--------|-------------|----------------------|
+| FAERS (US) | 100 | 83 recovered, 14 not_recovered, 3 unknown |
+| Eudravigilance (EU) | 39 | 30 recovered, 6 unknown, 2 fatal, 1 recovering |
+| JADER (Japan) | 647 | 462 recovered, 180 unknown, 5 fatal |
+
+### 7.2 Causal Risk Factors
 
 | Factor | Direction | Evidence | Mechanism |
 |--------|-----------|----------|-----------|
@@ -460,7 +522,7 @@ python interactive_dashboard.py --terminal
 | **Steroid Premedication** | ↓ Risk (Protective) | Propensity score analysis | Anti-inflammatory, cytokine suppression |
 | **Tocilizumab** | ↓ Risk (Protective) | Known CRS treatment | IL-6 receptor blockade |
 
-### 7.2 Confounders (Must Control For)
+### 7.3 Confounders (Must Control For)
 
 | Factor | Why It's a Confounder |
 |--------|----------------------|
@@ -468,7 +530,7 @@ python interactive_dashboard.py --terminal
 | **Disease Stage** | Advanced disease → more aggressive treatment AND worse outcomes |
 | **Prior Therapies** | More prior therapies → different dosing AND different baseline risk |
 
-### 7.3 Correlational (Not Causal)
+### 7.4 Correlational (Not Causal)
 
 | Factor | Why It's Not Causal |
 |--------|---------------------|
@@ -487,13 +549,13 @@ python interactive_dashboard.py --terminal
 ### 8.2 Methodological Limitations
 - **Unmeasured Confounding**: Cannot fully control for all confounders
 - **Cross-sectional Data**: Limited temporal information
-- **Simulated Data**: Eudravigilance and JADER data simulated for demonstration
+- **Regional Heterogeneity**: Different reporting practices across US, EU, and Japan
 
 ### 8.3 Recommendations for Improvement
-1. Obtain real Eudravigilance and JADER data for multi-database validation
-2. Link with clinical trial data for better dose-response characterization
-3. Use instrumental variables if available (e.g., prescribing physician preferences)
-4. Conduct negative control outcome analysis to detect residual confounding
+1. Link with clinical trial data for better dose-response characterization
+2. Use instrumental variables if available (e.g., prescribing physician preferences)
+3. Conduct negative control outcome analysis to detect residual confounding
+4. Investigate regional differences in CRS outcomes (US vs EU vs Japan)
 
 ---
 
@@ -504,7 +566,7 @@ python interactive_dashboard.py --terminal
 conda activate capstone
 pip install -r requirements.txt
 
-# 2. Run complete pipeline
+# 2. Run complete pipeline (uses real FAERS + EU + JADER data)
 python main.py --all
 
 # 3. Run individual components
@@ -514,10 +576,30 @@ python main.py --nlp        # NLP analysis only
 python main.py --dashboard  # Launch interactive dashboard
 python main.py --summary    # Generate executive summary
 
-# 4. For real EU/JP data, see instructions in:
-python -c "from data_extractors import EudravigilanceExtractor; EudravigilanceExtractor().download_line_listing('epcoritamab')"
-python -c "from data_extractors import JADERExtractor; JADERExtractor().download_instructions()"
+# 4. To manually rebuild multi-source dataset:
+python -c "
+from data_extractors import create_multi_source_data
+create_multi_source_data(
+    faers_path='crs_extracted_data.json',
+    eudravigilance_path='../Run Line Listing Report.csv',
+    jader_data_dir='../jader_data',
+    output_path='multi_source_crs_data.json'
+)
+"
 ```
+
+### Data Download Instructions (if needed)
+
+**Eudravigilance:**
+1. Visit https://www.adrreports.eu/
+2. Search for "epcoritamab"
+3. Go to "Line Listing" tab → Download CSV
+4. Save as `Run Line Listing Report.csv` in project root
+
+**JADER:**
+1. Visit https://www.pmda.go.jp/safety/info-services/drugs/adr-info/suspected-adr/0003.html
+2. Download latest ZIP file (e.g., `pmdacasereport202511.zip`)
+3. Extract to `jader_data/` folder
 
 ---
 
