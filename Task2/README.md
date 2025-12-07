@@ -82,8 +82,9 @@ print(f"C-index: {results['cox_model']['c_index']:.4f}")
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/epcoritamab-crs-analysis.git
-cd epcoritamab-crs-analysis
+[git clone https://github.com/yourusername/epcoritamab-crs-analysis.git
+cd epcoritamab-crs-analysis](https://github.com/MengqiLiu-9543/capstone_project-33.git
+)
 ```
 
 ### 2. Set Up Environment
