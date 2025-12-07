@@ -1,0 +1,18 @@
+LIME Explanation - Survival Case (Sample 0)
+============================================================
+
+Prediction (threshold=0.5): 0
+Prediction Probabilities [p0, p1]: [0.71233866 0.28766134]
+
+Top-10 Feature Contributions:
+------------------------------------------------------------
+cancer_stage_II <= 0.00                           : -0.314582
+cancer_stage_IV <= 0.00                           :  0.176330
+has_antiviral <= 0.00                             : -0.152826
+has_antifungal <= 0.00                            : -0.134386
+cancer_stage_III <= 0.00                          : -0.130271
+59.00 < patientonsetage <= 64.00                  : -0.100406
+0.00 < sex_male <= 1.00                           :  0.092706
+bmi <= 26.34                                      :  0.088432
+has_steroid <= 0.00                               : -0.070127
+has_chemo <= 0.00                                 : -0.068893
