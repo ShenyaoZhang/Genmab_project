@@ -248,6 +248,91 @@ print()
 print(df.head(5))
 print()
 
+# Epcoritamab + CRS Analysis
+print("=" * 80)
+print("🔬 Epcoritamab + CRS Analysis")
+print("=" * 80)
+print()
+
+# Identify Epcoritamab records
+if 'target_drug' in df.columns:
+    epcor_mask = df['target_drug'].str.contains('Epcoritamab', case=False, na=False)
+    epcor_df = df[epcor_mask].copy()
+    n_epcor = len(epcor_df)
+    
+    if n_epcor > 0:
+        print(f"📊 Epcoritamab Reports:")
+        print(f"   Total Epcoritamab reports: {n_epcor}")
+        print()
+        
+        # Death statistics
+        if 'seriousnessdeath' in epcor_df.columns:
+            death_col = pd.to_numeric(epcor_df['seriousnessdeath'], errors='coerce').fillna(0)
+            n_death = (death_col > 0).sum()
+            death_rate = (n_death / n_epcor) * 100 if n_epcor > 0 else 0
+            print(f"💀 Death Outcomes:")
+            print(f"   Deaths in Epcoritamab reports: {n_death} ({death_rate:.1f}%)")
+            print()
+        
+        # CRS identification
+        if 'reactions' in epcor_df.columns:
+            reactions_upper = epcor_df['reactions'].fillna('').str.upper()
+            
+            # CRS keywords
+            crs_keywords = [
+                'CYTOKINE RELEASE SYNDROME',
+                'CYTOKINE RELEASE',
+                'CYTOKINE STORM'
+            ]
+            
+            crs_mask = pd.Series([False] * len(epcor_df), index=epcor_df.index)
+            for keyword in crs_keywords:
+                crs_mask |= reactions_upper.str.contains(keyword, na=False, regex=False)
+            
+            n_crs = crs_mask.sum()
+            crs_rate = (n_crs / n_epcor) * 100 if n_epcor > 0 else 0
+            
+            print(f"🦠 CRS (Cytokine Release Syndrome):")
+            print(f"   Epcoritamab reports with CRS: {n_crs} ({crs_rate:.1f}%)")
+            print()
+            
+            # CRS + Death
+            if 'seriousnessdeath' in epcor_df.columns:
+                crs_death_df = epcor_df[crs_mask]
+                if len(crs_death_df) > 0:
+                    crs_death_col = pd.to_numeric(crs_death_df['seriousnessdeath'], errors='coerce').fillna(0)
+                    n_crs_death = (crs_death_col > 0).sum()
+                    crs_death_rate = (n_crs_death / len(crs_death_df)) * 100 if len(crs_death_df) > 0 else 0
+                    
+                    print(f"⚠️  CRS → Death:")
+                    print(f"   Deaths in CRS patients: {n_crs_death} / {len(crs_death_df)} ({crs_death_rate:.1f}%)")
+                    print()
+            
+            # Summary for report/slides
+            print("=" * 80)
+            print("📝 Summary for Report/Slides:")
+            print("=" * 80)
+            print()
+            print(f"In our dataset, we have {n_epcor} Epcoritamab reports.")
+            print(f"Among these, {n_crs} reports ({crs_rate:.1f}%) contain CRS-related adverse events.")
+            if 'seriousnessdeath' in epcor_df.columns and len(crs_death_df) > 0:
+                print(f"Of the {n_crs} CRS cases, {n_crs_death} resulted in death ({crs_death_rate:.1f}%).")
+            print()
+            print("📊 Key Statistics:")
+            print(f"   • Total Epcoritamab reports: {n_epcor}")
+            print(f"   • Reports with CRS: {n_crs} ({crs_rate:.1f}%)")
+            if 'seriousnessdeath' in epcor_df.columns:
+                print(f"   • Total deaths in Epcoritamab reports: {n_death} ({death_rate:.1f}%)")
+                if len(crs_death_df) > 0:
+                    print(f"   • Deaths in CRS patients: {n_crs_death} / {n_crs} ({crs_death_rate:.1f}%)")
+            print()
+    else:
+        print("⚠️  No Epcoritamab reports found in dataset")
+        print()
+else:
+    print("⚠️  'target_drug' column not found - cannot analyze Epcoritamab")
+    print()
+
 # Summary
 print("=" * 80)
 print("✅ Step 2 complete - data inspection finished")

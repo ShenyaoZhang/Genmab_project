@@ -1,5 +1,5 @@
 ,accuracy,precision,recall,f1,roc_auc
-XGBoost,0.668,0.3563,0.5127,0.4204,0.6398
-Logistic Regression,0.5965,0.3039,0.556,0.393,0.6198
-Random Forest,0.7119,0.3746,0.3384,0.3556,0.6129
-Gradient Boosting,0.7714,0.5981,0.0814,0.1433,0.644
+XGBoost,0.6784,0.3698,0.5242,0.4337,0.664
+Logistic Regression,0.6201,0.3184,0.5407,0.4008,0.6352
+Random Forest,0.7412,0.4363,0.3486,0.3876,0.6392
+Gradient Boosting,0.7851,0.731,0.1349,0.2277,0.6654

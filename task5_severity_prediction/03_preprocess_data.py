@@ -138,15 +138,209 @@ if 'patientsex' in df.columns:
     df['sex_female'] = (df['patientsex'] == 2).astype(int)
     df['sex_unknown'] = (df['patientsex'] == 0).astype(int)
 
-# Multi-drug usage features
+# Age threshold features
+if 'patientonsetage' in df.columns or 'age_years' in df.columns:
+    age_col = 'age_years' if 'age_years' in df.columns else 'patientonsetage'
+    if age_col in df.columns:
+        df['age_gt_65'] = (df[age_col] > 65).astype(int)
+        df['age_gt_70'] = (df[age_col] > 70).astype(int)
+        df['age_gt_75'] = (df[age_col] > 75).astype(int)
+
+# Weight normalization and BMI features
+# CONTINUOUS VARIABLE PROCESSING:
+# - Weight (patientweight): Kept as continuous in original units (kg), no scaling needed for tree-based models.
+#   Missing values filled with median, and a weight_missing flag is created.
+# - BMI: Calculated from weight (assuming default height if not available), kept as continuous feature.
+# - BMI buckets: Created as binary indicators (<18.5 underweight, 18.5-25 normal, 25-30 overweight, >30 obese).
+# - Age: Used both as continuous (age_years) and as binary indicators (age_gt_65, age_gt_70, age_gt_75).
+# - Polypharmacy: Captured both by continuous count (num_drugs) and by binary indicators (high_polypharmacy, etc.).
+if 'patientweight' in df.columns:
+    print("🔹 Weight normalization and BMI calculation...")
+    # Weight: Keep as continuous in original units (kg), no scaling needed for tree-based models
+    # Missing values: Fill with median, create missing indicator flag
+    weight = pd.to_numeric(df['patientweight'], errors='coerce')
+    df['weight_missing'] = weight.isna().astype(int)
+    median_weight = weight.median()
+    df['patientweight'] = weight.fillna(median_weight)
+    
+    # BMI: Calculate from weight (assuming average height ~1.65m if height not available)
+    # BMI is kept as a continuous feature for model use
+    height_default = 1.65  # meters
+    df['bmi'] = df['patientweight'] / (height_default ** 2)
+    
+    # BMI buckets: Create binary indicators based on thresholds
+    # Underweight: <18.5, Normal: 18.5-25, Overweight: 25-30, Obese: >30
+    df['bmi_underweight'] = (df['bmi'] < 18.5).astype(int)
+    df['bmi_normal'] = ((df['bmi'] >= 18.5) & (df['bmi'] < 25)).astype(int)
+    df['bmi_overweight'] = ((df['bmi'] >= 25) & (df['bmi'] < 30)).astype(int)
+    df['bmi_obese'] = (df['bmi'] >= 30).astype(int)
+    
+    print(f"   BMI calculated for {df['patientweight'].notna().sum()} patients")
+    print(f"   Underweight: {df['bmi_underweight'].sum()}, Normal: {df['bmi_normal'].sum()}")
+    print(f"   Overweight: {df['bmi_overweight'].sum()}, Obese: {df['bmi_obese'].sum()}")
+
+# Multi-drug usage features (polypharmacy class-level)
 if 'num_drugs' in df.columns:
     df['polypharmacy'] = (df['num_drugs'] > 1).astype(int)
     df['high_polypharmacy'] = (df['num_drugs'] > 5).astype(int)
+    df['moderate_polypharmacy'] = ((df['num_drugs'] >= 2) & (df['num_drugs'] <= 5)).astype(int)
+    df['very_high_polypharmacy'] = (df['num_drugs'] > 10).astype(int)
+    
+    # Classify polypharmacy levels
+    def classify_polypharmacy(num):
+        if num <= 1:
+            return 'low'
+        elif num <= 5:
+            return 'moderate'
+        elif num <= 10:
+            return 'high'
+        else:
+            return 'very_high'
+    
+    df['polypharmacy_class'] = df['num_drugs'].apply(classify_polypharmacy)
+    # One-hot encode polypharmacy class
+    poly_dummies = pd.get_dummies(df['polypharmacy_class'], prefix='polypharmacy')
+    df = pd.concat([df, poly_dummies], axis=1)
+
+# Drug class features (from all_drugs)
+if 'all_drugs' in df.columns:
+    print("🔹 Extracting drug class features...")
+    drugs_upper = df['all_drugs'].fillna('').str.upper()
+    
+    # Steroids
+    df['has_steroid'] = (
+        drugs_upper.str.contains('PREDNISONE|PREDNISOLONE|DEXAMETHASONE|METHYLPREDNISOLONE|HYDROCORTISONE', na=False)
+    ).astype(int)
+    
+    # Antibiotics
+    df['has_antibiotic'] = (
+        drugs_upper.str.contains('CIPROFLOXACIN|LEVOFLOXACIN|VANCOMYCIN|AMOXICILLIN|CEPHALEXIN|AZITHROMYCIN', na=False)
+    ).astype(int)
+    
+    # Antivirals
+    df['has_antiviral'] = (
+        drugs_upper.str.contains('ACYCLOVIR|GANCICLOVIR|OSELTAMIVIR|VALACYCLOVIR', na=False)
+    ).astype(int)
+    
+    # Chemotherapy
+    df['has_chemo'] = (
+        drugs_upper.str.contains('CYCLOPHOSPHAMIDE|DOXORUBICIN|GEMCITABINE|CISPLATIN|PACLITAXEL|CARBOPLATIN', na=False)
+    ).astype(int)
+    
+    # Targeted therapy
+    df['has_targeted'] = (
+        drugs_upper.str.contains('RITUXIMAB|BRENTUXIMAB|LENALIDOMIDE|POMALIDOMIDE', na=False)
+    ).astype(int)
+    
+    # Antifungals
+    df['has_antifungal'] = (
+        drugs_upper.str.contains('FLUCONAZOLE|VORICONAZOLE|AMPHOTERICIN|POSACONAZOLE', na=False)
+    ).astype(int)
+    
+    # Interaction terms (Sky's requirement)
+    df['steroid_plus_antibiotic'] = (
+        (df['has_steroid'] == 1) & (df['has_antibiotic'] == 1)
+    ).astype(int)
+    
+    print(f"   Steroid: {df['has_steroid'].sum()}, Antibiotic: {df['has_antibiotic'].sum()}")
+    print(f"   Antiviral: {df['has_antiviral'].sum()}, Chemo: {df['has_chemo'].sum()}")
+    print(f"   Steroid+Antibiotic combo: {df['steroid_plus_antibiotic'].sum()}")
 
 # Reaction count features
 if 'num_reactions' in df.columns:
     df['multiple_reactions'] = (df['num_reactions'] > 1).astype(int)
     df['many_reactions'] = (df['num_reactions'] > 3).astype(int)
+
+# Extract Cancer Stage from drug_indication
+# NOTE: FAERS does NOT have a standardized cancer stage field.
+# DLBCL stage is not available as a structured variable in FAERS.
+# We attempt to extract stage information from free-text drug_indication field,
+# but this is imperfect and may miss many cases.
+# 
+# For future datasets with structured stage data, a numeric cancer_stage field (1-4)
+# can be directly used. Our pipeline is designed to accept such a field.
+#
+# If a structured cancer_stage field becomes available in the future:
+# - Use it directly as: df['cancer_stage'] = df['cancer_stage']  # numeric 1-4
+# - Create derived features: df['advanced_stage'] = (df['cancer_stage'] >= 3).astype(int)
+# - Missing values will be automatically handled by the feature selection logic
+
+# Reserve a placeholder for structured stage data (currently None/NaN)
+if 'cancer_stage' not in df.columns:
+    df['cancer_stage'] = np.nan  # Placeholder for future structured stage data
+
+if 'drug_indication' in df.columns:
+    print("🔹 Extracting cancer stage from free-text drug_indication (imperfect extraction)...")
+    indication_upper = df['drug_indication'].fillna('').str.upper()
+    
+    # Extract cancer stage (Stage I, II, III, IV) from free-text
+    # Match patterns like: "STAGE I", "STAGE 1", "STAGE II", "STAGE 2", "STAGE III", "STAGE 3", "STAGE IV", "STAGE 4"
+    # LIMITATION: This is text pattern matching and may not capture all stage information
+    
+    # Initialize all stages as 0
+    df['cancer_stage_I'] = 0
+    df['cancer_stage_II'] = 0
+    df['cancer_stage_III'] = 0
+    df['cancer_stage_IV'] = 0
+    
+    # Stage I/1
+    stage_i_pattern = r'STAGE\s+[I1](\s|$|,|\|)'
+    df['cancer_stage_I'] = indication_upper.str.contains(stage_i_pattern, regex=True, na=False).astype(int)
+    
+    # Stage II/2
+    stage_ii_pattern = r'STAGE\s+[I2]{2}(\s|$|,|\|)'  # II or 2
+    df['cancer_stage_II'] = indication_upper.str.contains(stage_ii_pattern, regex=True, na=False).astype(int)
+    # Also check for "STAGE 2" separately
+    df['cancer_stage_II'] = (df['cancer_stage_II'] | 
+                              indication_upper.str.contains(r'STAGE\s+2(\s|$|,|\|)', regex=True, na=False)).astype(int)
+    
+    # Stage III/3
+    stage_iii_pattern = r'STAGE\s+[I3]{3}(\s|$|,|\|)'  # III or 3
+    df['cancer_stage_III'] = indication_upper.str.contains(stage_iii_pattern, regex=True, na=False).astype(int)
+    # Also check for "STAGE 3" separately
+    df['cancer_stage_III'] = (df['cancer_stage_III'] | 
+                               indication_upper.str.contains(r'STAGE\s+3(\s|$|,|\|)', regex=True, na=False)).astype(int)
+    
+    # Stage IV/4
+    stage_iv_pattern = r'STAGE\s+[IV4](\s|$|,|\|)'  # IV or 4
+    df['cancer_stage_IV'] = indication_upper.str.contains(stage_iv_pattern, regex=True, na=False).astype(int)
+    # Also check for "STAGE 4" separately
+    df['cancer_stage_IV'] = (df['cancer_stage_IV'] | 
+                              indication_upper.str.contains(r'STAGE\s+4(\s|$|,|\|)', regex=True, na=False)).astype(int)
+    
+    # Print statistics
+    print(f"   Stage I: {df['cancer_stage_I'].sum()} patients")
+    print(f"   Stage II: {df['cancer_stage_II'].sum()} patients")
+    print(f"   Stage III: {df['cancer_stage_III'].sum()} patients")
+    print(f"   Stage IV: {df['cancer_stage_IV'].sum()} patients")
+    
+    # Create combined cancer_stage categorical feature (for analysis)
+    def get_stage(row):
+        if row['cancer_stage_IV'] == 1:
+            return 'IV'
+        elif row['cancer_stage_III'] == 1:
+            return 'III'
+        elif row['cancer_stage_II'] == 1:
+            return 'II'
+        elif row['cancer_stage_I'] == 1:
+            return 'I'
+        else:
+            return 'Unknown'
+    
+    df['cancer_stage'] = df.apply(get_stage, axis=1)
+
+# Missing value imputation for numeric features
+print("🔹 Handling missing values...")
+numeric_cols = df.select_dtypes(include=[np.number]).columns
+for col in numeric_cols:
+    if col not in ['seriousnessdeath', 'serious', 'seriousnesshospitalization', 
+                   'seriousnesslifethreatening', 'seriousnessdisabling',
+                   'seriousnesscongenitalanomali', 'seriousnessother']:
+        if df[col].isna().sum() > 0:
+            median_val = df[col].median()
+            if pd.notna(median_val):
+                df[col] = df[col].fillna(median_val)
+                print(f"   Filled {col} missing values with median: {median_val:.2f}")
 
 # Reminder: do not recreate the severity_score feature (introduces leakage)
 print("✅ Feature engineering complete")
