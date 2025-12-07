@@ -348,22 +348,6 @@ Contributions are welcome! Please feel free to submit a Pull Request. For major 
 - [ ] Machine learning model enhancements
 - [ ] External validation with EHR data
 
-## 📄 License
-
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
-
-## 🙏 Acknowledgments
-
-- **FDA FAERS Team** - For providing open-access adverse event data
-- **Lifelines Developers** - Excellent survival analysis library
-- **Project Mentor** - Valuable feedback and guidance
-
-## 📧 Contact
-
-- **Author:** [Your Name]
-- **Email:** [your.email@example.com]
-- **Institution:** [Your Institution]
-- **GitHub:** [@yourusername](https://github.com/yourusername)
 
 ## 🔗 Links
 
@@ -375,7 +359,6 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 <div align="center">
 
-**⭐ If this project helps your research, please give it a star!**
 
 Made with ❤️ for safer oncology care
 
