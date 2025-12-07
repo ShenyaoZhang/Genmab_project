@@ -1,0 +1,8 @@
+# Ignore large FAERS raw data
+Part1/capstone_part1/fda_drug_events.json
+
+# General ignores
+.DS_Store
+*.csv
+*.json
+*.zip
