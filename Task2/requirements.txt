@@ -1,0 +1,30 @@
+# Python Requirements for Scalable Survival Analysis Pipeline
+# Install: pip install -r requirements.txt
+
+# Core Data Processing
+pandas>=1.4.2
+numpy>=1.22.4
+
+# Survival Analysis
+lifelines>=0.27.0
+
+# Machine Learning
+scikit-learn>=1.0.2
+
+# Visualization
+matplotlib>=3.5.0
+seaborn>=0.11.0
+
+# Statistical Analysis
+scipy>=1.8.0
+statsmodels>=0.13.0
+
+# API and Data Collection
+requests>=2.27.0
+
+# Optional: Advanced Interpretability (for future SHAP integration)
+# shap>=0.41.0
+
+# Optional: NLP for narrative text processing
+# nltk>=3.7
+# spacy>=3.3.0
