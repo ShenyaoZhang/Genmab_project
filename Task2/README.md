@@ -8,17 +8,17 @@
 
 ---
 
-## 🎯 Key Features
+##  Key Features
 
-✅ **Fully Scalable:** Analyze any drug-AE pair without code modification  
-✅ **Interpretable:** SHAP-style feature importance with plain-English explanations  
-✅ **Production-Ready:** Complete pipeline from data collection to risk stratification  
-✅ **Extensible:** Designed for future biomarker integration  
-✅ **Validated:** Results consistent with clinical trials (EPCORE NHL-1)
+ **Fully Scalable:** Analyze any drug-AE pair without code modification  
+ **Interpretable:** SHAP-style feature importance with plain-English explanations  
+ **Production-Ready:** Complete pipeline from data collection to risk stratification  
+ **Extensible:** Designed for future biomarker integration  
+ **Validated:** Results consistent with clinical trials (EPCORE NHL-1)
 
 ---
 
-## 📋 Table of Contents
+##  Table of Contents
 
 - [Quick Start](#quick-start)
 - [Installation](#installation)
@@ -34,7 +34,7 @@
 
 ---
 
-## ⚡ Quick Start
+##  Quick Start
 
 ### Run Analysis for Any Drug-AE Pair
 
@@ -77,7 +77,7 @@ print(f"C-index: {results['cox_model']['c_index']:.4f}")
 
 ---
 
-## 🚀 Installation
+##  Installation
 
 ### 1. Clone Repository
 
@@ -106,7 +106,7 @@ python -c "import lifelines; import sklearn; print('✓ All dependencies install
 
 ---
 
-## 💡 Usage Examples
+##  Usage Examples
 
 ### Example 1: Command Line
 
@@ -163,7 +163,7 @@ for drug, ae in pairs:
 
 ---
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 epcoritamab-crs-analysis/
@@ -202,7 +202,7 @@ epcoritamab-crs-analysis/
 
 ---
 
-## 🔄 Pipeline Flow
+##  Pipeline Flow
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
@@ -268,7 +268,7 @@ epcoritamab-crs-analysis/
 
 ---
 
-## 🔬 Key Findings (Epcoritamab + CRS)
+##  Key Findings (Epcoritamab + CRS)
 
 ### Primary Results
 
@@ -298,7 +298,7 @@ epcoritamab-crs-analysis/
 
 ---
 
-## 📊 Variables and Data Sources
+##  Variables and Data Sources
 
 ### Complete Variable Catalog
 
@@ -356,7 +356,7 @@ age_group = '>65'  # high-risk category
 
 ---
 
-## 🧠 Model Interpretability
+##  Model Interpretability
 
 ### Feature Importance Explanation
 
@@ -414,7 +414,7 @@ means weight is the main protective factor for this patient."
 
 ---
 
-## 🔮 Future: Biomarker Integration
+##  Future: Biomarker Integration
 
 ### Biomarker Mapping (Based on CAR-T Literature)
 
@@ -459,7 +459,7 @@ features = ['patient_age', 'patient_weight', 'total_drugs',
 
 ---
 
-## 📚 Documentation
+##  Documentation
 
 ### Technical Reports
 
@@ -479,7 +479,7 @@ features = ['patient_age', 'patient_weight', 'total_drugs',
 
 ---
 
-## 📊 Data Summary
+##  Data Summary
 
 ### Dataset Statistics (Epcoritamab + CRS)
 
@@ -505,7 +505,7 @@ features = ['patient_age', 'patient_weight', 'total_drugs',
 
 ---
 
-## 🏥 Clinical Applications
+##  Clinical Applications
 
 ### Risk Stratification
 
@@ -534,7 +534,7 @@ Risk Score =
 
 ---
 
-## 🤝 Contributing
+##  Contributing
 
 We welcome contributions! To add new features:
 
@@ -564,29 +564,11 @@ python task2/run_survival_analysis.py \
 
 ---
 
-## 📖 Citation
 
-```bibtex
-@article{epcoritamab_crs_2025,
-  title={Scalable Survival Analysis Pipeline for Drug-Adverse Event Pairs:
-         A Case Study of Epcoritamab and Cytokine Release Syndrome},
-  author={[Your Name]},
-  year={2025},
-  institution={[Your Institution]},
-  note={AI-Powered Pharmacovigilance System Project}
-}
-```
 
-### Related Publications
-
-- Thieblemont, C., et al. (2022). "Epcoritamab in Relapsed or Refractory Large B-Cell Lymphoma." *JCO*, 40(21), 2238-2247.
-- Hay, K. A., et al. (2017). "Kinetics and biomarkers of severe CRS after CAR T-cell therapy." *Blood*, 130(21), 2295-2306.
-- Lee, D. W., et al. (2019). "ASTCT Consensus Grading for Cytokine Release Syndrome." *BBMT*, 25(4), 625-638.
 
 ---
 
 
-
-**Made for safer oncology care**
 
 </div>
