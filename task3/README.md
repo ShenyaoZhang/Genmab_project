@@ -110,8 +110,29 @@ Statistics:
 Analyze clinical risk factors for a specific drug-event combination:
 
 ```bash
-python3 task3_bert_clinical_features.py --drug "Epcoritamab" --adverse_event "Neutropenia"
+python3 task3_bert_clinical_features.py "Epcoritamab" "Neutropenia"
 ```
+
+**Example Output:**
+```
+====================================================================================================
+Risk Factor Analysis
+====================================================================================================
+Risk Factor                              AE Group            Control Group       Difference      Conclusion        
+----------------------------------------------------------------------------------------------------
+Age                                      66.2 years          66.9 years          -0.7 years      Not a risk factor
+Sex                                      Female 56.5%        Female 66.7%        -10.1%          Male associated (OR=0.65)
+Medical History: DLBCL refractory       95.8%               15.4%               +80.4%         High risk factor
+Medical History: Prophylaxis           116.7%               76.9%               +39.7%         Risk factor
+Concomitant Drug: Prednisolone Oral    33.3%                0.0%                +33.3%         Risk factor
+====================================================================================================
+
+Group Sizes:
+  AE Group (with Neutropenia): 24 reports
+  Control Group (Fatigue): 12 reports
+```
+
+This analysis compares patients who experienced the AE vs. those who did not, identifying clinical features (age, sex, medical history, concomitant drugs) that influence or cause the adverse event.
 
 ---
 

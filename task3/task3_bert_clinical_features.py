@@ -421,10 +421,85 @@ class ClinicalFeatureExtractor:
             'adverse_event': adverse_event,
             'ae_group_size': len(ae_reports),
             'control_group_size': len(control_reports),
+            'control_ae': comparison_ae,
             'ae_analysis': ae_analysis,
             'control_analysis': control_analysis,
             'risk_factors': risk_factors,
         }
+    
+    def print_risk_factor_table(self, risk_analysis):
+        """
+        Print risk factor analysis in table format
+        
+        Args:
+            risk_analysis: Output from identify_risk_factors
+        """
+        print("\n" + "=" * 100)
+        print("Risk Factor Analysis")
+        print("=" * 100)
+        
+        # Table header
+        header = f"{'Risk Factor':<40} {'AE Group':<20} {'Control Group':<20} {'Difference':<15} {'Conclusion':<20}"
+        print(header)
+        print("-" * 100)
+        
+        risk_factors = risk_analysis.get('risk_factors', {})
+        
+        # Age row
+        if 'age' in risk_factors:
+            data = risk_factors['age']
+            ae_val = f"{data['ae_group_mean']:.1f} years"
+            control_val = f"{data['control_group_mean']:.1f} years"
+            diff_val = f"{data['difference']:+.1f} years"
+            conclusion = "Not a risk factor" if not data['is_risk_factor'] else data['interpretation']
+            print(f"{'Age':<40} {ae_val:<20} {control_val:<20} {diff_val:<15} {conclusion:<20}")
+        
+        # Sex row
+        if 'sex' in risk_factors:
+            data = risk_factors['sex']
+            ae_val = f"Female {data['ae_group_female_pct']:.1f}%"
+            control_val = f"Female {data['control_group_female_pct']:.1f}%"
+            diff_val = f"{data['difference']:+.1f}%"
+            if data.get('odds_ratio') and data['odds_ratio'] > 0:
+                if data['difference'] < -10:
+                    # Male associated: OR for male vs female
+                    male_or = 1 / data['odds_ratio']
+                    conclusion = f"Male associated (OR={male_or:.2f})"
+                elif data['difference'] > 10:
+                    # Female associated: OR for female vs male
+                    conclusion = f"Female associated (OR={data['odds_ratio']:.2f})"
+                else:
+                    conclusion = "Not a risk factor"
+            else:
+                conclusion = "Not a risk factor" if not data['is_risk_factor'] else data['interpretation']
+            print(f"{'Sex':<40} {ae_val:<20} {control_val:<20} {diff_val:<15} {conclusion:<20}")
+        
+        # Medical History rows
+        if 'medical_history' in risk_factors:
+            data = risk_factors['medical_history']
+            for ind in data.get('risk_indications', []):
+                risk_factor_name = f"Medical History: {ind['indication']}"
+                ae_val = f"{ind['ae_group_pct']:.1f}%"
+                control_val = f"{ind['control_group_pct']:.1f}%"
+                diff_val = f"+{ind['difference']:.1f}%"
+                conclusion = "High risk factor" if ind['difference'] > 50 else "Risk factor"
+                print(f"{risk_factor_name:<40} {ae_val:<20} {control_val:<20} {diff_val:<15} {conclusion:<20}")
+        
+        # Concomitant Drugs rows
+        if 'concomitant_drugs' in risk_factors:
+            data = risk_factors['concomitant_drugs']
+            for drug_info in data.get('risk_drugs', []):
+                risk_factor_name = f"Concomitant Drug: {drug_info['drug']}"
+                ae_val = f"{drug_info['ae_group_pct']:.1f}%"
+                control_val = f"{drug_info['control_group_pct']:.1f}%"
+                diff_val = f"+{drug_info['difference']:.1f}%"
+                conclusion = "Risk factor"
+                print(f"{risk_factor_name:<40} {ae_val:<20} {control_val:<20} {diff_val:<15} {conclusion:<20}")
+        
+        print("=" * 100)
+        print(f"\nGroup Sizes:")
+        print(f"  AE Group (with {risk_analysis['adverse_event']}): {risk_analysis['ae_group_size']} reports")
+        print(f"  Control Group ({risk_analysis.get('control_ae', 'other AEs')}): {risk_analysis['control_group_size']} reports")
     
     def get_bert_embedding(self, text):
         """
@@ -568,44 +643,8 @@ def demo():
         
         risk_analysis = extractor.identify_risk_factors(drug, adverse_event)
         
-        print(f"\nGroup Sizes:")
-        print(f"  AE Group (with {adverse_event}): {risk_analysis['ae_group_size']} reports")
-        print(f"  Control Group (without {adverse_event}): {risk_analysis['control_group_size']} reports")
-        
-        for factor, data in risk_analysis.get('risk_factors', {}).items():
-            print(f"\n{factor.upper().replace('_', ' ')}:")
-            
-            if factor == 'age':
-                print(f"  AE Group Mean Age: {data['ae_group_mean']:.1f} years")
-                print(f"  Control Group Mean Age: {data['control_group_mean']:.1f} years")
-                print(f"  Difference: {data['difference']:.1f} years")
-                print(f"  Interpretation: {data['interpretation']}")
-                print(f"  Is Risk Factor: {data['is_risk_factor']}")
-            
-            elif factor == 'sex':
-                print(f"  AE Group Female: {data['ae_group_female_pct']:.1f}%")
-                print(f"  Control Group Female: {data['control_group_female_pct']:.1f}%")
-                print(f"  Difference: {data['difference']:.1f}%")
-                if data.get('odds_ratio'):
-                    print(f"  Odds Ratio: {data['odds_ratio']}")
-                print(f"  Interpretation: {data['interpretation']}")
-                print(f"  Is Risk Factor: {data['is_risk_factor']}")
-            
-            elif factor == 'medical_history':
-                print(f"  {data['interpretation']}")
-                print(f"  Risk-Inducing Medical Conditions:")
-                for ind in data.get('risk_indications', [])[:5]:
-                    print(f"    - {ind['indication']}:")
-                    print(f"        AE Group: {ind['ae_group_pct']}% vs Control: {ind['control_group_pct']}%")
-                    print(f"        Increased Risk: +{ind['difference']}%")
-            
-            elif factor == 'concomitant_drugs':
-                print(f"  {data['interpretation']}")
-                print(f"  Risk-Inducing Concomitant Drugs:")
-                for drug_info in data.get('risk_drugs', [])[:5]:
-                    print(f"    - {drug_info['drug']}:")
-                    print(f"        AE Group: {drug_info['ae_group_pct']}% vs Control: {drug_info['control_group_pct']}%")
-                    print(f"        Increased Risk: +{drug_info['difference']}%")
+        # Print table format
+        extractor.print_risk_factor_table(risk_analysis)
     
     else:
         print("No reports found. Try a different drug-event combination.")
@@ -673,44 +712,8 @@ if __name__ == "__main__":
             
             risk_analysis = extractor.identify_risk_factors(drug, adverse_event)  # drug parameter preserved
             
-            print(f"\nGroup Sizes:")
-            print(f"  AE Group (with {adverse_event}): {risk_analysis['ae_group_size']} reports")
-            print(f"  Control Group (without {adverse_event}): {risk_analysis['control_group_size']} reports")
-            
-            for factor, data in risk_analysis.get('risk_factors', {}).items():
-                print(f"\n{factor.upper().replace('_', ' ')}:")
-                
-                if factor == 'age':
-                    print(f"  AE Group Mean Age: {data['ae_group_mean']:.1f} years")
-                    print(f"  Control Group Mean Age: {data['control_group_mean']:.1f} years")
-                    print(f"  Difference: {data['difference']:.1f} years")
-                    print(f"  Interpretation: {data['interpretation']}")
-                    print(f"  Is Risk Factor: {data['is_risk_factor']}")
-                
-                elif factor == 'sex':
-                    print(f"  AE Group Female: {data['ae_group_female_pct']:.1f}%")
-                    print(f"  Control Group Female: {data['control_group_female_pct']:.1f}%")
-                    print(f"  Difference: {data['difference']:.1f}%")
-                    if data.get('odds_ratio'):
-                        print(f"  Odds Ratio: {data['odds_ratio']}")
-                    print(f"  Interpretation: {data['interpretation']}")
-                    print(f"  Is Risk Factor: {data['is_risk_factor']}")
-                
-                elif factor == 'medical_history':
-                    print(f"  {data['interpretation']}")
-                    print(f"  Risk-Inducing Medical Conditions:")
-                    for ind in data.get('risk_indications', [])[:5]:
-                        print(f"    - {ind['indication']}:")
-                        print(f"        AE Group: {ind['ae_group_pct']}% vs Control: {ind['control_group_pct']}%")
-                        print(f"        Increased Risk: +{ind['difference']}%")
-                
-                elif factor == 'concomitant_drugs':
-                    print(f"  {data['interpretation']}")
-                    print(f"  Risk-Inducing Concomitant Drugs:")
-                    for drug_info in data.get('risk_drugs', [])[:5]:
-                        print(f"    - {drug_info['drug']}:")
-                        print(f"        AE Group: {drug_info['ae_group_pct']}% vs Control: {drug_info['control_group_pct']}%")
-                        print(f"        Increased Risk: +{drug_info['difference']}%")
+            # Print table format
+            extractor.print_risk_factor_table(risk_analysis)
         else:
             print("No reports found. Try a different drug-event combination.")
     
