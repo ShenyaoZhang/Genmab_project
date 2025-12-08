@@ -6,7 +6,7 @@ A scalable, extensible pipeline for analyzing adverse events from multiple pharm
 
 ---
 
-## 📋 Table of Contents
+## Table of Contents
 
 1. [Overview](#overview)
 2. [Quick Start](#quick-start)
@@ -21,7 +21,7 @@ A scalable, extensible pipeline for analyzing adverse events from multiple pharm
 
 ---
 
-## 🔬 Overview
+## Overview
 
 This pipeline analyzes safety data from multiple pharmacovigilance databases to:
 
@@ -32,14 +32,14 @@ This pipeline analyzes safety data from multiple pharmacovigilance databases to:
 
 ### Key Features
 
-- ✅ **Scalable**: Works for any drug or adverse event
-- ✅ **Multi-source**: Integrates FAERS, EudraVigilance, JADER
-- ✅ **Interpretable**: SHAP-based explanations for safety physicians
-- ✅ **Extensible**: Easy to add biomarkers or new data sources
+- **Scalable**: Works for any drug or adverse event
+- **Multi-source**: Integrates FAERS, EudraVigilance, JADER
+- **Interpretable**: SHAP-based explanations for safety physicians
+- **Extensible**: Easy to add biomarkers or new data sources
 
 ---
 
-## 🚀 Quick Start
+## Quick Start
 
 ```bash
 # 1. Clone repository
@@ -63,7 +63,7 @@ python main.py --check-signal --drug epcoritamab --ae neutropenia
 
 ---
 
-## 💻 Installation
+## Installation
 
 ### Prerequisites
 
@@ -105,55 +105,55 @@ plotly>=5.13.0        # For visualizations
 
 ---
 
-## 🏗️ Pipeline Architecture
+## Pipeline Architecture
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                         INPUT PARAMETERS                                     │
-│                    drug="epcoritamab", ae="CRS"                              │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ STEP 1: DATA EXTRACTION                                                      │
-│   ├── Query FAERS API with drug + AE filters                                │
-│   ├── Load EudraVigilance CSV (if available)                                │
-│   ├── Load JADER data (if available)                                        │
-│   └── Output: multi_source_crs_data.json                                    │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ STEP 2: FEATURE EXTRACTION                                                   │
-│   ├── Demographics (age, sex, weight)                                       │
-│   ├── Clinical variables (seriousness, outcome)                             │
-│   ├── Drug exposure (dose, frequency, co-medications)                       │
-│   ├── NLP features from narratives                                          │
-│   └── Output: extracted_features.json                                       │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ STEP 3: MODEL TRAINING                                                       │
-│   ├── Rare AE Model: Detect unexpected AE patterns                          │
-│   ├── Risk Model: Predict probability of target AE                          │
-│   ├── Mortality Model: Predict risk of AE-related death                     │
-│   └── Output: model_results.json, feature_importances.json                  │
-└─────────────────────────────────────────────────────────────────────────────┘
-                                    │
-                                    ▼
-┌─────────────────────────────────────────────────────────────────────────────┐
-│ STEP 4: CAUSAL ANALYSIS                                                      │
-│   ├── DAG-based framework                                                   │
-│   ├── Propensity score analysis                                             │
-│   ├── Sensitivity analysis (E-values)                                       │
-│   └── Output: causal_analysis_results.json                                  │
-└─────────────────────────────────────────────────────────────────────────────┘
++-----------------------------------------------------------------------------+
+|                         INPUT PARAMETERS                                     |
+|                    drug="epcoritamab", ae="CRS"                              |
++-----------------------------------------------------------------------------+
+                                    |
+                                    v
++-----------------------------------------------------------------------------+
+| STEP 1: DATA EXTRACTION                                                      |
+|   - Query FAERS API with drug + AE filters                                  |
+|   - Load EudraVigilance CSV (if available)                                  |
+|   - Load JADER data (if available)                                          |
+|   - Output: multi_source_crs_data.json                                      |
++-----------------------------------------------------------------------------+
+                                    |
+                                    v
++-----------------------------------------------------------------------------+
+| STEP 2: FEATURE EXTRACTION                                                   |
+|   - Demographics (age, sex, weight)                                         |
+|   - Clinical variables (seriousness, outcome)                               |
+|   - Drug exposure (dose, frequency, co-medications)                         |
+|   - NLP features from narratives                                            |
+|   - Output: extracted_features.json                                         |
++-----------------------------------------------------------------------------+
+                                    |
+                                    v
++-----------------------------------------------------------------------------+
+| STEP 3: MODEL TRAINING                                                       |
+|   - Rare AE Model: Detect unexpected AE patterns                            |
+|   - Risk Model: Predict probability of target AE                            |
+|   - Mortality Model: Predict risk of AE-related death                       |
+|   - Output: model_results.json, feature_importances.json                    |
++-----------------------------------------------------------------------------+
+                                    |
+                                    v
++-----------------------------------------------------------------------------+
+| STEP 4: CAUSAL ANALYSIS                                                      |
+|   - DAG-based framework                                                     |
+|   - Propensity score analysis                                               |
+|   - Sensitivity analysis (E-values)                                         |
+|   - Output: causal_analysis_results.json                                    |
++-----------------------------------------------------------------------------+
 ```
 
 ---
 
-## 📖 Usage Examples
+## Usage Examples
 
 ### Example 1: Run Full Pipeline
 
@@ -212,7 +212,7 @@ print(report)
 
 ---
 
-## 📚 Module Documentation
+## Module Documentation
 
 ### `main.py` - Pipeline Orchestrator
 
@@ -270,7 +270,7 @@ Implements 5-step detection:
 
 ---
 
-## 📊 Expected Outputs
+## Expected Outputs
 
 ### Files Generated
 
@@ -298,16 +298,16 @@ On Label: Yes
 Signal Strength: moderate
 
 Case Counts by Database:
-  FAERS: 23 cases (✓ Detected)
-  JADER: 15 cases (✓ Detected)
-  EUDRAVIGILANCE: 8 cases (✓ Detected)
+  FAERS: 23 cases (Detected)
+  JADER: 15 cases (Detected)
+  EUDRAVIGILANCE: 8 cases (Detected)
 
 Recommendation: Continue routine monitoring per label requirements.
 ```
 
 ---
 
-## ➕ Adding New Drugs/AEs/Datasets
+## Adding New Drugs/AEs/Datasets
 
 ### Adding a New Drug
 
@@ -364,23 +364,23 @@ class YourDatabaseExtractor:
 
 ---
 
-## 🔍 Model Interpretation
+## Model Interpretation
 
 ### Reading SHAP Values
 
 ```
 For Patient 203:
-  Feature              │ Raw Value │ SHAP Value │ Effect on Prediction
-  ─────────────────────┼───────────┼────────────┼─────────────────────
-  Weight               │ 92 kg     │ -0.08      │ ↓ Reduces mortality risk
-  Age                  │ 72 years  │ +0.15      │ ↑ Increases mortality risk  
-  Steroid premedication│ Yes       │ -0.22      │ ↓ Reduces CRS severity
-  Dose (full, 48mg)    │ 48 mg     │ +0.18      │ ↑ Increases CRS risk
+  Feature              | Raw Value | SHAP Value | Effect on Prediction
+  ---------------------|-----------|------------|----------------------
+  Weight               | 92 kg     | -0.08      | Reduces mortality risk
+  Age                  | 72 years  | +0.15      | Increases mortality risk  
+  Steroid premedication| Yes       | -0.22      | Reduces CRS severity
+  Dose (full, 48mg)    | 48 mg     | +0.18      | Increases CRS risk
 
 Interpretation Guide:
-  • Positive SHAP → Feature pushes risk UPWARD (worse outcome)
-  • Negative SHAP → Feature pushes risk DOWNWARD (better outcome)
-  • Magnitude → Strength of effect
+  - Positive SHAP: Feature pushes risk UPWARD (worse outcome)
+  - Negative SHAP: Feature pushes risk DOWNWARD (better outcome)
+  - Magnitude: Strength of effect
 ```
 
 ### Model Purposes
@@ -394,45 +394,44 @@ Interpretation Guide:
 
 ---
 
-## 📁 File Structure
+## File Structure
 
 ```
 capstone_part1/
-├── main.py                     # Pipeline orchestrator (scalable entry point)
-├── data_extractors.py          # FAERS/EudraVigilance/JADER extractors
-├── extract_crs_data.py         # CRS-specific variable extraction
-├── causal_analysis.py          # Causal inference analysis
-├── nlp_analysis.py             # NLP/BERT narrative analysis
-├── interactive_dashboard.py    # Streamlit dashboard
-├── data_summary.py             # Dataset summaries & missingness
-├── preprocessing.py            # Variable preprocessing documentation
-├── biomarker_integration.py    # Future biomarker integration
-├── rare_ae_detection.py        # Rare/unexpected AE detection
-├── requirements.txt            # Python dependencies
-├── README.md                   # This file
-├── METHODOLOGY.md              # Detailed methodology documentation
-│
-├── figures/                    # Generated visualizations
-│   ├── causal_summary.png
-│   ├── dag_framework.png
-│   └── ...
-│
-└── [Generated Data Files]
-    ├── fda_drug_events.json
-    ├── crs_extracted_data.json
-    ├── multi_source_crs_data.json
-    ├── causal_analysis_results.json
-    ├── narrative_features.json
-    └── ...
+|-- main.py                     # Pipeline orchestrator (scalable entry point)
+|-- data_extractors.py          # FAERS/EudraVigilance/JADER extractors
+|-- extract_crs_data.py         # CRS-specific variable extraction
+|-- causal_analysis.py          # Causal inference analysis
+|-- nlp_analysis.py             # NLP/BERT narrative analysis
+|-- interactive_dashboard.py    # Streamlit dashboard
+|-- data_summary.py             # Dataset summaries & missingness
+|-- preprocessing.py            # Variable preprocessing documentation
+|-- biomarker_integration.py    # Future biomarker integration
+|-- rare_ae_detection.py        # Rare/unexpected AE detection
+|-- requirements.txt            # Python dependencies
+|-- README.md                   # This file
+|-- METHODOLOGY.md              # Detailed methodology documentation
+|
+|-- figures/                    # Generated visualizations
+|   |-- causal_summary.png
+|   |-- dag_framework.png
+|   +-- ...
+|
++-- [Generated Data Files]
+    |-- fda_drug_events.json
+    |-- crs_extracted_data.json
+    |-- multi_source_crs_data.json
+    |-- causal_analysis_results.json
+    |-- narrative_features.json
+    +-- ...
 ```
 
 ---
 
-## 📞 Support
+## Support
 
 For questions about this pipeline, contact the development team or refer to the `METHODOLOGY.md` for detailed technical documentation.
 
 ---
 
 *Developed for NYU Capstone Project in collaboration with Genmab*
-
