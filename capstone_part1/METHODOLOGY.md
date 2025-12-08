@@ -61,7 +61,7 @@ Genmab_project/
 
 ### 2.1 FAERS (FDA Adverse Event Reporting System)
 - **Access**: Public API at `https://api.fda.gov/drug/event.json`
-- **Status**: ✅ Fully implemented
+- **Status**: Fully implemented
 - **Coverage**: United States, global submissions
 - **Records**: 100 CRS cases
 
@@ -76,14 +76,14 @@ params = {
 
 ### 2.2 Eudravigilance (European Medicines Agency)
 - **Access**: Manual download from https://www.adrreports.eu/
-- **Status**: ✅ Fully implemented with real data
+- **Status**: Fully implemented with real data
 - **Coverage**: European Union member states
 - **Records**: 39 CRS cases (from 175 total Epcoritamab reports)
 - **File**: `Run Line Listing Report.csv`
 
 ### 2.3 JADER (Japanese Adverse Drug Event Report)
 - **Access**: Public CSV files from PMDA website (https://www.pmda.go.jp/)
-- **Status**: ✅ Fully implemented with real data
+- **Status**: Fully implemented with real data
 - **Coverage**: Japan
 - **Records**: 647 CRS cases (from 964 total Epcoritamab cases)
 - **Files**: `demo202511.csv`, `drug202511.csv`, `reac202511.csv`, `hist202511.csv`
@@ -242,13 +242,13 @@ The DAG represents our theoretical understanding of causal relationships:
                     ▼                             ▼
             ┌───────────────┐             ┌───────────────┐
             │  Epcoritamab  │             │  CRS Severity │
-            │     Dose      │────────────▶│   (Outcome)   │
+            │     Dose      │------------>│   (Outcome)   │
             └───────┬───────┘             └───────▲───────┘
                     │                             │
                     │     CAUSAL PATHWAY          │
                     ▼                             │
             ┌───────────────┐             ┌───────────────┐
-            │   T-cell      │────────────▶│   Cytokine    │
+            │   T-cell      │------------>│   Cytokine    │
             │  Activation   │             │   Release     │
             └───────────────┘             └───────────────┘
                                                   │
@@ -518,17 +518,17 @@ The analysis uses **786 real CRS cases** from three pharmacovigilance databases:
 
 | Factor | Direction | Evidence | Mechanism |
 |--------|-----------|----------|-----------|
-| **Epcoritamab Dose** | ↑ Risk | OR=2.21 (high vs low), E-value=3.85 | Dose-dependent T-cell activation |
-| **Steroid Premedication** | ↓ Risk (Protective) | Propensity score analysis | Anti-inflammatory, cytokine suppression |
-| **Tocilizumab** | ↓ Risk (Protective) | Known CRS treatment | IL-6 receptor blockade |
+| **Epcoritamab Dose** | Increased Risk | OR=2.21 (high vs low), E-value=3.85 | Dose-dependent T-cell activation |
+| **Steroid Premedication** | Decreased Risk (Protective) | Propensity score analysis | Anti-inflammatory, cytokine suppression |
+| **Tocilizumab** | Decreased Risk (Protective) | Known CRS treatment | IL-6 receptor blockade |
 
 ### 7.3 Confounders (Must Control For)
 
 | Factor | Why It's a Confounder |
 |--------|----------------------|
 | **Age** | Older patients may receive lower doses (caution) AND have worse immune dysregulation |
-| **Disease Stage** | Advanced disease → more aggressive treatment AND worse outcomes |
-| **Prior Therapies** | More prior therapies → different dosing AND different baseline risk |
+| **Disease Stage** | Advanced disease leads to more aggressive treatment AND worse outcomes |
+| **Prior Therapies** | More prior therapies leads to different dosing AND different baseline risk |
 
 ### 7.4 Correlational (Not Causal)
 
@@ -593,7 +593,7 @@ create_multi_source_data(
 **Eudravigilance:**
 1. Visit https://www.adrreports.eu/
 2. Search for "epcoritamab"
-3. Go to "Line Listing" tab → Download CSV
+3. Go to "Line Listing" tab, then Download CSV
 4. Save as `Run Line Listing Report.csv` in project root
 
 **JADER:**
