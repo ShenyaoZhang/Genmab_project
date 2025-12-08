@@ -565,26 +565,97 @@ def print_combo_result(drug, adverse_event):
     print(f"{'=' * 70}\n")
 
 
+def print_top_events(drug, n=10):
+    """Print top N anomalies for a drug"""
+    query = InteractiveAnomalyQuery()
+    top_aes = query.get_top_events_for_drug(drug, n=n)
+    
+    if top_aes is not None and len(top_aes) > 0:
+        print("=" * 70)
+        print(f"Top {n} Rare & Unexpected AEs for {drug}")
+        print("=" * 70)
+        for idx, (_, row) in enumerate(top_aes.iterrows(), 1):
+            print(f"\n{idx}. {row['adverse_event']}")
+            print(f"   Anomaly Score: {row['anomaly_score']:.3f}")
+            print(f"   Count: {row['count']}")
+            if 'prr' in row:
+                print(f"   PRR: {row['prr']:.2f}")
+            if 'ic025' in row:
+                print(f"   IC025: {row['ic025']:.3f}")
+    else:
+        print(f"No results found for {drug}")
+
+
+def print_drug_comparison(drug_list_str):
+    """Print comparison of multiple drugs"""
+    query = InteractiveAnomalyQuery()
+    drugs = [d.strip() for d in drug_list_str.split(',')]
+    comparison = query.compare_drugs(drugs)
+    
+    if comparison is not None and len(comparison) > 0:
+        print("=" * 70)
+        print("Drug Comparison: Rare & Unexpected AE Counts")
+        print("=" * 70)
+        print(comparison[['drug', 'adverse_event', 'count', 'anomaly_score']].to_string(index=False))
+    else:
+        print("No comparison data available")
+
+
+def print_search_results(keyword, top_n=10):
+    """Print search results by adverse event keyword"""
+    query = InteractiveAnomalyQuery()
+    results = query.search_by_adverse_event(keyword, top_n=top_n)
+    
+    if results is not None and len(results) > 0:
+        print("=" * 70)
+        print(f"Found {len(results)} drug-event pairs with '{keyword}':")
+        print("=" * 70)
+        for idx, (_, row) in enumerate(results.head(top_n).iterrows(), 1):
+            print(f"{idx}. {row['drug']} + {row['adverse_event']} (Count: {row['count']}, Score: {row['anomaly_score']:.3f})")
+    else:
+        print(f"No results found for '{keyword}'")
+
+
 if __name__ == "__main__":
     import argparse
     
     parser = argparse.ArgumentParser(
-        description='Task 3: Check if a drug-adverse event combination is rare & unexpected',
+        description='Task 3: Interactive Query System for Rare & Unexpected AEs',
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog="""
 Examples:
+  # Check a specific drug-event combination
   python3 task3_interactive_query.py --drug "Epcoritamab" --adverse_event "Neutropenia"
-  python3 task3_interactive_query.py --drug "Epcoritamab" --adverse_event "Renal impairment"
+  
+  # Get top anomalies for a drug
+  python3 task3_interactive_query.py --top_events "Epcoritamab" --n 10
+  
+  # Compare multiple drugs
+  python3 task3_interactive_query.py --compare "Epcoritamab,Glofitamab,Mosunetuzumab"
+  
+  # Search by adverse event keyword
+  python3 task3_interactive_query.py --search "infection" --top_n 10
         """
     )
     parser.add_argument('--drug', type=str, help='Drug name (e.g., "Epcoritamab")')
     parser.add_argument('--adverse_event', type=str, help='Adverse event name (e.g., "Neutropenia")')
+    parser.add_argument('--top_events', type=str, help='Get top anomalies for a drug')
+    parser.add_argument('--n', type=int, default=10, help='Number of top events to return (default: 10)')
+    parser.add_argument('--compare', type=str, help='Compare multiple drugs (comma-separated)')
+    parser.add_argument('--search', type=str, help='Search by adverse event keyword')
+    parser.add_argument('--top_n', type=int, default=10, help='Number of search results to return (default: 10)')
     
     args = parser.parse_args()
     
-    # If command-line arguments provided, use them
+    # Route to appropriate function based on arguments
     if args.drug and args.adverse_event:
         print_combo_result(args.drug, args.adverse_event)
+    elif args.top_events:
+        print_top_events(args.top_events, args.n)
+    elif args.compare:
+        print_drug_comparison(args.compare)
+    elif args.search:
+        print_search_results(args.search, args.top_n)
     else:
         # Otherwise run interactive demo
         interactive_demo()
