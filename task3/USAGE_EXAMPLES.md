@@ -369,10 +369,138 @@ Frequency Check: Below mean (rare)
 
 ---
 
+## Example 7: BERT Clinical Feature Analysis
+
+Analyze clinical risk factors that influence or cause a specific adverse event.
+
+### Command-Line Usage
+
+```bash
+cd task3
+python3 task3_bert_clinical_features.py "Epcoritamab" "Neutropenia"
+```
+
+**Output:**
+```
+======================================================================
+Task 3: BERT Clinical Feature Analysis
+======================================================================
+
+Analyzing: Epcoritamab + Neutropenia
+----------------------------------------------------------------------
+Fetching reports for Epcoritamab + Neutropenia...
+✓ Found 24 reports
+
+Clinical Feature Analysis:
+----------------------------------------
+
+Age Distribution:
+  Mean: 66.2 years
+  Median: 66.0 years
+  Range: 53 - 82
+  Age Groups: {'<18': 0, '18-40': 0, '40-65': 7, '65+': 11}
+
+Sex Distribution:
+  Female: 56.5%
+  Male: 43.5%
+
+Medical History (Indications):
+  - Prophylaxis: 28 reports
+  - Diffuse large B-cell lymphoma refractory: 23 reports
+  - Premedication: 10 reports
+  - Diffuse large B-cell lymphoma: 6 reports
+  - Disseminated intravascular coagulation: 2 reports
+
+Concomitant Drugs:
+  - EPCORITAMAB-BYSP: 60 reports
+  - PREDNISOLONE: 8 reports
+  - PREDNISOLONE ORAL: 8 reports
+  - PREDNISOLONE ORAL SOLUTION: 8 reports
+  - DEXAMETHASONE: 7 reports
+
+Outcome Distribution:
+  - Death: 24 reports
+  - Hospitalization: 24 reports
+  - Life-threatening: 24 reports
+  - Disability: 24 reports
+
+======================================================================
+Causal Risk Factor Analysis
+======================================================================
+Comparing AE group vs Control group to identify factors that INFLUENCE/CAUSE the AE
+----------------------------------------------------------------------
+
+Analyzing risk factors for Epcoritamab + Neutropenia
+------------------------------------------------------------
+Fetching reports for Epcoritamab + Neutropenia...
+✓ Found 24 reports
+Fetching reports for Epcoritamab + Fatigue...
+✓ Found 13 reports
+Selected control AE: Fatigue (balanced sex distribution + sample size)
+
+====================================================================================================
+Risk Factor Analysis
+====================================================================================================
+Risk Factor                              AE Group            Control Group       Difference      Conclusion        
+----------------------------------------------------------------------------------------------------
+Age                                      66.2 years          66.9 years          -0.7 years      Not a risk factor
+Sex                                      Female 56.5%        Female 66.7%        -10.1%          Male associated (OR=1.54)
+Medical History: DLBCL refractory       95.8%               15.4%               +80.4%         High risk factor
+Medical History: Prophylaxis           116.7%               76.9%               +39.7%         Risk factor
+Concomitant Drug: Prednisolone Oral    33.3%                0.0%                +33.3%         Risk factor
+====================================================================================================
+
+Group Sizes:
+  AE Group (with Neutropenia): 24 reports
+  Control Group (Fatigue): 13 reports
+```
+
+### Python API Usage
+
+```python
+from task3_bert_clinical_features import ClinicalFeatureExtractor
+
+# Initialize extractor
+extractor = ClinicalFeatureExtractor(use_bert=False)
+
+# Get reports for drug-event combination
+reports = extractor.get_reports_for_drug_event("Epcoritamab", "Neutropenia", limit=50)
+
+if reports:
+    # Extract clinical features
+    features = extractor.extract_clinical_features(reports)
+    analysis = extractor.analyze_features(features)
+    
+    # Identify risk factors (compares AE group vs control group)
+    risk_analysis = extractor.identify_risk_factors("Epcoritamab", "Neutropenia")
+    
+    # Print table format
+    extractor.print_risk_factor_table(risk_analysis)
+```
+
+### Understanding the Risk Factor Table
+
+The table compares patients who **experienced** the AE vs. those who **did not** (control group), identifying clinical features that influence or cause the adverse event:
+
+- **Risk Factor**: Clinical feature being analyzed (age, sex, medical history, concomitant drugs)
+- **AE Group**: Value/prevalence in patients who experienced the AE
+- **Control Group**: Value/prevalence in patients who did not experience the AE
+- **Difference**: Difference between AE group and control group
+- **Conclusion**: Interpretation of whether the factor is a risk factor
+
+**Example Interpretation:**
+- **DLBCL refractory**: 95.8% in AE group vs 15.4% in control → +80.4% difference → **High risk factor**
+- **Prednisolone Oral**: 33.3% in AE group vs 0.0% in control → +33.3% difference → **Risk factor**
+- **Age**: 66.2 years vs 66.9 years → -0.7 years difference → **Not a risk factor**
+
+---
+
 ## Notes
 
 - All queries require the results CSV file (`task3_all_unexpected_no_cap.csv`) to be generated first
 - The system automatically loads the most recent results file
 - Case-insensitive matching is used for drug and event names
 - The `check_any_combo()` method can check ANY combination, even if not in the results file
+- BERT clinical feature analysis fetches data in real-time from OpenFDA API (no pre-generated CSV required)
+- The control group is automatically selected based on balanced sex distribution and sample size
 
