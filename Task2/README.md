@@ -306,14 +306,15 @@ See [docs/VARIABLE_LIST.md](docs/VARIABLE_LIST.md) for full details.
 
 #### Quick Reference
 
-| Category | Variables | FAERS | JADER | EudraVigilance |
-|----------|-----------|-------|-------|----------------|
-| **Demographics** | Age, Weight, Sex | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Clinical** | Hospitalization, Life-threatening, Death | ✅ Yes | ✅ Yes | ✅ Yes |
-| **Drug Exposure** | Total drugs, Concomitant, Dose | ✅ Yes | ✅ Yes | ⚠️ Limited |
-| **Time Variables** | Days to event, Drug dates | ✅ Yes | ⚠️ Limited | ⚠️ Limited |
-| **Narrative Text** | Case narratives | ✅ Yes (English) | ❌ Japanese | ✅ Limited |
-| **Comorbidities** | Hypertension, Cardiac, Diabetes | ⚠️ Limited | ⚠️ Limited | ⚠️ Limited |
+| Category | Variables | FAERS |
+|----------|-----------|-------|
+| **Demographics** | Age, Weight, Sex | ✅ Yes |
+| **Clinical** | Hospitalization, Life-threatening, Death | ✅ Yes |
+| **Drug Exposure** | Total drugs, Concomitant, Dose | ✅ Yes |
+| **Time Variables** | Days to event, Drug dates | ✅ Yes |
+| **Narrative Text** | Case narratives | ✅ Yes (English) |
+| **Comorbidities** | Hypertension, Cardiac, Diabetes | ⚠️ Limited |
+
 
 ### Continuous Variable Processing
 
