@@ -1,5 +1,5 @@
 # CRS → Death Model: Plain Language Summary for Clinicians
-**Generated:** 2025-12-07 14:25:37
+**Generated:** 2025-12-08 01:23:21
 ---
 
 ## What This Model Does
@@ -20,10 +20,10 @@ This model predicts the risk of death in patients with **Cytokine Release Syndro
 
 🔹 Key Factors That DECREASE Death Risk:
    • Female Gender: Protective effect against death risk
-   • Patient Age: Protective effect against death risk
    • Receiving Steroids: Protective effect against death risk
+   • Patient Age: Protective effect against death risk
+   • Body Mass Index (BMI): Protective effect against death risk
    • Age Over 65 Years: Protective effect against death risk
-   • Multiple Adverse Reactions: Protective effect against death risk
 
 ================================================================================English Summary (Ready for Report)================================================================================
 For CRS cases, the model finds that age over 70, and infection-related adverse events are the strongest contributors to death risk.
@@ -48,11 +48,11 @@ Advanced age (particularly over 70 years) is consistently associated with increa
    • A patient with age 1 years and high polypharmacy
 
    Why the model predicts high death risk:
-   • Number of Concurrent Medications: increases death risk (contribution: +0.086)
-   • Receiving Chemotherapy: increases death risk (contribution: +0.047)
-   • Number of Adverse Reactions: increases death risk (contribution: +0.039)
-   • Receiving Targeted Therapy: increases death risk (contribution: +0.018)
-   • Patient Age: increases death risk (contribution: +0.016)
+   • Number of Concurrent Medications: increases death risk (contribution: +0.084)
+   • Receiving Chemotherapy: increases death risk (contribution: +0.048)
+   • Number of Adverse Reactions: increases death risk (contribution: +0.038)
+   • Receiving Targeted Therapy: increases death risk (contribution: +0.019)
+   • Patient Age: increases death risk (contribution: +0.017)
 
 
 #### Case 2
@@ -61,10 +61,10 @@ Advanced age (particularly over 70 years) is consistently associated with increa
 
    Why the model predicts lower death risk:
    • Receiving Chemotherapy: decreases death risk (contribution: -0.081)
-   • Number of Concurrent Medications: decreases death risk (contribution: -0.075)
-   • Patient Weight: decreases death risk (contribution: -0.043)
-   • Body Mass Index (BMI): decreases death risk (contribution: -0.037)
-   • Underweight (BMI <18.5): decreases death risk (contribution: -0.022)
+   • Number of Concurrent Medications: decreases death risk (contribution: -0.074)
+   • Patient Weight: decreases death risk (contribution: -0.041)
+   • Body Mass Index (BMI): decreases death risk (contribution: -0.038)
+   • Underweight (BMI <18.5): decreases death risk (contribution: -0.021)
 
 
 ## Clinical Interpretation

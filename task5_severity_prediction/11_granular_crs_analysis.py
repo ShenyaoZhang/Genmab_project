@@ -13,6 +13,7 @@ This script performs FINE-GRAINED feature engineering and analysis:
 import pandas as pd
 import numpy as np
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 from collections import Counter
@@ -35,10 +36,43 @@ except ImportError as e:
     print(f"❌ Missing required library: {e}")
     exit(1)
 
-# Constants
-DATA_FILE = 'main_data.csv'
-TARGET_DRUG = 'Epcoritamab'
-CRS_KEYWORDS = ['CYTOKINE RELEASE SYNDROME', 'CYTOKINE RELEASE', 'CYTOKINE STORM']
+# Default constants (for backward compatibility)
+DEFAULT_DATA_FILE = 'main_data.csv'
+DEFAULT_TARGET_DRUG = 'Epcoritamab'
+DEFAULT_CRS_KEYWORDS = ['CYTOKINE RELEASE SYNDROME', 'CYTOKINE RELEASE', 'CYTOKINE STORM']
+
+def get_ae_keywords(ae):
+    """
+    Map adverse event name to search keywords.
+    
+    Parameters:
+    -----------
+    ae : str
+        Adverse event name (e.g., "CRS", "pneumonia")
+    
+    Returns:
+    --------
+    list : List of keywords to search for in reactions field
+    """
+    ae_keyword_map = {
+        'CRS': ['CYTOKINE RELEASE SYNDROME', 'CYTOKINE RELEASE', 'CYTOKINE STORM'],
+        'pneumonia': ['PNEUMONIA', 'PNEUMONITIS'],
+        'cytokine release syndrome': ['CYTOKINE RELEASE SYNDROME', 'CYTOKINE RELEASE', 'CYTOKINE STORM'],
+        'ICANS': ['ICANS', 'IMMUNE EFFECTOR CELL-ASSOCIATED NEUROTOXICITY', 'NEUROTOXICITY'],
+        # Add more mappings as needed
+    }
+    
+    # Try exact match first
+    if ae.upper() in ae_keyword_map:
+        return ae_keyword_map[ae.upper()]
+    
+    # Try case-insensitive match
+    for key, keywords in ae_keyword_map.items():
+        if ae.upper() == key.upper():
+            return keywords
+    
+    # Default: use the AE name itself
+    return [ae.upper()]
 
 # Common comorbidities to extract from drug_indication, reactions, and medications
 COMORBIDITY_KEYWORDS = {
@@ -132,42 +166,69 @@ def extract_drug_categories(all_drugs_str):
     
     return categories
 
-def identify_crs_cases(df):
-    """Identify CRS cases in Epcoritamab patients."""
+def identify_ae_cases(df, target_drug, ae_keywords):
+    """
+    Identify adverse event cases in patients taking a specific drug.
+    
+    Parameters:
+    -----------
+    df : pd.DataFrame
+        Input dataframe with FAERS data
+    target_drug : str
+        Target drug name (e.g., "Epcoritamab")
+    ae_keywords : list
+        List of keywords to search for in reactions field
+    
+    Returns:
+    --------
+    pd.DataFrame or None
+        DataFrame with AE cases identified, or None if no records found
+    """
     print("=" * 70)
-    print("Step 1: Identifying CRS Cases")
+    print(f"Step 1: Identifying {ae_keywords[0] if ae_keywords else 'AE'} Cases")
     print("=" * 70)
     
-    # Filter to Epcoritamab patients
-    drug_mask = df['target_drug'].str.contains(TARGET_DRUG, case=False, na=False)
-    epcor_df = df[drug_mask].copy()
+    # Filter to target drug patients
+    drug_mask = df['target_drug'].str.contains(target_drug, case=False, na=False)
+    drug_df = df[drug_mask].copy()
     
-    if len(epcor_df) == 0:
-        print("❌ No Epcoritamab records found.")
+    if len(drug_df) == 0:
+        print(f"❌ No {target_drug} records found.")
         return None
     
-    print(f"📊 Total Epcoritamab records: {len(epcor_df)}")
+    print(f"📊 Total {target_drug} records: {len(drug_df)}")
     
-    # Identify CRS cases
-    reactions_upper = epcor_df['reactions'].fillna('').str.upper()
-    crs_mask = pd.Series(False, index=epcor_df.index)
+    # Identify AE cases
+    reactions_upper = drug_df['reactions'].fillna('').str.upper()
+    ae_mask = pd.Series(False, index=drug_df.index)
     
-    for keyword in CRS_KEYWORDS:
+    for keyword in ae_keywords:
         mask = reactions_upper.str.contains(keyword.upper(), na=False, regex=False)
-        crs_mask |= mask
+        ae_mask |= mask
     
-    epcor_df['has_crs'] = crs_mask.astype(int)
+    drug_df['has_ae'] = ae_mask.astype(int)  # Generic name for any AE
+    drug_df['has_crs'] = ae_mask.astype(int)  # Keep for backward compatibility
     
     # Outcome: death
-    epcor_df['death'] = pd.to_numeric(epcor_df['seriousnessdeath'], errors='coerce').fillna(0).astype(int)
+    drug_df['death'] = pd.to_numeric(drug_df['seriousnessdeath'], errors='coerce').fillna(0).astype(int)
     
-    n_crs = crs_mask.sum()
-    n_crs_death = epcor_df[crs_mask & (epcor_df['death'] == 1)].shape[0]
+    n_ae = ae_mask.sum()
+    n_ae_death = drug_df[ae_mask & (drug_df['death'] == 1)].shape[0]
     
-    print(f"🔍 Patients with CRS: {n_crs} ({n_crs/len(epcor_df)*100:.1f}%)")
-    print(f"   Deaths in CRS patients: {n_crs_death} ({n_crs_death/n_crs*100:.1f}% of CRS patients)" if n_crs > 0 else "   No CRS patients")
+    ae_name = ae_keywords[0] if ae_keywords else 'AE'
+    print(f"🔍 Patients with {ae_name}: {n_ae} ({n_ae/len(drug_df)*100:.1f}%)")
+    print(f"   Deaths in {ae_name} patients: {n_ae_death} ({n_ae_death/n_ae*100:.1f}% of {ae_name} patients)" if n_ae > 0 else f"   No {ae_name} patients")
     
-    return epcor_df
+    return drug_df
+
+# Backward compatibility alias
+def identify_crs_cases(df, target_drug=None, ae_keywords=None):
+    """Backward compatibility wrapper for identify_ae_cases."""
+    if target_drug is None:
+        target_drug = DEFAULT_TARGET_DRUG
+    if ae_keywords is None:
+        ae_keywords = DEFAULT_CRS_KEYWORDS
+    return identify_ae_cases(df, target_drug, ae_keywords)
 
 def granular_feature_engineering(df):
     """
@@ -346,11 +407,12 @@ def stratified_analysis(df):
     
     findings = []
     
-    # Filter to CRS patients only
-    crs_df = df[df['has_crs'] == 1].copy()
+    # Filter to AE patients only (support both has_ae and has_crs for backward compatibility)
+    ae_flag = 'has_ae' if 'has_ae' in df.columns else 'has_crs'
+    crs_df = df[df[ae_flag] == 1].copy()
     
     if len(crs_df) == 0:
-        print("⚠️  No CRS patients found for stratified analysis")
+        print("⚠️  No AE patients found for stratified analysis")
         return findings
     
     print(f"\n📊 Analyzing {len(crs_df)} CRS patients...")
@@ -552,10 +614,12 @@ def generate_summary_tables(df):
     print("Step 3.5: Summary Tables (Clear Cutoffs & Numbers)")
     print("=" * 70)
     
-    crs_df = df[df['has_crs'] == 1].copy()
+    # Filter to AE patients only (support both has_ae and has_crs)
+    ae_flag = 'has_ae' if 'has_ae' in df.columns else 'has_crs'
+    crs_df = df[df[ae_flag] == 1].copy()
     
     if len(crs_df) == 0:
-        print("⚠️  No CRS patients found")
+        print("⚠️  No AE patients found")
         return {}
     
     tables = {}
@@ -1206,7 +1270,9 @@ def analyze_top_drug_combinations(df, top_n=10):
     print("Step 4: Top Drug Combination Analysis")
     print("=" * 70)
     
-    crs_df = df[df['has_crs'] == 1].copy()
+    # Filter to AE patients only (support both has_ae and has_crs)
+    ae_flag = 'has_ae' if 'has_ae' in df.columns else 'has_crs'
+    crs_df = df[df[ae_flag] == 1].copy()
     
     if len(crs_df) == 0 or 'all_drugs' not in crs_df.columns:
         print("⚠️  Insufficient data for drug combination analysis")
@@ -1375,10 +1441,12 @@ def visualize_granular_findings(df, findings, output_dir='.'):
     fig_dir = Path(output_dir)
     fig_dir.mkdir(exist_ok=True)
     
-    crs_df = df[df['has_crs'] == 1].copy()
+    # Filter to AE patients only (support both has_ae and has_crs)
+    ae_flag = 'has_ae' if 'has_ae' in df.columns else 'has_crs'
+    crs_df = df[df[ae_flag] == 1].copy()
     
     if len(crs_df) == 0:
-        print("⚠️  No CRS patients for visualization")
+        print("⚠️  No AE patients for visualization")
         return
     
     # 1. Age stratification plot
@@ -1471,27 +1539,179 @@ def visualize_granular_findings(df, findings, output_dir='.'):
     
     print("\n✅ Visualization complete")
 
-def main():
-    """Main execution function."""
+def run_granular_analysis(drug='Epcoritamab', ae='CRS', data_file='main_data.csv', output_dir='.'):
+    """
+    Run granular analysis for a specific drug and adverse event.
+    
+    Parameters:
+    -----------
+    drug : str
+        Target drug name (default: 'Epcoritamab')
+    ae : str
+        Adverse event name (default: 'CRS')
+    data_file : str
+        Path to input CSV file (default: 'main_data.csv')
+    output_dir : str
+        Output directory for results (default: '.')
+    
+    Returns:
+    --------
+    dict : Analysis results and output file paths
+    """
+    from pathlib import Path
+    output_path = Path(output_dir)
+    output_path.mkdir(parents=True, exist_ok=True)
+    
+    # Get AE keywords
+    ae_keywords = get_ae_keywords(ae)
+    
     print("=" * 70)
-    print("Granular CRS → Death Analysis")
+    print(f"Granular {ae} → Death Analysis: {drug}")
     print("=" * 70)
     print()
     
     # Load data
-    if not Path(DATA_FILE).exists():
-        print(f"❌ Data file not found: {DATA_FILE}")
-        return
+    if not os.path.exists(data_file):
+        print(f"❌ Data file not found: {data_file}")
+        return None
     
-    print(f"📂 Loading data from {DATA_FILE}...")
-    df = pd.read_csv(DATA_FILE)
+    print(f"📂 Loading data from {data_file}...")
+    df = pd.read_csv(data_file)
     print(f"✅ Loaded {len(df)} records")
     print()
     
-    # Step 1: Identify CRS cases
-    epcor_df = identify_crs_cases(df)
+    # Step 1: Identify AE cases
+    epcor_df = identify_ae_cases(df, drug, ae_keywords)
     if epcor_df is None or len(epcor_df) == 0:
-        print("\n❌ No Epcoritamab patients found. Analysis cannot proceed.")
+        print(f"\n❌ No {drug} patients with {ae} found. Analysis cannot proceed.")
+        return None
+    
+    # Continue with the rest of the analysis...
+    # (The rest of the main() function logic goes here)
+    # For now, we'll call the original main() logic but with parameters
+    
+    # Filter to AE cases only
+    crs_df = epcor_df[epcor_df['has_ae'] == 1].copy()
+    
+    if len(crs_df) == 0:
+        print(f"\n❌ No {ae} cases found. Analysis cannot proceed.")
+        return None
+    
+    print(f"\n📊 {ae} cases for analysis: {len(crs_df)}")
+    print()
+    
+    # Step 2: Granular feature engineering
+    crs_df = granular_feature_engineering(crs_df)
+    
+    # Step 3: Stratified analysis
+    findings = stratified_analysis(crs_df)
+    
+    # Step 4: Generate summary tables
+    tables = generate_summary_tables(crs_df)
+    
+    # Step 5: Missingness summary
+    missingness_summary = generate_missingness_summary(crs_df)
+    missingness_file = output_path / 'crs_missingness_summary.csv'
+    missingness_summary.to_csv(missingness_file, index=False)
+    print(f"✅ Saved: {missingness_file}")
+    
+    # Step 6: Drug usage summary
+    drug_conclusions = summarize_drug_usage(crs_df)
+    
+    # Step 7: Top drug combinations
+    combo_analysis = analyze_top_drug_combinations(crs_df, top_n=10)
+    
+    # Step 8: Generate plain language summary
+    summary_text = generate_plain_language_summary(tables, findings, crs_df, drug_conclusions)
+    summary_file = output_path / 'crs_plain_language_summary.txt'
+    with open(summary_file, 'w', encoding='utf-8') as f:
+        f.write(summary_text)
+    print(f"✅ Saved plain language summary: {summary_file}")
+    
+    # Step 9: Generate report
+    report_file = output_path / 'granular_crs_report.md'
+    generate_granular_report(findings, combo_analysis, output_file=str(report_file))
+    
+    # Step 10: Visualizations
+    visualize_granular_findings(crs_df, findings, output_dir=str(output_path))
+    
+    # Save metadata
+    meta = {
+        'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'drug': drug,
+        'adverse_event': ae,
+        'data_file': data_file,
+        'n_total': len(epcor_df),
+        'n_ae': int(epcor_df['has_ae'].sum()),
+        'findings': findings,
+        'top_combinations': combo_analysis[:5]  # Top 5 only
+    }
+    
+    meta_file = output_path / 'granular_crs_meta.json'
+    with open(meta_file, 'w') as f:
+        json.dump(meta, f, indent=2, ensure_ascii=False)
+    
+    print("\n" + "=" * 70)
+    print(f"✅ Granular {ae} Analysis Complete!")
+    print("=" * 70)
+    print("\nGenerated files:")
+    print(f"  - {report_file}")
+    print(f"  - {summary_file} ⭐ (Ready for slides!)")
+    print(f"  - {missingness_file}")
+    print(f"  - {meta_file}")
+    
+    return {
+        'report': str(report_file),
+        'summary': str(summary_file),
+        'missingness': str(missingness_file),
+        'metadata': str(meta_file)
+    }
+
+def main(drug=None, ae=None, data_file=None, output_dir='.'):
+    """
+    Main execution function with parameterized support.
+    
+    Parameters:
+    -----------
+    drug : str, optional
+        Target drug name (default: DEFAULT_TARGET_DRUG)
+    ae : str, optional
+        Adverse event name (default: 'CRS')
+    data_file : str, optional
+        Input data file path (default: DEFAULT_DATA_FILE)
+    output_dir : str, optional
+        Output directory (default: '.')
+    """
+    # Use defaults if not provided (backward compatibility)
+    if drug is None:
+        drug = DEFAULT_TARGET_DRUG
+    if ae is None:
+        ae = 'CRS'
+    if data_file is None:
+        data_file = DEFAULT_DATA_FILE
+    
+    # Get AE keywords
+    ae_keywords = get_ae_keywords(ae)
+    
+    print("=" * 70)
+    print(f"Granular {ae} → Death Analysis: {drug}")
+    print("=" * 70)
+    print()
+    
+    # Load data
+    if not Path(data_file).exists():
+        print(f"❌ Data file not found: {data_file}")
+        return
+    
+    print(f"📂 Loading data from {data_file}...")
+    df = pd.read_csv(data_file)
+    print(f"✅ Loaded {len(df)} records")
+    print()
+    
+    # Step 1: Identify AE cases (using provided parameters)
+    epcor_df = identify_ae_cases(df, drug, ae_keywords)
+    if epcor_df is None or len(epcor_df) == 0:
+        print(f"\n❌ No {drug} patients found. Analysis cannot proceed.")
         return
     
     # Step 2: Granular feature engineering
@@ -1507,14 +1727,20 @@ def main():
     combo_analysis = analyze_top_drug_combinations(feature_df, top_n=10)
     
     # Step 4.5: Drug usage summary (new - for slides)
-    crs_df = feature_df[feature_df['has_crs'] == 1].copy()
+    # Use 'has_ae' instead of 'has_crs' for generic AE support
+    ae_flag_col = 'has_crs' if 'has_crs' in feature_df.columns else 'has_ae'
+    if ae_flag_col not in feature_df.columns:
+        # Create has_ae flag if it doesn't exist
+        feature_df['has_ae'] = 1  # All rows in feature_df are AE cases
+    crs_df = feature_df[feature_df[ae_flag_col] == 1].copy()
     drug_summary_table, drug_conclusions = summarize_drug_usage(crs_df)
     
     # Step 5: Generate report
-    generate_granular_report(findings, combo_analysis)
+    report_file = os.path.join(output_dir, 'granular_crs_report.md')
+    generate_granular_report(findings, combo_analysis, output_file=report_file)
     
     # Step 6: Visualizations
-    visualize_granular_findings(feature_df, findings)
+    visualize_granular_findings(feature_df, findings, output_dir=output_dir)
     
     # Step 6.5: Generate missingness summary
     if len(crs_df) > 0:
@@ -1524,8 +1750,9 @@ def main():
         print()
         
         missingness_summary = generate_missingness_summary(crs_df)
-        missingness_summary.to_csv('crs_missingness_summary.csv', index=True)
-        print("✅ Saved: crs_missingness_summary.csv")
+        missingness_file = os.path.join(output_dir, 'crs_missingness_summary.csv')
+        missingness_summary.to_csv(missingness_file, index=True)
+        print(f"✅ Saved: {missingness_file}")
         print()
         
         # Print key missingness statistics
@@ -1546,26 +1773,49 @@ def main():
     # Save metadata
     meta = {
         'timestamp': datetime.now().strftime('%Y-%m-%d %H:%M:%S'),
+        'drug': drug,
+        'adverse_event': ae,
         'n_total': len(epcor_df),
-        'n_crs': int(epcor_df['has_crs'].sum()),
+        'n_ae': int(epcor_df[ae_flag_col].sum() if ae_flag_col in epcor_df.columns else len(epcor_df)),
         'findings': findings,
         'top_combinations': combo_analysis[:5]  # Top 5 only
     }
     
-    with open('granular_crs_meta.json', 'w') as f:
+    meta_file = os.path.join(output_dir, 'granular_crs_meta.json')
+    with open(meta_file, 'w') as f:
         json.dump(meta, f, indent=2, ensure_ascii=False)
     
     print("\n" + "=" * 70)
-    print("✅ Granular CRS Analysis Complete!")
+    print(f"✅ Granular {ae} Analysis Complete!")
     print("=" * 70)
     print("\nGenerated files:")
-    print("  - granular_crs_report.md")
-    print("  - crs_plain_language_summary.txt ⭐ (Ready for slides!)")
-    print("  - crs_age_stratification.png")
-    print("  - crs_bmi_stratification.png (if BMI data available)")
-    print("  - crs_comorbidity_comparison.png")
-    print("  - granular_crs_meta.json")
+    print(f"  - {report_file}")
+    print(f"  - {os.path.join(output_dir, 'crs_plain_language_summary.txt')} ⭐ (Ready for slides!)")
+    print(f"  - {os.path.join(output_dir, 'crs_age_stratification.png')}")
+    print(f"  - {os.path.join(output_dir, 'crs_bmi_stratification.png')} (if BMI data available)")
+    print(f"  - {os.path.join(output_dir, 'crs_comorbidity_comparison.png')}")
+    print(f"  - {meta_file}")
 
 if __name__ == '__main__':
-    main()
+    import argparse
+    
+    parser = argparse.ArgumentParser(description='Run granular adverse event analysis')
+    parser.add_argument('--drug', type=str, default=None,
+                       help=f'Target drug name (default: {DEFAULT_TARGET_DRUG})')
+    parser.add_argument('--ae', type=str, default=None,
+                       help='Adverse event name (default: CRS)')
+    parser.add_argument('--data_file', type=str, default=None,
+                       help=f'Input data file (default: {DEFAULT_DATA_FILE})')
+    parser.add_argument('--output_dir', type=str, default='.',
+                       help='Output directory (default: current directory)')
+    
+    args = parser.parse_args()
+    
+    # Run analysis with parameters (use main() for backward compatibility)
+    main(
+        drug=args.drug,
+        ae=args.ae,
+        data_file=args.data_file,
+        output_dir=args.output_dir
+    )
 

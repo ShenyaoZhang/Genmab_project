@@ -78,8 +78,28 @@ def run_pipeline(drug="epcoritamab", ae="CRS", max_records=500, output_dir="."):
         results['output_files']['models'] = model_results
         print(f"✅ Model training complete\n")
         
-        # Step 5: Evaluate models
-        print(f"📊 Step 5: Evaluating models...")
+        # Step 5: Granular analysis (for any AE)
+        print(f"📊 Step 5: Running granular {ae} analysis...")
+        try:
+            import sys
+            from importlib import import_module
+            sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+            
+            granular_module = import_module('11_granular_crs_analysis')
+            granular_results = granular_module.run_granular_analysis(
+                drug=drug,
+                ae=ae,
+                data_file=data_file,
+                output_dir=output_dir
+            )
+            if granular_results:
+                results['output_files']['granular_analysis'] = granular_results
+                print(f"✅ Granular analysis complete\n")
+        except Exception as e:
+            print(f"⚠️  Granular analysis skipped: {str(e)[:100]}\n")
+        
+        # Step 6: Evaluate models (SHAP analysis)
+        print(f"📊 Step 6: Generating SHAP explanations...")
         eval_results = evaluate_models(model_results, drug, ae, output_dir)
         results['output_files']['evaluation'] = eval_results
         print(f"✅ Model evaluation complete\n")
@@ -174,46 +194,76 @@ def inspect_data(data_file, drug, ae, output_dir="."):
 def preprocess_data(data_file, output_dir="."):
     """
     Preprocess data with all feature engineering.
-    
-    Note: In production, 03_preprocess_data.py should be refactored to accept
-    input and output file paths as parameters.
     """
-    # Check if preprocessed file already exists
-    output_file = os.path.join(output_dir, f"preprocessed_{Path(data_file).stem}.csv")
+    import sys
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    from importlib import import_module
     
-    if os.path.exists(output_file):
-        print(f"   Using existing preprocessed file: {output_file}")
-    else:
-        print(f"   Note: Would run preprocessing (file not found: {output_file})")
-        print(f"   Run: python 03_preprocess_data.py")
-    
-    return output_file
+    # Import and call preprocessing function
+    preprocess_module = import_module('03_preprocess_data')
+    results = preprocess_module.preprocess_file(data_file, output_dir=output_dir, verbose=True)
+    return results['preprocessed_data']
 
 
 def train_models(preprocessed_file, drug, ae, output_dir="."):
     """
     Train models for the specific drug-AE combination.
-    
-    Note: In production, 12_crs_model_training.py should be refactored to accept
-    drug and AE parameters. For CRS analysis, use 12_crs_model_training.py.
-    For general models, use 04_train_models.py.
     """
+    import sys
+    from importlib import import_module
+    
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    
     # Determine which training script to use based on AE
     if ae.upper() == 'CRS':
         # Use CRS-specific training
-        model_file = os.path.join(output_dir, 'crs_model_best.pkl')
-        results_file = os.path.join(output_dir, 'crs_model_meta.json')
-        print(f"   Using CRS-specific model training")
+        crs_module = import_module('12_crs_model_training')
+        
+        # Get AE keywords
+        ae_keywords = get_ae_keywords(ae)
+        
+        # Run CRS pipeline
+        results = crs_module.run_crs_mortality_pipeline(
+            drug_name=drug,
+            ae_keyword_list=ae_keywords,
+            input_csv=preprocessed_file,
+            output_dir=output_dir
+        )
+        
+        if results:
+            return {
+                'model_file': os.path.join(output_dir, f"{drug.lower()}_model_best.pkl"),
+                'results_file': os.path.join(output_dir, 'crs_model_meta.json'),
+                'results': results
+            }
+        else:
+            return None
     else:
         # Use general model training
-        model_file = os.path.join(output_dir, f"trained_model_{drug}_{ae}.pkl")
-        results_file = os.path.join(output_dir, f"model_results_{drug}_{ae}.json")
-        print(f"   Using general model training")
-    
-    return {
-        'model_file': model_file,
-        'results_file': results_file
-    }
+        train_module = import_module('04_train_models')
+        
+        # Extract train/test paths from preprocessed file location
+        base_dir = os.path.dirname(preprocessed_file) or output_dir
+        X_train_path = os.path.join(base_dir, "X_train.csv")
+        y_train_path = os.path.join(base_dir, "y_train.csv")
+        X_test_path = os.path.join(base_dir, "X_test.csv")
+        y_test_path = os.path.join(base_dir, "y_test.csv")
+        
+        # Run general training
+        results = train_module.train_general_model(
+            X_train_path=X_train_path,
+            y_train_path=y_train_path,
+            X_test_path=X_test_path,
+            y_test_path=y_test_path,
+            output_dir=output_dir,
+            verbose=True
+        )
+        
+        return {
+            'model_file': results['best_model_file'],
+            'results_file': results['training_meta'],
+            'results': results
+        }
 
 
 def evaluate_models(model_results, drug, ae, output_dir="."):

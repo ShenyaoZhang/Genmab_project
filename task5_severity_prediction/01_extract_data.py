@@ -306,10 +306,12 @@ def main():
         print(f"  {i:2d}. {drug}")
     print()
     
-    response = input("Start data collection? (y/n, default y): ").strip().lower()
-    if response in ['n', 'no']:
-        print("Cancelled")
-        return
+    # Non-interactive mode: automatically start data collection
+    response = 'y'  # Default to 'y' for automated runs
+    # response = input("Start data collection? (y/n, default y): ").strip().lower()
+    # if response in ['n', 'no']:
+    #     print("Cancelled")
+    #     return
     
     print()
     print("=" * 80)
