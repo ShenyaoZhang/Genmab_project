@@ -513,49 +513,78 @@ def print_combo_result(drug, adverse_event):
     result = query.check_any_combo(drug, adverse_event)
     
     print("=" * 70)
-    print(f"Drug-Event Pair: {drug} + {adverse_event}")
+    print(f"Drug-Event Query: {drug} + {adverse_event}")
     print("=" * 70)
     
     if not result.get("found", False):
         print(f"\n{result.get('conclusion', result.get('message', 'Not found'))}")
         return
     
-    print(f"\nReport Count: {result['report_count']}")
+    # Status summary
+    is_unexpected = result.get('is_unexpected', False)
+    status_icon = "RARE & UNEXPECTED" if is_unexpected else "NOT RARE/UNEXPECTED"
+    
+    print(f"\nStatus: {status_icon}")
+    print(f"Observed in: FAERS")
+    print(f"Report Count: {result['report_count']}")
+    
+    # Statistical metrics
     print(f"\nStatistical Metrics:")
-    prr_status = "PASS" if result['assessment']['passes_prr'] else "FAIL"
-    ic025_status = "PASS" if result['assessment']['passes_ic025'] else "FAIL"
-    chi2_status = "PASS" if result['assessment']['passes_chi2'] else "FAIL"
-    print(f"   PRR:     {result['statistics']['prr']:.2f} ({prr_status})")
-    print(f"   IC025:   {result['statistics']['ic025']:.3f} ({ic025_status})")
-    print(f"   Chi-square: {result['statistics']['chi2']:.2f} ({chi2_status})")
+    stats = result['statistics']
+    assessment = result['assessment']
     
-    print(f"\nClinical Indicators:")
-    print(f"   Death Rate:      {result['clinical']['death_rate']}")
-    print(f"   Hospitalization: {result['clinical']['hosp_rate']}")
-    print(f"   Serious Events:  {result['clinical']['serious_rate']}")
+    prr_threshold = ">2" if assessment['passes_prr'] else "<=2"
+    ic025_threshold = ">0" if assessment['passes_ic025'] else "<=0"
+    chi2_threshold = ">4" if assessment['passes_chi2'] else "<=4"
     
+    print(f"  - PRR (Proportional Reporting Ratio): {stats['prr']:.2f} (threshold: {prr_threshold})")
+    print(f"  - IC025 (Information Component): {stats['ic025']:.3f} (threshold: {ic025_threshold})")
+    print(f"  - Chi-square: {stats['chi2']:.2f} (threshold: {chi2_threshold})")
+    
+    # Clinical impact
+    print(f"\nClinical Impact:")
+    clinical = result['clinical']
+    print(f"  - Death Rate: {clinical['death_rate']}")
+    print(f"  - Hospitalization Rate: {clinical['hosp_rate']}")
+    print(f"  - Serious Rate: {clinical['serious_rate']}")
+    
+    # Assessment details
     print(f"\nAssessment:")
-    no_cap_status = "Yes" if result['assessment']['in_no_cap_results'] else "No"
-    all_three_status = "Yes" if result['assessment']['passes_all_three'] else "No"
-    print(f"   In No-Cap Results: {no_cap_status}")
-    print(f"   Passes All 3 Tests: {all_three_status}")
+    print(f"  - In No-Cap Results: {'Yes' if assessment['in_no_cap_results'] else 'No'}")
+    print(f"  - Passes PRR Test (>2): {'Yes' if assessment['passes_prr'] else 'No'}")
+    print(f"  - Passes IC025 Test (>0): {'Yes' if assessment['passes_ic025'] else 'No'}")
+    print(f"  - Passes Chi² Test (>4): {'Yes' if assessment['passes_chi2'] else 'No'}")
+    print(f"  - Passes All 3 Tests: {'Yes' if assessment['passes_all_three'] else 'No'}")
     
+    # Final conclusion
     print(f"\n{'=' * 70}")
-    # Clean conclusion text (remove emoji)
     conclusion = result['conclusion']
+    # Clean conclusion text (remove emoji)
     conclusion = conclusion.replace('✅', '').replace('❌', '').replace('⚠️', '').replace('🔶', '').strip()
     print(f"CONCLUSION: {conclusion}")
     print(f"{'=' * 70}\n")
 
 
 if __name__ == "__main__":
-    import sys
+    import argparse
+    
+    parser = argparse.ArgumentParser(
+        description='Task 3: Check if a drug-adverse event combination is rare & unexpected',
+        formatter_class=argparse.RawDescriptionHelpFormatter,
+        epilog="""
+Examples:
+  python3 task3_interactive_query.py --drug "Epcoritamab" --adverse_event "Neutropenia"
+  python3 task3_interactive_query.py --drug "Epcoritamab" --adverse_event "Renal impairment"
+        """
+    )
+    parser.add_argument('--drug', type=str, help='Drug name (e.g., "Epcoritamab")')
+    parser.add_argument('--adverse_event', type=str, help='Adverse event name (e.g., "Neutropenia")')
+    
+    args = parser.parse_args()
     
     # If command-line arguments provided, use them
-    if len(sys.argv) == 3:
-        drug = sys.argv[1]
-        adverse_event = sys.argv[2]
-        print_combo_result(drug, adverse_event)
+    if args.drug and args.adverse_event:
+        print_combo_result(args.drug, args.adverse_event)
     else:
         # Otherwise run interactive demo
         interactive_demo()
