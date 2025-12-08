@@ -298,11 +298,7 @@ epcoritamab-crs-analysis/
 
 ---
 
-##  Variables and Data Sources
 
-### Complete Variable Catalog
-
-See [docs/VARIABLE_LIST.md](docs/VARIABLE_LIST.md) for full details.
 
 #### Quick Reference
 
