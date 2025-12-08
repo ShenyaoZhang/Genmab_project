@@ -400,7 +400,22 @@ class InteractiveAnomalyQuery:
             return None
         
         ae_lower = adverse_event.lower()
-        mask = self.results_df['adverse_event'].str.lower().str.contains(ae_lower)
+        
+        # Try exact match first
+        mask = self.results_df['adverse_event'].str.lower().str.contains(ae_lower, na=False)
+        
+        # If no results, try word stem matching (e.g., "infection" -> "infect")
+        if mask.sum() == 0:
+            # Remove common suffixes for flexible matching
+            stem = ae_lower
+            # Remove common English suffixes
+            for suffix in ['ion', 'ive', 'ing', 'ed', 's', 'es']:
+                if stem.endswith(suffix) and len(stem) > len(suffix) + 2:
+                    stem = stem[:-len(suffix)]
+                    break
+            
+            if stem != ae_lower:
+                mask = self.results_df['adverse_event'].str.lower().str.contains(stem, na=False)
         
         ae_results = self.results_df[mask].copy()
         ae_results = ae_results.sort_values('anomaly_score', ascending=False)
@@ -590,9 +605,23 @@ def print_drug_comparison(drug_list_str):
     """Print comparison of multiple drugs"""
     query = InteractiveAnomalyQuery()
     drugs = [d.strip() for d in drug_list_str.split(',')]
-    comparison = query.compare_drugs(drugs)
     
-    if comparison is not None and len(comparison) > 0:
+    # Get all anomalies for each drug (not summary)
+    all_results = []
+    for drug in drugs:
+        top_aes = query.get_top_events_for_drug(drug, n=1000)  # Get all
+        if top_aes is not None and len(top_aes) > 0:
+            for _, row in top_aes.iterrows():
+                all_results.append({
+                    'drug': drug,
+                    'adverse_event': row['adverse_event'],
+                    'count': row['count'],
+                    'anomaly_score': row['anomaly_score']
+                })
+    
+    if len(all_results) > 0:
+        import pandas as pd
+        comparison = pd.DataFrame(all_results)
         print("=" * 70)
         print("Drug Comparison: Rare & Unexpected AE Counts")
         print("=" * 70)

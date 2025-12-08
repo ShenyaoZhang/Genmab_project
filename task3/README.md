@@ -36,18 +36,19 @@ Flagged Rare & Unexpected AEs
 
 ---
 
-## Example: "Epcoritamab + Renal Impairment"
+## Example: "Epcoritamab + Haemorrhagic gastroenteritis"
 
 **Why it's flagged as rare & unexpected:**
 
-1. ✅ **Isolation Forest**: Anomaly score 0.78 (unusual pattern)
-2. ✅ **Known AE Check**: Renal impairment NOT in Epcoritamab FDA label
+1. ✅ **Isolation Forest**: Anomaly score 0.689 (unusual pattern)
+2. ✅ **Known AE Check**: Haemorrhagic gastroenteritis NOT in Epcoritamab FDA label
 3. ✅ **Indication Check**: NOT an indication (it's a condition)
-4. ✅ **Frequency Check**: Count = 2, Mean = 3.24 → 2 < 3.24 (rare)
+4. ✅ **Frequency Check**: Count = 1, Mean = 3.24 → 1 < 3.24 (rare)
+5. ✅ **Statistical Tests**: PRR=111.69 (>2), IC025=3.602 (>0), Chi-square=41.14 (>4)
 
 **Result:** ✅ **RARE & UNEXPECTED**
 
-**Reasoning:** Appeared only **twice** in FAERS, is **not** on the drug label, and is below frequency thresholds, so it is flagged as unexpected.
+**Reasoning:** Appeared only **once** in FAERS, is **not** on the drug label, passes all statistical tests, and is below frequency thresholds, so it is flagged as unexpected. This is a serious adverse event with 100% death rate, hospitalization rate, and serious rate.
 
 ---
 
@@ -80,7 +81,7 @@ python3 task3_improved_pipeline.py
 ```
 
 **Output Files:**
-- `data/task3_all_unexpected_no_cap.csv` - All rare & unexpected AEs (no limit)
+- `data/task3_all_unexpected_no_cap.csv` - All rare & unexpected AEs (no limit, typically ~1386 results)
 - `data/task3_unexpected_anomalies.csv` - Top-K results with per-drug cap (max 5 per drug)
 
 ### 3. Interactive Query
@@ -88,19 +89,41 @@ python3 task3_improved_pipeline.py
 Check if a specific drug-event combination is rare & unexpected:
 
 ```bash
-python3 task3_interactive_query.py --drug "Epcoritamab" --adverse_event "Neutropenia"
+python3 task3_interactive_query.py --drug "Epcoritamab" --adverse_event "Haemorrhagic gastroenteritis"
 ```
 
 **Example Output:**
 ```
-Drug: Epcoritamab
-Adverse Event: Neutropenia
-Status: ✅ RARE & UNEXPECTED (passed IF + all 3 statistical tests)
-Report Count: 2
-Statistics:
-  - PRR: 15.3
-  - IC025: 2.1
-  - Chi-square: 8.5
+✓ Loaded 1386 anomaly results from task3_all_unexpected_no_cap.csv
+✓ Loaded raw data (58,296 reports) for arbitrary queries
+======================================================================
+Drug-Event Query: Epcoritamab + Haemorrhagic gastroenteritis
+======================================================================
+
+Status: RARE & UNEXPECTED
+Observed in: FAERS
+Report Count: 1
+
+Statistical Metrics:
+  - PRR (Proportional Reporting Ratio): 111.69 (threshold: >2)
+  - IC025 (Information Component): 3.602 (threshold: >0)
+  - Chi-square: 41.14 (threshold: >4)
+
+Clinical Impact:
+  - Death Rate: 100.0%
+  - Hospitalization Rate: 100.0%
+  - Serious Rate: 100.0%
+
+Assessment:
+  - In No-Cap Results: Yes
+  - Passes PRR Test (>2): Yes
+  - Passes IC025 Test (>0): Yes
+  - Passes Chi² Test (>4): Yes
+  - Passes All 3 Tests: Yes
+
+======================================================================
+CONCLUSION: RARE & UNEXPECTED (passed IF + all 3 statistical tests)
+======================================================================
 ```
 
 **For more usage examples, see [USAGE_EXAMPLES.md](USAGE_EXAMPLES.md)**
@@ -115,21 +138,72 @@ python3 task3_bert_clinical_features.py "Epcoritamab" "Neutropenia"
 
 **Example Output:**
 ```
+======================================================================
+Task 3: BERT Clinical Feature Analysis
+======================================================================
+
+Analyzing: Epcoritamab + Neutropenia
+----------------------------------------------------------------------
+Fetching reports for Epcoritamab + Neutropenia...
+✓ Found 24 reports
+
+Clinical Feature Analysis:
+----------------------------------------
+
+Age Distribution:
+  Mean: 66.2 years
+  Median: 66.0 years
+  Range: 53 - 82
+  Age Groups: {'<18': 0, '18-40': 0, '40-65': 7, '65+': 11}
+
+Sex Distribution:
+  Female: 56.5%
+  Male: 43.5%
+
+Medical History (Indications):
+  - Prophylaxis: 28 reports
+  - Diffuse large B-cell lymphoma refractory: 23 reports
+  - Premedication: 10 reports
+  - Diffuse large B-cell lymphoma: 6 reports
+  - Disseminated intravascular coagulation: 2 reports
+
+Concomitant Drugs:
+  - EPCORITAMAB-BYSP: 60 reports
+  - PREDNISOLONE: 8 reports
+  - PREDNISOLONE ORAL: 8 reports
+  - PREDNISOLONE ORAL SOLUTION: 8 reports
+  - DEXAMETHASONE: 7 reports
+
+Outcome Distribution:
+  - Death: 24 reports
+  - Hospitalization: 24 reports
+  - Life-threatening: 24 reports
+  - Disability: 24 reports
+
+======================================================================
+Causal Risk Factor Analysis
+======================================================================
+Comparing AE group vs Control group to identify factors that INFLUENCE/CAUSE the AE
+----------------------------------------------------------------------
+
 ====================================================================================================
 Risk Factor Analysis
 ====================================================================================================
-Risk Factor                              AE Group            Control Group       Difference      Conclusion        
+Risk Factor                              AE Group             Control Group        Difference      Conclusion          
 ----------------------------------------------------------------------------------------------------
-Age                                      66.2 years          66.9 years          -0.7 years      Not a risk factor
-Sex                                      Female 56.5%        Female 66.7%        -10.1%          Male associated (OR=0.65)
-Medical History: DLBCL refractory       95.8%               15.4%               +80.4%         High risk factor
-Medical History: Prophylaxis           116.7%               76.9%               +39.7%         Risk factor
-Concomitant Drug: Prednisolone Oral    33.3%                0.0%                +33.3%         Risk factor
+Age                                      66.2 years           66.9 years           -0.7 years      Not a risk factor   
+Sex                                      Female 56.5%         Female 66.7%         -10.1%          Male associated (OR=1.54)
+Medical History: Diffuse large B-cell lymphoma refractory 95.8%                15.4%                +80.4%          High risk factor    
+Medical History: Prophylaxis             116.7%               76.9%                +39.7%          Risk factor         
+Concomitant Drug: PREDNISOLONE ORAL SOLUTION 33.3%                0.0%                 +33.3%          Risk factor         
+Concomitant Drug: PREDNISOLONE ORAL      33.3%                0.0%                 +33.3%          Risk factor         
+Concomitant Drug: VALGANCICLOVIR HYDROCHLORIDE 16.7%                0.0%                 +16.7%          Risk factor         
+Concomitant Drug: VALGANCICLOVIR         16.7%                0.0%                 +16.7%          Risk factor         
 ====================================================================================================
 
 Group Sizes:
   AE Group (with Neutropenia): 24 reports
-  Control Group (Fatigue): 12 reports
+  Control Group (Fatigue): 13 reports
 ```
 
 This analysis compares patients who experienced the AE vs. those who did not, identifying clinical features (age, sex, medical history, concomitant drugs) that influence or cause the adverse event.
@@ -218,35 +292,38 @@ print(comparison)
 ### Simple Status Check
 
 ```
-Drug: Epcoritamab
-Adverse Event: Neutropenia
-Status: ✅ RARE & UNEXPECTED
+Drug-Event Query: Epcoritamab + Haemorrhagic gastroenteritis
+Status: RARE & UNEXPECTED
 Observed in: FAERS
+Report Count: 1
 ```
 
 ### Detailed Analysis
 
 ```
-Drug: Epcoritamab
-Adverse Event: Neutropenia
-Status: ✅ RARE & UNEXPECTED (passed IF + all 3 statistical tests)
+Drug-Event Query: Epcoritamab + Haemorrhagic gastroenteritis
+Status: RARE & UNEXPECTED
 
-Report Count: 2
-Mean Threshold: 3.24 (2 < 3.24 → RARE)
+Report Count: 1
 
-Statistical Evidence:
-  - PRR: 15.3 (>2 threshold) ✓
-  - IC025: 2.1 (>0 threshold) ✓
-  - Chi-square: 8.5 (>4 threshold) ✓
+Statistical Metrics:
+  - PRR (Proportional Reporting Ratio): 111.69 (threshold: >2)
+  - IC025 (Information Component): 3.602 (threshold: >0)
+  - Chi-square: 41.14 (threshold: >4)
 
 Clinical Impact:
-  - Death Rate: 0.0%
-  - Hospitalization Rate: 50.0%
+  - Death Rate: 100.0%
+  - Hospitalization Rate: 100.0%
   - Serious Rate: 100.0%
 
-FDA Label Check: NOT listed (unexpected)
-Indication Check: NOT an indication
-Frequency Check: Below mean (rare)
+Assessment:
+  - In No-Cap Results: Yes
+  - Passes PRR Test (>2): Yes
+  - Passes IC025 Test (>0): Yes
+  - Passes Chi² Test (>4): Yes
+  - Passes All 3 Tests: Yes
+
+CONCLUSION: RARE & UNEXPECTED (passed IF + all 3 statistical tests)
 ```
 
 ---
