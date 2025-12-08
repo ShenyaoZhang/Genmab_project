@@ -584,32 +584,7 @@ python task2/run_survival_analysis.py \
 
 ---
 
-## 📄 License
 
-MIT License - See [LICENSE](LICENSE) for details.
-
----
-
-## 📧 Contact
-
-- **Author:** [Your Name]
-- **Email:** [your.email@example.com]
-- **Institution:** [Your Institution]
-- **GitHub:** [@yourusername](https://github.com/yourusername)
-
----
-
-## 🙏 Acknowledgments
-
-- **FDA FAERS Team** - Open-access adverse event data
-- **Lifelines Developers** - Excellent survival analysis library
-- **Project Mentors** - Valuable feedback and guidance
-
----
-
-<div align="center">
-
-**⭐ If this project helps your research, please give it a star!**
 
 **Made for safer oncology care**
 
