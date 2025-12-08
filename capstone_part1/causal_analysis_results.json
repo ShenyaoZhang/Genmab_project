@@ -1,0 +1,135 @@
+{
+  "associations": [
+    {
+      "variable": "age",
+      "type": "continuous",
+      "correlation": -0.054300144390974615,
+      "p_value": 0.13948407637271212,
+      "odds_ratio_per_sd": 0.8046302031885367,
+      "significant": false,
+      "interpretation": "CONFOUNDER - Affects both treatment selection and outcome",
+      "chi2": NaN,
+      "odds_ratio": NaN
+    },
+    {
+      "variable": "weight",
+      "type": "continuous",
+      "correlation": 0.14168157588505337,
+      "p_value": 0.19859243457398448,
+      "odds_ratio_per_sd": 1.3134324074602257,
+      "significant": false,
+      "interpretation": "CONFOUNDER - Affects drug exposure and clearance",
+      "chi2": NaN,
+      "odds_ratio": NaN
+    },
+    {
+      "variable": "max_dose_mg",
+      "type": "continuous",
+      "correlation": 0.003426065115909066,
+      "p_value": 0.9745800236322563,
+      "odds_ratio_per_sd": 1.0068698052979668,
+      "significant": false,
+      "interpretation": "LIKELY CAUSAL - Dose-response relationship established",
+      "chi2": NaN,
+      "odds_ratio": NaN
+    },
+    {
+      "variable": "n_co_medications",
+      "type": "continuous",
+      "correlation": 0.4117097313269931,
+      "p_value": 1.6501318420321924e-33,
+      "odds_ratio_per_sd": 2.4618923547174427,
+      "significant": true,
+      "interpretation": "CORRELATION - Marker of disease severity",
+      "chi2": NaN,
+      "odds_ratio": NaN
+    },
+    {
+      "variable": "n_doses",
+      "type": "continuous",
+      "correlation": 0.45663181082451076,
+      "p_value": 9.617286804841089e-42,
+      "odds_ratio_per_sd": 2.5923854588096873,
+      "significant": true,
+      "interpretation": "LIKELY CAUSAL - Cumulative exposure effect",
+      "chi2": NaN,
+      "odds_ratio": NaN
+    },
+    {
+      "variable": "sex_male",
+      "type": "categorical",
+      "correlation": NaN,
+      "p_value": 0.7136447054015611,
+      "odds_ratio_per_sd": NaN,
+      "significant": false,
+      "interpretation": "UNCLEAR - Possible biological modifier",
+      "chi2": 0.13466372446688368,
+      "odds_ratio": 0.8537329700272479
+    },
+    {
+      "variable": "has_rituximab",
+      "type": "categorical",
+      "correlation": NaN,
+      "p_value": 1.0515046030755958e-22,
+      "odds_ratio_per_sd": NaN,
+      "significant": true,
+      "interpretation": "CORRELATION - Marker of treatment line",
+      "chi2": 96.17526434987231,
+      "odds_ratio": 14.216129032258065
+    },
+    {
+      "variable": "has_steroids",
+      "type": "categorical",
+      "correlation": NaN,
+      "p_value": 1.9160943912255032e-48,
+      "odds_ratio_per_sd": NaN,
+      "significant": true,
+      "interpretation": "CAUSAL (protective) - Anti-inflammatory mechanism",
+      "chi2": 213.92115839022563,
+      "odds_ratio": 47.63076923076923
+    },
+    {
+      "variable": "has_tocilizumab",
+      "type": "categorical",
+      "correlation": NaN,
+      "p_value": 8.890916425106331e-09,
+      "odds_ratio_per_sd": NaN,
+      "significant": true,
+      "interpretation": "CAUSAL (protective) - IL-6 pathway blockade",
+      "chi2": 33.06979660809144,
+      "odds_ratio": 13.102564102564102
+    },
+    {
+      "variable": "data_source",
+      "type": "categorical",
+      "correlation": NaN,
+      "p_value": 6.769616035751802e-64,
+      "odds_ratio_per_sd": NaN,
+      "significant": true,
+      "interpretation": "Cross-database heterogeneity assessment",
+      "chi2": 290.90600316369876,
+      "odds_ratio": NaN
+    }
+  ],
+  "propensity_score": {
+    "treatment": "has_steroids",
+    "outcome": "severe_crs",
+    "n_treated": 57,
+    "n_control": 27,
+    "ate": 0.10014987421992524,
+    "ate_ci_lower": -0.11850128169916656,
+    "ate_ci_upper": 0.3219147643927742,
+    "significant": "False",
+    "interpretation": "has_steroids may affect risk of outcome by 10.0 percentage points (not statistically significant). 95% CI: [-11.9%, 32.2%]"
+  },
+  "sensitivity": {
+    "exposure": "high_dose (>=24mg)",
+    "outcome": "severe_crs",
+    "observed_or": 7.17948717948718,
+    "or_ci_lower": 1.5507200504078782,
+    "or_ci_upper": 33.239420710954974,
+    "e_value": 13.840234058098737,
+    "e_value_ci": 2.47484808500543,
+    "interpretation": "An unmeasured confounder would need to be associated with both the exposure and outcome by a risk ratio of at least 13.84 to explain away the observed association. E-value for CI: 2.47."
+  }
+}

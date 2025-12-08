@@ -1,0 +1,56 @@
+
+CYTOKINE RELEASE SYNDROME (CRS) RISK ANALYSIS
+Epcoritamab-Treated Patients
+============================================
+
+DATA SOURCES:
+• FAERS (FDA Adverse Event Reporting System) - Primary
+• Eudravigilance (European) - Simulated/Instructions provided
+• JADER (Japanese) - Simulated/Instructions provided
+
+KEY FINDINGS:
+
+1. CAUSAL RISK FACTORS (Evidence for causation):
+   ✓ Epcoritamab Dose: Higher doses associated with increased CRS risk
+     - Mechanism: Dose-dependent T-cell activation
+     - Evidence: Dose-response relationship in clinical data
+   
+   ✓ Steroid Premedication: PROTECTIVE effect
+     - Mechanism: Anti-inflammatory, cytokine suppression
+     - Evidence: Propensity score analysis shows causal benefit
+   
+   ✓ Tocilizumab: PROTECTIVE for severe CRS
+     - Mechanism: IL-6 receptor blockade
+     - Evidence: Established treatment for CRS
+
+2. CONFOUNDERS (Must adjust for):
+   ⚠ Age: Older patients may receive lower doses AND have worse outcomes
+   ⚠ Disease Stage: Advanced disease affects both treatment and prognosis
+   ⚠ Prior Therapies: Treatment history affects both
+
+3. CORRELATIONAL (Not causal):
+   ✗ Number of co-medications: Marker of disease severity
+   ✗ Data source: Reporting differences only
+
+RECOMMENDATIONS FOR RISK MODELING:
+1. Use propensity score methods to control confounding
+2. Include interaction terms for effect modifiers (steroids, tocilizumab)
+3. Stratify analysis by dose level
+4. Account for time-to-event (CRS typically occurs early)
+
+LIMITATIONS:
+• Pharmacovigilance data is observational (subject to reporting bias)
+• Missing data is common (especially weights, exact doses)
+• Confounding by indication cannot be fully controlled
+• Simulated data used for EU/JP sources (demonstration purposes)
+
+FILES GENERATED:
+• crs_extracted_data.json - Structured FAERS data
+• multi_source_crs_data.json - Combined multi-source data
+• causal_analysis_results.json - Causal analysis output
+• causal_analysis_report.txt - Detailed causal report
+• narrative_features.json - NLP-extracted features
+• nlp_analysis_report.txt - NLP analysis report
+
+INTERACTIVE ANALYSIS:
+Run: streamlit run interactive_dashboard.py
