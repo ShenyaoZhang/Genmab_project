@@ -75,14 +75,14 @@ params = {
 ```
 
 ### 2.2 Eudravigilance (European Medicines Agency)
-- **Access**: Manual download from https://www.adrreports.eu/
+- **Access**: Manual download from https://dap.ema.europa.eu/analytics/saw.dll?PortalPages/
 - **Status**: Fully implemented with real data
 - **Coverage**: European Union member states
 - **Records**: 39 CRS cases (from 175 total Epcoritamab reports)
 - **File**: `Run Line Listing Report.csv`
 
 ### 2.3 JADER (Japanese Adverse Drug Event Report)
-- **Access**: Public CSV files from PMDA website (https://www.pmda.go.jp/)
+- **Access**: Public CSV files from PMDA website (https://www.info.pmda.go.jp/fukusayoudb/CsvDownload.jsp)
 - **Status**: Fully implemented with real data
 - **Coverage**: Japan
 - **Records**: 647 CRS cases (from 964 total Epcoritamab cases)
