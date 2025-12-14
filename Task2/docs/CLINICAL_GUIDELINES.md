@@ -6,7 +6,7 @@ This document provides clinical practice guidelines for managing Cytokine Releas
 
 ---
 
-## 🎯 Risk Stratification System
+## Risk Stratification System
 
 ### Weight-Based Risk Assessment (Novel Finding)
 
@@ -25,7 +25,7 @@ Risk Score Calculation:
 ┌─────────────────────────────────────┬────────┐
 │ Risk Factor                         │ Points │
 ├─────────────────────────────────────┼────────┤
-│ Weight <60 kg                       │   +2   │ ⭐ NEW
+│ Weight <60 kg                       │   +2   │ NEW
 │ Age >65 years                       │   +1   │
 │ Polypharmacy (≥3 drugs)             │   +1   │
 │ Prior life-threatening event        │   +2   │
@@ -41,7 +41,7 @@ Risk Classification:
 
 ---
 
-## 📊 CRS Grading System
+## CRS Grading System
 
 ### ASTCT Consensus Grading (Lee et al., 2019)
 
@@ -272,7 +272,7 @@ Management:
 
 ---
 
-## 🔬 Laboratory Monitoring
+## Laboratory Monitoring
 
 ### Baseline (Pre-Treatment)
 
@@ -334,17 +334,17 @@ Optional (if biomarker study):
 │  🚨 Respiratory distress                              │
 │                                                        │
 │  IMMEDIATE ICU TRANSFER:                               │
-│  ⚠️ Grade 3-4 CRS confirmed                           │
-│  ⚠️ Requiring vasopressors                            │
-│  ⚠️ Requiring FiO₂ >40%                               │
-│  ⚠️ No response to tocilizumab + fluids at 2h         │
+│  Grade 3-4 CRS confirmed                           │
+│  Requiring vasopressors                            │
+│  Requiring FiO₂ >40%                               │
+│  No response to tocilizumab + fluids at 2h         │
 │                                                        │
 └────────────────────────────────────────────────────────┘
 ```
 
 ---
 
-## 📋 Patient Education Materials
+## Patient Education Materials
 
 ### Pre-Treatment Patient Counseling
 
@@ -460,7 +460,7 @@ Optional (if biomarker study):
 
 ---
 
-## ✅ Pre-Treatment Checklist
+## Pre-Treatment Checklist
 
 ```
 EPCORITAMAB ADMINISTRATION CHECKLIST

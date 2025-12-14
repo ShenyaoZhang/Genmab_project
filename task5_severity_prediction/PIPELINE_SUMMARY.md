@@ -151,11 +151,11 @@ granular_crs_report.md    crs_feature_inventory.csv    crs_plain_language_summar
 
 All requested features have been implemented:
 
-✅ Cancer stage documented (limitations + future integration)
-✅ Variable list + data sources table (CSV + Markdown)
-✅ Granularity and interaction explanation (with diagram)
-✅ Biomarker integration concept (module + documentation)
-✅ README with command-line examples
+Cancer stage documented (limitations + future integration)
+Variable list + data sources table (CSV + Markdown)
+Granularity and interaction explanation (with diagram)
+Biomarker integration concept (module + documentation)
+README with command-line examples
 
 The pipeline is fully parameterized, documented, and ready for use.
 

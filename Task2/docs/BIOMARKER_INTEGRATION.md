@@ -379,11 +379,11 @@ features = ['patient_age', 'patient_weight', 'total_drugs',
 
 ### Key Points
 
-1. ✅ **Pipeline is flexible:** Biomarkers can be added as new columns with minimal code changes
-2. ✅ **Processing is standardized:** Biomarkers use same preprocessing as other continuous variables (log-transform, z-score)
-3. ✅ **Expected improvement:** C-index from 0.58 → 0.75-0.85 with biomarkers
-4. ✅ **Clinical relevance:** IL-6, ferritin, CRP are established CRS biomarkers
-5. ✅ **Based on literature:** Approach mirrors successful CAR-T biomarker studies
+1. **Pipeline is flexible:** Biomarkers can be added as new columns with minimal code changes                          
+2. **Processing is standardized:** Biomarkers use same preprocessing as other continuous variables (log-transform, z-score)                                                                            
+3. **Expected improvement:** C-index from 0.58 → 0.75-0.85 with biomarkers                                             
+4. **Clinical relevance:** IL-6, ferritin, CRP are established CRS biomarkers
+5. **Based on literature:** Approach mirrors successful CAR-T biomarker studies
 
 ### Next Steps if Biomarker Data Becomes Available
 

@@ -1,5 +1,5 @@
 # Fdb version 4
-["pdflatex"] 1765596959.12083 "/Users/liuliuliu/Downloads/capstone_project-33/poster/poster.tex" "poster.pdf" "poster" 1765596959.63304 2
+["pdflatex"] 1765744935.1764 "/Users/liuliuliu/Downloads/capstone_project-33/poster/poster.tex" "poster.pdf" "poster" 1765744935.69635 2
   "/Users/liuliuliu/Downloads/capstone_project-33/poster/poster.tex" 1765596956.93173 6838 e907b6e22d93748e5120030a45df66e5 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/local/texlive/2024/texmf-dist/fonts/tfm/jknappen/ec/ecss1095.tfm" 1136768653 3584 8ece407347b270c252c46fdfaef5a9ef ""
@@ -183,7 +183,7 @@
   "/usr/local/texlive/2024/texmf-var/web2c/pdftex/pdflatex.fmt" 1731274022 8221435 0c21e8dcd0ced7bf228c104720af3487 ""
   "/usr/local/texlive/2024/texmf.cnf" 1710266656 577 e590dabc9e28c5b61546e15f63eebcdf ""
   "beamerthemegemini.sty" 1765166913.7662 6726 3b1744dffda098b55e3ae32b8d66ec7a ""
-  "poster.aux" 1765596959.11923 32 3985256e7290058c681f74d7a3565a19 "pdflatex"
+  "poster.aux" 0 -1 0 "pdflatex"
   "poster.tex" 1765596956.93173 6838 e907b6e22d93748e5120030a45df66e5 ""
   (generated)
   "poster.aux"

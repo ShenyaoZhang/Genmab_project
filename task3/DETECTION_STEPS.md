@@ -105,7 +105,7 @@ Flagged Rare & Unexpected AEs
 **Counter-Example:**
 - **Input:** "Epcoritamab + Renal impairment" (count: 2, anomaly score: 0.78)
 - **Frequency Check:** 2 < 3.24 (mean threshold)
-- **Result:** ✅ **KEPT** (rare frequency)
+- **Result:** **KEPT** (rare frequency)
 
 ---
 

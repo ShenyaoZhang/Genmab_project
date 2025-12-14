@@ -5,7 +5,7 @@
 
 **Date:** November 18, 2025  
 **Version:** Final v3.0 - Revised per Mentor Feedback  
-**Status:** ✅ Complete  
+**Status:** Complete  
 **Quality:** Publication-Ready
 
 ---
@@ -533,13 +533,13 @@ The ensemble tree model reveals that **CRS risk is predominantly determined by p
 
 | Feature | F-test Rank | MI Rank | RF Rank | Avg Rank | Selected | Clinical Relevance |
 |---------|-------------|---------|---------|----------|----------|--------------------|
-| **patient_weight** | **1** | **1** | **1** | **1.0** | ✅ **Primary** | Pharmacokinetics, cytokine buffering |
-| **patient_age** | 3 | 2 | 2 | 2.3 | ✅ Secondary | Immune function, frailty |
-| **total_drugs** | 7 | 3 | 4 | 4.7 | ✅ Tertiary | Treatment complexity |
-| **concomitant_drugs** | 6 | 5 | 3 | 4.7 | ✅ Tertiary | Drug interactions |
-| **polypharmacy** | 2 | 6 | 7 | 5.0 | ✅ Minor | Disease burden proxy |
-| **is_lifethreatening** | 5 | 4 | 5 | 4.7 | ✅ Minor | Prior severity |
-| **is_hospitalization** | 4 | 7 | 6 | 5.7 | ✅ Minor | Healthcare utilization |
+| **patient_weight** | **1** | **1** | **1** | **1.0** | **Primary** | Pharmacokinetics, cytokine buffering |
+| **patient_age** | 3 | 2 | 2 | 2.3 | Secondary | Immune function, frailty |
+| **total_drugs** | 7 | 3 | 4 | 4.7 | Tertiary | Treatment complexity |
+| **concomitant_drugs** | 6 | 5 | 3 | 4.7 | Tertiary | Drug interactions |
+| **polypharmacy** | 2 | 6 | 7 | 5.0 | Minor | Disease burden proxy |
+| **is_lifethreatening** | 5 | 4 | 5 | 4.7 | Minor | Prior severity |
+| **is_hospitalization** | 4 | 7 | 6 | 5.7 | Minor | Healthcare utilization |
 
 **Unanimous #1 Ranking:** **Patient weight** is the only feature ranked #1 by all three methods, establishing it as the **definitive CRS risk factor** for Epcoritamab.
 
@@ -585,21 +585,21 @@ To assess feature selection stability, we performed bootstrap resampling (100 it
 **Categorization of Significant Predictors:**
 
 1. **Demographic Predictors:**
-   - `patient_age` (continuous) - ✅ Significant
-   - `patient_weight` (continuous) - ✅ Significant
+   - `patient_age` (continuous) - Significant
+   - `patient_weight` (continuous) - Significant
    - Gender (not significantly predictive in this dataset)
 
 2. **Treatment Complexity Predictors:**
-   - `total_drugs` (count) - ✅ Significant
-   - `concomitant_drugs` (count) - ✅ Significant
-   - `polypharmacy` (binary: ≥3 drugs) - ✅ Significant
+   - `total_drugs` (count) - Significant
+   - `concomitant_drugs` (count) - Significant
+   - `polypharmacy` (binary: ≥3 drugs) - Significant
 
 3. **Event History Predictors:**
-   - `total_events` (count) - ✅ Highly significant (strongest predictor)
+   - `total_events` (count) - Highly significant (strongest predictor)
 
 4. **Event Severity Predictors:**
-   - `is_hospitalization` (binary) - ✅ Significant
-   - `is_lifethreatening` (binary) - ✅ Highly significant (Cox HR=1.21)
+   - `is_hospitalization` (binary) - Significant
+   - `is_lifethreatening` (binary) - Highly significant (Cox HR=1.21)
 
 **Key Findings:**
 
@@ -748,7 +748,7 @@ Risk factors for treatment-related cancers:
 | C-index | 0.532 | 0.531 | 0.001 |
 | Interpretation | - | - | **Negligible** |
 
-**Assessment:** ✅ **No overfitting detected**
+**Assessment:** **No overfitting detected**
 
 **Evidence:**
 - Training performance ≈ CV performance (difference = 0.001)
@@ -764,16 +764,16 @@ Comparing top 5 drugs by volume (10 pairwise comparisons total):
 
 | Comparison | Log-Rank χ² | Raw p-value | FDR-adjusted p | Significant |
 |------------|-------------|-------------|----------------|-------------|
-| Rucaparib vs Niraparib | 311.83 | <0.0001 | <0.0001 | ✅ Yes |
-| Rucaparib vs Bortezomib | 13.31 | 0.0003 | 0.0003 | ✅ Yes |
-| Rucaparib vs Doxorubicin | 36.01 | <0.0001 | <0.0001 | ✅ Yes |
-| Rucaparib vs Rituximab | 311.83 | <0.0001 | <0.0001 | ✅ Yes |
-| Niraparib vs Bortezomib | 30.82 | <0.0001 | <0.0001 | ✅ Yes |
-| Niraparib vs Doxorubicin | 54.06 | <0.0001 | <0.0001 | ✅ Yes |
-| Niraparib vs Rituximab | 346.49 | <0.0001 | <0.0001 | ✅ Yes |
-| Bortezomib vs Doxorubicin | 4.35 | 0.0370 | 0.0370 | ✅ Yes |
-| Bortezomib vs Rituximab | 108.89 | <0.0001 | <0.0001 | ✅ Yes |
-| Doxorubicin vs Rituximab | 67.07 | <0.0001 | <0.0001 | ✅ Yes |
+| Rucaparib vs Niraparib | 311.83 | <0.0001 | <0.0001 | Yes |
+| Rucaparib vs Bortezomib | 13.31 | 0.0003 | 0.0003 | Yes |
+| Rucaparib vs Doxorubicin | 36.01 | <0.0001 | <0.0001 | Yes |
+| Rucaparib vs Rituximab | 311.83 | <0.0001 | <0.0001 | Yes |
+| Niraparib vs Bortezomib | 30.82 | <0.0001 | <0.0001 | Yes |
+| Niraparib vs Doxorubicin | 54.06 | <0.0001 | <0.0001 | Yes |
+| Niraparib vs Rituximab | 346.49 | <0.0001 | <0.0001 | Yes |
+| Bortezomib vs Doxorubicin | 4.35 | 0.0370 | 0.0370 | Yes |
+| Bortezomib vs Rituximab | 108.89 | <0.0001 | <0.0001 | Yes |
+| Doxorubicin vs Rituximab | 67.07 | <0.0001 | <0.0001 | Yes |
 
 **Multiple Testing Correction:**
 - Method: False Discovery Rate (Benjamini-Hochberg)
@@ -920,15 +920,15 @@ Month 7+:  Every 3-6 months
 
 ### Summary of Findings: Epcoritamab and Cytokine Release Syndrome
 
-#### Requirement 2.a: Survival Analysis Models - Focused on Epcoritamab & CRS ✅
+#### Requirement 2.a: Survival Analysis Models - Focused on Epcoritamab & CRS
 
 **Implementation Success:**
-- ✅ Cox proportional hazards model successfully implemented for **CRS risk** after **Epcoritamab**
-- ✅ Applied to 1,000 Epcoritamab patient records from FDA FAERS
-- ✅ Predicted timing of **Cytokine Release Syndrome** (34.4% incidence, median onset: Day 1)
-- ✅ Identified **severe CRS** subgroup (2.8% of patients, 8.1% of CRS cases)
-- ✅ Comprehensive CRS-free survival analysis with risk stratification
-- ✅ Validated CRS occurs predominantly within first 24 hours (mechanism-driven)
+- Cox proportional hazards model successfully implemented for **CRS risk** after **Epcoritamab**
+- Applied to 1,000 Epcoritamab patient records from FDA FAERS
+- Predicted timing of **Cytokine Release Syndrome** (34.4% incidence, median onset: Day 1)
+- Identified **severe CRS** subgroup (2.8% of patients, 8.1% of CRS cases)
+- Comprehensive CRS-free survival analysis with risk stratification
+- Validated CRS occurs predominantly within first 24 hours (mechanism-driven)
 
 **Key Results:**
 - **C-index: 0.5796** - Moderate discrimination, improved over general model (0.532)
@@ -938,13 +938,13 @@ Month 7+:  Every 3-6 months
 - **High-risk patients** (risk score ≥3): 36.9% CRS rate vs 30.7% in moderate-risk
 - Comparison to clinical trials: 34.4% (FAERS) vs 49.6% (EPCORE NHL-1) - consistent
 
-#### Requirement 2.b: Feature Selection Techniques - CRS Risk Factors ✅
+#### Requirement 2.b: Feature Selection Techniques - CRS Risk Factors
 
 **Implementation Success:**
-- ✅ Three-method ensemble approach implemented for **CRS-specific** risk factors
-- ✅ Identified **patient weight** as unanimous #1 predictor across all methods
-- ✅ Demonstrated CRS has distinct risk profile vs general adverse events
-- ✅ Feature ranking: weight > age > treatment complexity > prior events
+- Three-method ensemble approach implemented for **CRS-specific** risk factors
+- Identified **patient weight** as unanimous #1 predictor across all methods
+- Demonstrated CRS has distinct risk profile vs general adverse events
+- Feature ranking: weight > age > treatment complexity > prior events
 
 **Key Results:**
 - **Patient weight** ranked #1 by F-test, Mutual Information, and Random Forest
@@ -1256,7 +1256,7 @@ This focused Epcoritamab-CRS analysis contributes to pharmacovigilance science b
 **Project:** AI-Powered Pharmacovigilance System  
 **Requirement:** Model Risk Factors and Time-to-Event Analysis  
 **Focus:** Epcoritamab and Cytokine Release Syndrome  
-**Status:** ✅ Complete (100%) - Revised per Mentor Feedback  
+**Status:** Complete (100%) - Revised per Mentor Feedback  
 **Date:** November 18, 2025  
 **Version:** Final v3.0 (Revised)  
 **Quality:** Publication-Ready
