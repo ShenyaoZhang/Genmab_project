@@ -12,12 +12,12 @@ Rather than using only aggregate counts, we create **granular features** that ca
 
 ## Granular Features vs. Aggregate Counts
 
-### ❌ Not Granular (Aggregate Only)
+### Not Granular (Aggregate Only)
 - "Number of drugs" (raw count)
 - "Number of comorbidities" (raw count)
 - "Age" (continuous only)
 
-### ✅ Granular (Specific Cutoffs + Interactions)
+### Granular (Specific Cutoffs + Interactions)
 - Age >65, >70, >75 (specific thresholds)
 - BMI categories: obese (>30), underweight (<18.5)
 - Specific drug classes: steroids, antibiotics, chemo
@@ -172,8 +172,8 @@ steroid_plus_antibiotic = (has_steroid == 1) & (has_antibiotic == 1)
 **Interactions** = Synergistic effects between features
 
 This approach provides:
-- ✅ Clinically interpretable features
-- ✅ Actionable risk stratification
-- ✅ Clear identification of high-risk combinations
-- ✅ Plain language explanations for clinicians
+- Clinically interpretable features
+- Actionable risk stratification
+- Clear identification of high-risk combinations
+- Plain language explanations for clinicians
 

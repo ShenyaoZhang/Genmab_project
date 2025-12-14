@@ -2,7 +2,7 @@
 
 Detect rare and unexpected drug-adverse event relationships using Isolation Forest anomaly detection and FDA label filtering.
 
-> **⚠️ Important:** Before running the main pipeline, you must first run `task3_data_collector.py` to collect the required data from OpenFDA.
+> **Important:** Before running the main pipeline, you must first run `task3_data_collector.py` to collect the required data from OpenFDA.
 
 ---
 
@@ -42,13 +42,13 @@ Flagged Rare & Unexpected AEs
 
 **Why it's flagged as rare & unexpected:**
 
-1. ✅ **Isolation Forest**: Anomaly score 0.689 (unusual pattern)
-2. ✅ **Known AE Check**: Haemorrhagic gastroenteritis NOT in Epcoritamab FDA label
-3. ✅ **Indication Check**: NOT an indication (it's a condition)
-4. ✅ **Frequency Check**: Count = 1, Mean = 3.24 → 1 < 3.24 (rare)
-5. ✅ **Statistical Tests**: PRR=111.69 (>2), IC025=3.602 (>0), Chi-square=41.14 (>4)
+1. **Isolation Forest**: Anomaly score 0.689 (unusual pattern)
+2. **Known AE Check**: Haemorrhagic gastroenteritis NOT in Epcoritamab FDA label
+3. **Indication Check**: NOT an indication (it's a condition)
+4. **Frequency Check**: Count = 1, Mean = 3.24 → 1 < 3.24 (rare)
+5. **Statistical Tests**: PRR=111.69 (>2), IC025=3.602 (>0), Chi-square=41.14 (>4)
 
-**Result:** ✅ **RARE & UNEXPECTED**
+**Result:** **RARE & UNEXPECTED**
 
 **Reasoning:** Appeared only **once** in FAERS, is **not** on the drug label, passes all statistical tests, and is below frequency thresholds, so it is flagged as unexpected. This is a serious adverse event with 100% death rate, hospitalization rate, and serious rate.
 
@@ -334,7 +334,6 @@ CONCLUSION: RARE & UNEXPECTED (passed IF + all 3 statistical tests)
 
 - **[DETECTION_STEPS.md](DETECTION_STEPS.md)** - Detailed step-by-step detection process with examples
 - **[USAGE_EXAMPLES.md](USAGE_EXAMPLES.md)** - Comprehensive usage examples and code snippets
-- **[FEEDBACK_IMPROVEMENT_PLAN.md](FEEDBACK_IMPROVEMENT_PLAN.md)** - Feedback analysis and improvement plan
 
 ---
 

@@ -58,12 +58,12 @@ Flagged Rare & Unexpected AEs
 **Example:**
 - **Input:** "Epcoritamab + Cytokine release syndrome" (anomaly score: 0.85)
 - **FDA Label Check:** CRS is listed in Epcoritamab label
-- **Result:** ❌ **REMOVED** (known AE, not unexpected)
+- **Result:** **REMOVED** (known AE, not unexpected)
 
 **Counter-Example:**
 - **Input:** "Epcoritamab + Renal impairment" (anomaly score: 0.78)
 - **FDA Label Check:** Renal impairment NOT listed in Epcoritamab label
-- **Result:** ✅ **KEPT** (proceeds to next step)
+- **Result:** **KEPT** (proceeds to next step)
 
 ---
 
@@ -79,12 +79,12 @@ Flagged Rare & Unexpected AEs
 **Example:**
 - **Input:** "Epcoritamab + DLBCL" (anomaly score: 0.72)
 - **Indication Check:** DLBCL is the indication for Epcoritamab
-- **Result:** ❌ **REMOVED** (indication, not an AE)
+- **Result:** **REMOVED** (indication, not an AE)
 
 **Counter-Example:**
 - **Input:** "Epcoritamab + Neutropenia" (anomaly score: 0.68)
 - **Indication Check:** Neutropenia is NOT an indication
-- **Result:** ✅ **KEPT** (proceeds to next step)
+- **Result:** **KEPT** (proceeds to next step)
 
 ---
 
@@ -100,7 +100,7 @@ Flagged Rare & Unexpected AEs
 **Example:**
 - **Input:** "Epcoritamab + Fatigue" (count: 45, anomaly score: 0.65)
 - **Frequency Check:** 45 >= 3.24 (mean threshold)
-- **Result:** ❌ **REMOVED** (too common, not rare)
+- **Result:** **REMOVED** (too common, not rare)
 
 **Counter-Example:**
 - **Input:** "Epcoritamab + Renal impairment" (count: 2, anomaly score: 0.78)
@@ -119,28 +119,28 @@ Let's trace a complete example through all steps:
 - **Report Count:** 2
 - **Anomaly Score:** 0.78 (from Isolation Forest)
 
-### Step 1: Isolation Forest ✅
+### Step 1: Isolation Forest
 - Passed: Anomaly score 0.78 indicates unusual pattern
 - **Status:** Flagged as anomaly
 
-### Step 2: Known Label AEs ✅
+### Step 2: Known Label AEs
 - Checked FDA label for Epcoritamab
 - Renal impairment NOT found in label
 - **Status:** Not a known AE → **KEPT**
 
-### Step 3: Indication Filter ✅
+### Step 3: Indication Filter
 - Checked if "Renal impairment" is an indication
 - It is NOT an indication (it's a disease/condition)
 - **Status:** Not an indication → **KEPT**
 
-### Step 4: Frequency Filter ✅
+### Step 4: Frequency Filter
 - Count = 2
 - Mean threshold = 3.24
 - 2 < 3.24 → **RARE**
 - **Status:** Below frequency threshold → **KEPT**
 
 ### Final Result
-✅ **FLAGGED AS RARE & UNEXPECTED**
+**FLAGGED AS RARE & UNEXPECTED**
 
 **Reasoning:**
 - Appeared only **twice** in FAERS (rare frequency)
@@ -193,4 +193,5 @@ After running the pipeline, two output files are generated:
 - The pipeline uses **FAERS data only** (FDA Adverse Event Reporting System)
 - MedDRA synonym matching ensures better accuracy in Step 2 (known AE filtering)
 - The mean count threshold (3.24) is calculated from the **original raw data**, not filtered results
+
 

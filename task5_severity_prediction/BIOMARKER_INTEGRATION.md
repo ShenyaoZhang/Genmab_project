@@ -141,10 +141,10 @@ Once integrated, these biomarkers are expected to be among the top predictive fe
 
 ## Implementation Status
 
-- ✅ **Conceptual framework**: Complete (see `add_future_biomarkers.py`)
-- ✅ **Integration points**: Identified and documented
-- ⏳ **Actual biomarker data**: Not yet available in FAERS
-- ✅ **Pipeline readiness**: Code structure supports biomarker addition
+- **Conceptual framework**: Complete (see `add_future_biomarkers.py`)
+- **Integration points**: Identified and documented
+- **Actual biomarker data**: Not yet available in FAERS
+- **Pipeline readiness**: Code structure supports biomarker addition
 
 ---
 

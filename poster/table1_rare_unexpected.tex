@@ -1,0 +1,40 @@
+\documentclass[border=5pt]{standalone}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{multirow}
+\usepackage{xcolor}
+
+\begin{document}
+
+\begin{tabular}{@{}p{6cm}@{}}
+\toprule
+\textbf{Drug--Event:} Epcoritamab + Haemorrhagic gastroenteritis \\
+\midrule
+\textbf{Status:} \textcolor{red}{RARE \& UNEXPECTED} \\
+\textbf{Report Count:} 1 \\
+\midrule
+\textbf{Statistical Metrics:} \\
+\quad PRR (Proportional Reporting Ratio): 111.69 (threshold: >2) \\
+\quad IC025 (Information Component): 3.602 (threshold: >0) \\
+\quad Chi-square: 41.14 (threshold: >4) \\
+\midrule
+\textbf{Clinical Impact:} \\
+\quad Death Rate: 100.0\% \\
+\quad Hospitalization Rate: 100.0\% \\
+\quad Serious Rate: 100.0\% \\
+\midrule
+\textbf{Assessment:} \\
+\quad In No-Cap Results: Yes \\
+\quad Passes PRR Test (>2): Yes \\
+\quad Passes IC025 Test (>0): Yes \\
+\quad Passes Chi² Test (>4): Yes \\
+\quad Passes All 3 Tests: Yes \\
+\midrule
+\textbf{CONCLUSION:} \\
+\textcolor{red}{RARE \& UNEXPECTED} \\
+(passed IF + all 3 statistical tests) \\
+\bottomrule
+\end{tabular}
+
+\end{document}
+

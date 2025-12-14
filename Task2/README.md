@@ -173,7 +173,7 @@ epcoritamab-crs-analysis/
 ├── LICENSE                            # MIT license
 │
 ├── task2/                             # Main analysis code
-│   ├── run_survival_analysis.py      # ⭐ Scalable pipeline (main entry point)
+│   ├── run_survival_analysis.py      # Scalable pipeline (main entry point)
 │   └── requirement2_epcoritamab_crs_analysis.py  # Original focused analysis
 │
 ├── examples/                          # Usage examples
@@ -283,7 +283,7 @@ epcoritamab-crs-analysis/
 
 | Feature | Hazard Ratio | 95% CI | p-value | Interpretation |
 |---------|--------------|--------|---------|----------------|
-| **Patient Weight** | **0.992*** | [0.985, 1.000] | **0.037** | **15% lower risk per 20 kg** ⭐ |
+| **Patient Weight** | **0.992*** | [0.985, 1.000] | **0.037** | **15% lower risk per 20 kg** |
 | Patient Age | 0.995 | [0.984, 1.006] | 0.347 | Not significant |
 | Polypharmacy | 0.616 | [0.153, 2.482] | 0.495 | Not significant |
 
@@ -291,7 +291,7 @@ epcoritamab-crs-analysis/
 
 ### Novel Discovery
 
-🔍 **Patient body weight identified as primary CRS risk factor**
+**Patient body weight identified as primary CRS risk factor**
 - Unanimously ranked #1 by all three feature selection methods
 - **Not reported in clinical trials** (EPCORE NHL-1)
 - Actionable: weight-based risk stratification
@@ -304,12 +304,12 @@ epcoritamab-crs-analysis/
 
 | Category | Variables | FAERS |
 |----------|-----------|-------|
-| **Demographics** | Age, Weight, Sex | ✅ Yes |
-| **Clinical** | Hospitalization, Life-threatening, Death | ✅ Yes |
-| **Drug Exposure** | Total drugs, Concomitant, Dose | ✅ Yes |
-| **Time Variables** | Days to event, Drug dates | ✅ Yes |
-| **Narrative Text** | Case narratives | ✅ Yes (English) |
-| **Comorbidities** | Hypertension, Cardiac, Diabetes | ⚠️ Limited |
+| **Demographics** | Age, Weight, Sex | Yes |
+| **Clinical** | Hospitalization, Life-threatening, Death | Yes |
+| **Drug Exposure** | Total drugs, Concomitant, Dose | Yes |
+| **Time Variables** | Days to event, Drug dates | Yes |
+| **Narrative Text** | Case narratives | Yes (English) |
+| **Comorbidities** | Hypertension, Cardiac, Diabetes | Limited |
 
 
 ### Continuous Variable Processing
