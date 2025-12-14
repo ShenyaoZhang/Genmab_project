@@ -2,6 +2,8 @@
 
 Detect rare and unexpected drug-adverse event relationships using Isolation Forest anomaly detection and FDA label filtering.
 
+> **⚠️ Important:** Before running the main pipeline, you must first run `task3_data_collector.py` to collect the required data from OpenFDA.
+
 ---
 
 ## Overview
@@ -75,10 +77,10 @@ Create a `data/` directory and place:
 
 ### 2. Run Full Pipeline
 
-```bash
-cd task3
-python3 task3_improved_pipeline.py
-```
+   ```bash
+   cd task3
+   python3 task3_improved_pipeline.py
+   ```
 
 **Output Files:**
 - `data/task3_all_unexpected_no_cap.csv` - All rare & unexpected AEs (no limit, typically ~1386 results)
@@ -88,7 +90,7 @@ python3 task3_improved_pipeline.py
 
 Check if a specific drug-event combination is rare & unexpected:
 
-```bash
+   ```bash
 python3 task3_interactive_query.py --drug "Epcoritamab" --adverse_event "Haemorrhagic gastroenteritis"
 ```
 
@@ -132,7 +134,7 @@ CONCLUSION: RARE & UNEXPECTED (passed IF + all 3 statistical tests)
 
 Analyze clinical risk factors for a specific drug-event combination:
 
-```bash
+   ```bash
 python3 task3_bert_clinical_features.py "Epcoritamab" "Neutropenia"
 ```
 
