@@ -488,11 +488,10 @@ features = ['patient_age', 'patient_weight', 'total_drugs',
 ### Technical Reports
 
 - **[Full Report (English)](REQUIREMENT2_FINAL_REPORT.md)** - Complete methodology, results, and clinical recommendations (1,283 lines)
-- **[Full Report (Chinese)](REQUIREMENT2_FINAL_REPORT_CN.md)** - Chinese translation (815 lines)
+
 
 ### Reference Documentation
 
-- **[Variable List](docs/VARIABLE_LIST.md)** - Complete catalog of all variables, processing methods, and data sources
 - **[Biomarker Integration](docs/BIOMARKER_INTEGRATION.md)** - Strategy for future biomarker data integration
 - **[Clinical Guidelines](docs/CLINICAL_GUIDELINES.md)** - Risk stratification protocols and CRS management
 
@@ -663,28 +662,9 @@ This will check:
 - FDA API connectivity
 - File write permissions
 
----
-
-### Quick Command Reference
-
-See `task2/QUICK_COMMANDS.txt` for copy-paste commands, or:
-
-```bash
-cd task2
-cat QUICK_COMMANDS.txt
-```
 
 ---
 
-### Getting Help
-
-If problems persist:
-1. Check `task2/FIX_AND_RUN.md` for detailed troubleshooting
-2. Check `task2/quick_start_guide_cn.md` for Chinese instructions
-3. Run `python3 check_environment.py` for diagnostics
-4. Open an issue on GitHub with the error message
-
----
 
 ## Citation
 
@@ -716,7 +696,6 @@ MIT License - See [LICENSE](LICENSE) for details.
 ## Contact
 
 - **Author:** Mengqi Liu
-- **Institution:** [Your Institution]
 - **GitHub:** [@MengqiLiu-9543](https://github.com/MengqiLiu-9543)
 - **Project:** [capstone_project-33](https://github.com/MengqiLiu-9543/capstone_project-33)
 
