@@ -51,16 +51,7 @@ Post-marketing pharmacovigilance surveillance is essential for characterizing re
 
 \subsection{Study objectives}
 
-The objective of this study was to develop an integrated pharmacovigilance pipeline comprising four complementary analytical modules:
-
-\begin{enumerate}
-    \item \textbf{Multi-source Risk Analysis (Task 1):} Causal inference and propensity score matching across FAERS, EudraVigilance, and JADER
-    \item \textbf{Survival Analysis (Task 2):} Cox proportional hazards modeling for time-to-CRS prediction
-    \item \textbf{Rare AE Detection (Task 3):} Anomaly detection using Isolation Forest to identify unexpected adverse events
-    \item \textbf{Severity Prediction (Task 4):} Machine learning with SHAP interpretability for CRS mortality prediction
-\end{enumerate}
-
-Each module addresses distinct clinical questions while sharing a unified data infrastructure.
+The objective of this study was to develop an integrated pharmacovigilance pipeline comprising four complementary analytical modules. The first module implements multi-source risk analysis employing causal inference and propensity score matching methodologies across FAERS, EudraVigilance, and JADER databases. The second module performs survival analysis using Cox proportional hazards modeling for time-to-CRS prediction. The third module conducts rare adverse event detection using Isolation Forest anomaly detection algorithms to identify unexpected drug-event relationships. The fourth module develops severity prediction models using machine learning with SHAP (SHapley Additive exPlanations) interpretability for CRS mortality prediction. Each module addresses distinct clinical questions while sharing a unified data infrastructure.
 
 
 \section{Methods}
@@ -95,39 +86,19 @@ Missing data were handled using established imputation strategies: median imputa
 
 \textbf{Objective:} Distinguish causal risk factors from confounders and correlations.
 
-\textbf{Methods:}
-\begin{enumerate}
-    \item \textbf{Univariate associations:} Chi-square tests for categorical variables; Spearman correlation for continuous variables
-    \item \textbf{Propensity score matching:} Inverse probability weighting to estimate average treatment effects (ATE) for protective interventions (steroids, tocilizumab)
-    \item \textbf{Sensitivity analysis:} E-values to assess robustness to unmeasured confounding
-    \item \textbf{Causal classification:} Variables categorized as causal, confounders, or correlational based on biological mechanisms and statistical evidence
-\end{enumerate}
+\textbf{Methods:} The causal analysis framework employed multiple complementary approaches. Univariate associations were assessed using chi-square tests for categorical variables and Spearman correlation for continuous variables. Propensity score matching with inverse probability weighting was implemented to estimate average treatment effects for protective interventions including steroids and tocilizumab. Sensitivity analyses computed E-values to assess robustness of findings to potential unmeasured confounding. Variables were systematically categorized as causal factors, confounders, or correlational associations based on biological mechanisms and strength of statistical evidence.
 
 \subsection{Task 2: Survival analysis}
 
 \textbf{Objective:} Model time-to-CRS using Cox proportional hazards.
 
-\textbf{Methods:}
-\begin{enumerate}
-    \item Cox regression with covariates: age, weight, total drugs, concomitant drugs, polypharmacy, life-threatening status, hospitalization
-    \item Hazard ratios (HR) with 95\% confidence intervals
-    \item Concordance index (C-index) for model discrimination
-    \item Kaplan-Meier survival curves stratified by risk groups
-\end{enumerate}
+\textbf{Methods:} Cox proportional hazards regression models were fitted with covariates including age, weight, total drugs, concomitant medications, polypharmacy status, life-threatening event designation, and hospitalization requirement. Hazard ratios with 95\% confidence intervals were computed to quantify associations between covariates and CRS incidence. Model discrimination was assessed using the concordance index (C-index). Kaplan-Meier survival curves were generated and stratified by risk groups for visualization of time-to-event patterns.
 
 \subsection{Task 3: Rare adverse event detection}
 
 \textbf{Objective:} Identify rare, unexpected drug-event relationships not documented in FDA labels.
 
-\textbf{Pipeline:}
-\begin{enumerate}
-    \item \textbf{Anomaly detection:} Isolation Forest (contamination=0.15) on statistical features (PRR, IC025, Chi-square, count)
-    \item \textbf{Known AE filtering:} Remove events listed in FDA drug labels (with MedDRA synonym matching)
-    \item \textbf{Indication filtering:} Remove disease indications (e.g., ``DLBCL'', ``lymphoma'')
-    \item \textbf{Frequency filtering:} Retain only rare events (count $<$ mean threshold of 3.24)
-\end{enumerate}
-
-\textbf{Statistical thresholds:} PRR $>$ 2, IC025 $>$ 0, Chi-square $>$ 4
+\textbf{Pipeline:} The rare adverse event detection pipeline implemented a four-stage filtering process. First, Isolation Forest anomaly detection (contamination parameter=0.15) was applied to statistical disproportionality features including Proportional Reporting Ratio (PRR), Information Component lower bound (IC025), Chi-square statistic, and event count. Second, known adverse events documented in FDA drug labels were removed using MedDRA synonym matching algorithms. Third, disease indications (e.g., diffuse large B-cell lymphoma, lymphoma) were filtered to exclude drug-disease associations. Fourth, frequency filtering retained only rare events with counts below the dataset mean threshold of 3.24. Statistical significance thresholds were set at PRR $>$2, IC025 $>$0, and Chi-square $>$4 to ensure robust signal detection.
 
 \subsection{Task 4: Severity prediction}
 
@@ -143,43 +114,13 @@ Missing data were handled using established imputation strategies: median imputa
 
 \subsection{Implementation details}
 
-\textbf{Software and libraries:}
-\begin{itemize}
-    \item Python 3.10+ for all analysis
-    \item Data manipulation: pandas (1.5.0+), NumPy (1.23.0+)
-    \item Machine learning: scikit-learn (1.1.0+), XGBoost (1.7.0+)
-    \item Survival analysis: lifelines (0.27.0+)
-    \item Interpretability: SHAP (0.41.0+)
-    \item Statistical analysis: SciPy (1.9.0+), statsmodels (0.13.0+)
-    \item API access: requests (2.28.0+)
-    \item Visualization: matplotlib, seaborn
-\end{itemize}
+\textbf{Software and libraries:} All analyses were implemented in Python 3.10+ using established scientific computing libraries. Data manipulation employed pandas (version 1.5.0+) and NumPy (1.23.0+). Machine learning models utilized scikit-learn (1.1.0+) and XGBoost (1.7.0+). Survival analysis was performed using lifelines (0.27.0+). Model interpretability calculations employed SHAP (0.41.0+). Statistical analyses utilized SciPy (1.9.0+) and statsmodels (0.13.0+). API access was implemented using the requests library (2.28.0+). Visualization employed matplotlib and seaborn libraries.
 
-\textbf{Computational resources:}
-\begin{itemize}
-    \item Hardware: MacBook Pro M1, 16GB RAM (sufficient for all analyses)
-    \item Runtime: Data extraction ~30 min (API rate-limited), preprocessing ~2 min, model training ~5 min per task
-    \item Storage: ~500 MB for complete dataset with all outputs
-\end{itemize}
+\textbf{Computational resources:} All analyses were executed on standard hardware (MacBook Pro M1 with 16GB RAM), demonstrating computational feasibility for routine pharmacovigilance applications. Runtime characteristics included approximately 30 minutes for API-rate-limited data extraction, 2 minutes for preprocessing operations, and 5 minutes per task for model training. Complete dataset storage requirements totaled approximately 500 MB including all analytical outputs.
 
-\textbf{Code organization:}
-\begin{itemize}
-    \item Task1/Part1/: Multi-source causal analysis (15 Python modules, 3,500 lines)
-    \item Task2/: Survival analysis pipeline (4 modules, 1,200 lines)
-    \item Task3/: Rare AE detection (7 modules, 2,800 lines)
-    \item Task4/: Severity prediction (13 modules, 4,500 lines)
-    \item Combined: 12,000 lines of documented Python code
-    \item GitHub repository: \url{https://github.com/MengqiLiu-9543/capstone_project-33}
-\end{itemize}
+\textbf{Code organization:} The codebase comprises four modular task directories: Task1/Part1 containing multi-source causal analysis (15 Python modules, 3,500 lines), Task2 containing survival analysis pipeline (4 modules, 1,200 lines), Task3 containing rare adverse event detection (7 modules, 2,800 lines), and Task4 containing severity prediction (13 modules, 4,500 lines). The combined implementation totals 12,000 lines of documented Python code, publicly available at \url{https://github.com/MengqiLiu-9543/capstone_project-33}.
 
-\textbf{Reproducibility:}
-\begin{itemize}
-    \item All analyses fully scripted and version-controlled
-    \item Random seeds fixed (random\_state=42) for ML models
-    \item Requirements.txt with pinned package versions
-    \item README files with step-by-step execution instructions
-    \item Note: FAERS data changes daily; exact replication requires archived data snapshot
-\end{itemize}
+\textbf{Reproducibility:} All analyses are fully scripted and maintained under version control. Random seeds were fixed (random\_state=42) for all machine learning models to ensure deterministic results. Package dependencies are specified with pinned versions in requirements.txt files. Comprehensive README documentation provides step-by-step execution instructions for each module. Note that FAERS data undergoes daily updates; exact replication would require use of archived data snapshots from the analysis date.
 
 
 \section{Results}
@@ -206,14 +147,7 @@ Table~\ref{tab:causal} summarizes causal classifications for key variables.
   \end{tabular}
 \end{table}
 
-\textbf{Key findings:}
-\begin{itemize}
-    \item Steroid premedication shows protective effect (OR=0.54, p=0.002) via anti-inflammatory mechanism
-    \item Tocilizumab (IL-6 receptor antagonist) is protective for severe CRS (OR=2.14, p=0.027)
-    \item Patient weight is a significant confounder affecting both drug exposure and clearance
-    \item Propensity score analysis: Steroids reduce CRS risk by 8.8 percentage points (95\% CI: -28.5\% to 6.5\%), though not statistically significant in this dataset
-    \item E-value sensitivity analysis: Unmeasured confounders would need RR $\geq$ 1.32 to explain away observed associations
-\end{itemize}
+\textbf{Key findings:} Corticosteroid premedication demonstrated a significant protective effect (OR=0.54, p=0.002) mediated through anti-inflammatory mechanisms. Tocilizumab, an IL-6 receptor antagonist, exhibited protective efficacy for severe CRS (OR=2.14, p=0.027). Patient body weight emerged as a significant confounder, influencing both drug exposure pharmacokinetics and clearance dynamics. Propensity score analysis estimated that steroid administration reduces CRS risk by 8.8 percentage points (95\% CI: -28.5\% to 6.5\%), though this effect did not achieve statistical significance in the present dataset. E-value sensitivity analysis indicated that unmeasured confounding variables would require risk ratios of 1.32 or greater to nullify the observed associations.
 
 \subsection{Task 2: Survival analysis}
 
@@ -250,14 +184,7 @@ The Isolation Forest-based anomaly detection pipeline successfully identified 18
 
 \subsubsection{Pipeline performance metrics}
 
-\begin{itemize}
-    \item \textbf{Initial dataset:} 10,847 unique drug-event pairs
-    \item \textbf{After Isolation Forest (contamination=0.15):} 1,627 anomalies flagged
-    \item \textbf{After known AE filtering:} 892 unexpected (not in FDA labels)
-    \item \textbf{After indication filtering:} 743 non-indication events
-    \item \textbf{After frequency filtering (count $<$ 3.24):} 185 rare \& unexpected signals
-    \item \textbf{Reduction rate:} 98.3\% of pairs filtered, retaining highest-priority signals
-\end{itemize}
+The multi-stage filtering pipeline demonstrated systematic signal refinement. The initial dataset comprised 10,847 unique drug-event pairs. Following Isolation Forest anomaly detection (contamination=0.15), 1,627 anomalies were flagged. Subsequent filtering against FDA drug labels identified 892 unexpected events not documented in approved labeling. Indication filtering removed disease-drug associations, yielding 743 non-indication adverse events. Final frequency filtering (count threshold $<$3.24) identified 185 rare and unexpected signals, representing a 98.3\% reduction rate that successfully retained highest-priority pharmacovigilance signals.
 
 \subsubsection{Detailed example: Epcoritamab signals}
 
@@ -283,33 +210,13 @@ Table~\ref{tab:rare-ae} shows rare/unexpected AEs flagged for Epcoritamab.
 
 \textbf{Clinical interpretation of flagged signals:}
 
-\begin{itemize}
-    \item \textbf{Haemorrhagic gastroenteritis:} Single case with 100\% mortality, very high PRR (111.69), not documented in Epcoritamab label. \textit{Action:} Signal review, case narrative examination, regulatory reporting.
-    
-    \item \textbf{Renal impairment:} Two reports, not listed in label. \textit{Mechanism hypothesis:} Cytokine storm-induced acute kidney injury, tumor lysis syndrome. \textit{Action:} Monitor renal function in high-risk patients.
-    
-    \item \textbf{Pancytopenia:} Three reports with 67\% mortality. \textit{Mechanism:} Possible immune-mediated bone marrow suppression. \textit{Action:} Complete blood count monitoring.
-\end{itemize}
+Haemorrhagic gastroenteritis represented a single case with 100\% mortality and exceptionally high proportional reporting ratio (PRR=111.69), notably absent from Epcoritamab labeling, warranting signal review, case narrative examination, and regulatory reporting. Renal impairment emerged in two reports not documented in the drug label, with plausible mechanistic hypotheses including cytokine storm-induced acute kidney injury and tumor lysis syndrome, suggesting enhanced renal function monitoring in high-risk patients. Pancytopenia appeared in three reports with 67\% mortality, potentially attributable to immune-mediated bone marrow suppression, indicating need for systematic complete blood count monitoring protocols.
 
 \subsubsection{Cross-drug comparison}
 
-Rare AE detection extended to competitor bispecific antibodies:
+Rare adverse event detection was extended to competitor bispecific antibodies, identifying 42 rare/unexpected signals for Glofitamab and 38 for Mosunetuzumab. Overlap analysis revealed 12 shared signals across all three bispecific antibodies, suggesting potential class effects including neutropenia and thrombocytopenia not uniformly documented in all drug labels. The majority of signals (73\%) demonstrated drug-specificity, warranting individualized pharmacovigilance monitoring strategies for each agent.
 
-\begin{itemize}
-    \item \textbf{Glofitamab:} 42 rare/unexpected signals identified
-    \item \textbf{Mosunetuzumab:} 38 rare/unexpected signals identified
-    \item \textbf{Overlap analysis:} 12 shared signals across all three bispecifics suggest class effects (e.g., neutropenia, thrombocytopenia not labeled for all)
-    \item \textbf{Drug-specific signals:} 73\% of signals are drug-specific, warranting individual pharmacovigilance
-\end{itemize}
-
-\textbf{Validation against literature:}
-
-The flagged signals were systematically compared against published case reports and clinical trial safety data:
-\begin{itemize}
-    \item 23\% of our flagged rare AEs (43/185) have subsequent case reports published after FAERS report dates
-    \item 8\% (15/185) were later added to drug label updates in 2023-2024
-    \item Demonstrates predictive validity of the anomaly detection approach
-\end{itemize}
+\textbf{Validation against literature:} The flagged signals were systematically compared against published case reports and clinical trial safety data. Notably, 23\% of flagged rare adverse events (43/185) subsequently appeared in case reports published after the FAERS report dates, and 8\% (15/185) were incorporated into drug label updates during 2023-2024. These findings demonstrate the predictive validity of the anomaly detection methodology for prospective signal identification.
 
 \textbf{Detection flowchart validated:} All drug-event pairs (10,847) $\rightarrow$ Isolation Forest (1,627 anomalies) $\rightarrow$ Remove known label AEs (892 unexpected) $\rightarrow$ Remove indications (743 non-indications) $\rightarrow$ Frequency filter (185 rare \& unexpected)
 
@@ -381,22 +288,9 @@ Comorbidity burden demonstrated differential mortality impact: hypertension was 
 
 \subsection{Key contributions}
 
-\textbf{1. Integrated multi-method analytical framework:} In contrast to conventional single-modality pharmacovigilance studies, our pipeline integrates causal inference, time-to-event survival analysis, supervised machine learning, and unsupervised anomaly detection methodologies. This multi-faceted approach provides complementary perspectives on drug safety. Each analytical module addresses distinct but interrelated research questions:
-\begin{itemize}
-    \item Task 1 answers: ``What causes CRS?'' (causal mechanisms)
-    \item Task 2 answers: ``When does CRS occur?'' (time-to-event)
-    \item Task 4 answers: ``Who dies from CRS?'' (severity prediction)
-    \item Task 3 answers: ``What else should we watch for?'' (unexpected signals)
-\end{itemize}
+\textbf{1. Integrated multi-method analytical framework:} In contrast to conventional single-modality pharmacovigilance studies, our pipeline integrates causal inference, time-to-event survival analysis, supervised machine learning, and unsupervised anomaly detection methodologies. This multi-faceted approach provides complementary perspectives on drug safety, with each analytical module addressing distinct but interrelated research questions. Task 1 elucidates causal mechanisms underlying CRS, Task 2 characterizes temporal patterns of CRS onset, Task 4 predicts individual-level severity and mortality risk, and Task 3 identifies unexpected safety signals warranting pharmacovigilance attention.
 
-\textbf{2. Actionable risk stratification:} SHAP-based interpretability translates black-box predictions into clinician-friendly explanations with patient-specific risk decomposition. For example, for Patient A (age 72, weight 58kg, 7 drugs):
-\begin{itemize}
-    \item Age contribution: +0.198 (``Advanced age increases risk'')
-    \item Weight contribution: +0.051 (``Low weight increases exposure'')
-    \item Polypharmacy: +0.077 (``Multiple drugs increase toxicity'')
-    \item Combined predicted risk: 87\% mortality probability
-    \item Clinical action: ICU-level monitoring, tocilizumab on standby
-\end{itemize}
+\textbf{2. Actionable risk stratification:} SHAP-based interpretability translates black-box predictions into clinician-friendly explanations with patient-specific risk decomposition. For illustrative purposes, consider Patient A (age 72 years, weight 58 kg, receiving 7 concurrent medications): age contributes +0.198 to risk (advanced age increases mortality probability), weight contributes +0.051 (low body weight increases drug exposure), polypharmacy contributes +0.077 (multiple drugs potentiate toxicity), yielding a combined predicted mortality probability of 87\%, which warrants intensive care unit-level monitoring with tocilizumab on standby for prompt CRS management.
 
 \textbf{3. Scalable, production-ready architecture:} All modules are fully parameterized with no hard-coded drug/AE combinations:
 \begin{verbatim}
@@ -412,51 +306,17 @@ This enables rapid analysis of new drugs as they enter the market or new safety 
 
 \textbf{4. Novel rare AE detection with validation:} Isolation Forest with multi-stage filtering (known AEs, indications, frequency) effectively distinguishes truly unexpected events from known/common AEs. Our validation showed 23\% of flagged signals subsequently appeared in case reports and 8\% were added to drug labels, demonstrating real-world predictive value.
 
-\textbf{5. Model interpretability for non-technical stakeholders:} We developed a ``Model Purpose Table'' and ``SHAP Interpretation Guide'' tailored for safety physicians without machine learning backgrounds:
-\begin{itemize}
-    \item Plain-language feature descriptions (``Number of concurrent drugs'' not ``num\_drugs'')
-    \item Clinical contextualization (``A positive SHAP value means this feature pushes the patient toward higher death risk'')
-    \item Color-coded risk stratification (green/yellow/red)
-\end{itemize}
+\textbf{5. Model interpretability for non-technical stakeholders:} Documentation was developed specifically for safety physicians without machine learning expertise, including a Model Purpose Table and SHAP Interpretation Guide. These resources employ plain-language feature descriptions (``Number of concurrent drugs'' rather than technical variable names like ``num\_drugs''), provide clinical contextualization (``A positive SHAP value indicates this feature increases predicted mortality risk''), and implement color-coded risk stratification schemes (green/yellow/red) for intuitive clinical decision support.
 
 \textbf{6. Computational efficiency:} Pipeline processes 50,000 records in $<$10 minutes on standard hardware (MacBook Pro M1, 16GB RAM), making it feasible for routine pharmacovigilance use.
 
 \subsection{Clinical implications}
 
-\textbf{High-risk patient identification:}
-\begin{itemize}
-    \item Age $>$75 years + high polypharmacy ($>$5 drugs): Enhanced CRS monitoring protocols
-    \item Lower body weight ($<$60 kg): Consider dose adjustments or prophylactic steroids
-    \item Concurrent steroid + antibiotic use: Flag for intensive care unit (ICU) readiness
-\end{itemize}
-
-\textbf{Protective interventions:}
-\begin{itemize}
-    \item Steroid premedication shows consistent protective signal across causal and ML analyses
-    \item Tocilizumab readily available for CRS management (IL-6 blockade)
-\end{itemize}
+\textbf{High-risk patient identification and protective interventions:} Several patient phenotypes warrant enhanced surveillance protocols. Patients aged over 75 years with high polypharmacy (exceeding 5 concurrent medications) require intensified CRS monitoring. Lower body weight patients (under 60 kg) should be considered for dose adjustments or prophylactic corticosteroid administration. Patients receiving concurrent steroid and antibiotic therapy should be flagged for intensive care unit readiness given elevated mortality risk. Protective interventions include corticosteroid premedication, which demonstrated consistent protective signals across both causal inference and machine learning analyses, and ensuring tocilizumab availability for prompt IL-6-mediated CRS management.
 
 \subsection{Limitations}
 
-\textbf{Data limitations:}
-\begin{itemize}
-    \item FAERS is observational with inherent reporting bias (underreporting, selective reporting)
-    \item Missing data for key variables: disease stage (DLBCL Ann Arbor stage), exact doses, laboratory values (IL-6, CRP, ferritin)
-    \item No access to biomarker data (cytokines, chemokines) in current FAERS database
-\end{itemize}
-
-\textbf{Methodological limitations:}
-\begin{itemize}
-    \item Causality cannot be definitively established from observational data despite propensity score methods
-    \item External validation needed on independent datasets (clinical trial data, EHR databases)
-    \item Model performance (PR-AUC 0.415 overall) reflects data quality constraints and class imbalance
-\end{itemize}
-
-\textbf{Generalizability:}
-\begin{itemize}
-    \item Results specific to bispecific antibodies; may not generalize to other immunotherapy classes
-    \item FAERS overrepresents U.S. population; multi-country validation needed
-\end{itemize}
+\textbf{Study limitations:} Several limitations warrant acknowledgment. Data-related constraints include the observational nature of FAERS with inherent reporting biases (underreporting, selective reporting), substantial missing data for key clinical variables (disease stage such as DLBCL Ann Arbor classification, precise dosing information, laboratory values including IL-6, C-reactive protein, ferritin), and absence of biomarker data (cytokines, chemokines) in the current FAERS infrastructure. Methodologically, definitive causal inferences cannot be established from observational data despite propensity score adjustment techniques, external validation on independent datasets (clinical trial data, electronic health record databases) remains necessary, and overall model performance (PR-AUC 0.415) reflects underlying data quality constraints and severe class imbalance. Generalizability limitations include results specific to bispecific antibody pharmacology that may not extend to other immunotherapy classes, and FAERS demographic overrepresentation of United States populations necessitating multi-country validation efforts.
 
 \subsection{Comparison with prior work and validation}
 
@@ -464,46 +324,13 @@ This enables rapid analysis of new drugs as they enter the market or new safety 
 
 The observed CRS incidence in our FAERS cohort (34.4\%, 343/1000 reports) was lower than that reported in the pivotal EPCORE NHL-1 clinical trial (49.6\% any grade CRS, 2.5\% Grade $\geq$3)~\cite{thieblemont2023}. This discrepancy is consistent with well-documented underreporting bias in spontaneous adverse event reporting systems, which arises from voluntary reporting practices, absence of exposure denominators (total treated patients), and preferential reporting of serious outcomes. Our observed rate aligns with expected post-marketing surveillance patterns and does not invalidate the analytical findings.
 
-\textbf{Risk factor validation:}
-
-Our machine learning-identified risk factors align with established clinical knowledge and recent CAR-T CRS literature:
-
-\begin{itemize}
-    \item \textbf{Age:} Budde et al.\ (2022) identified age $>$65 as independent risk factor for Grade $\geq$3 CRS (HR=2.1, p=0.03) in mosunetuzumab trial~\cite{budde2022}. Our findings (83.5\% mortality in age $>$65 vs. 67.4\% in $\leq$65) are consistent.
-    
-    \item \textbf{Tumor burden:} Clinical trials report high tumor burden (elevated LDH, bulky disease) predicts severe CRS. While we lack direct tumor burden measures in FAERS, our ``number of reactions'' feature (SHAP: +0.074) may serve as proxy for disease complexity.
-    
-    \item \textbf{Steroids:} Our causal analysis (OR=0.54, protective) validates standard practice of steroid premedication. EPCORE NHL-1 protocol mandated dexamethasone premedication for cycles $\geq$2.
-    
-    \item \textbf{IL-6 blockade:} Tocilizumab identified as protective (OR=2.14, though small sample). This aligns with FDA-approved use of tocilizumab for CRS management.
-\end{itemize}
+\textbf{Risk factor validation:} The machine learning-identified risk factors align closely with established clinical knowledge and recent chimeric antigen receptor T-cell therapy CRS literature. Age effects observed in our analysis (83.5\% mortality in patients aged over 65 years versus 67.4\% in younger patients) are consistent with Budde and colleagues' 2022 report identifying age exceeding 65 years as an independent risk factor for Grade 3 or higher CRS (HR=2.1, p=0.03) in the mosunetuzumab trial~\cite{budde2022}. Tumor burden, reported in clinical trials as a predictor of severe CRS through elevated lactate dehydrogenase and bulky disease, lacks direct measurement in FAERS data; however, our ``number of reactions'' feature (SHAP contribution: +0.074) may serve as a proxy indicator for underlying disease complexity. Corticosteroid protective effects identified through causal analysis (OR=0.54) validate standard clinical practice of steroid premedication, as exemplified by the EPCORE NHL-1 protocol mandating dexamethasone premedication for treatment cycles 2 and beyond. Tocilizumab protective association (OR=2.14, albeit in limited sample) aligns with FDA-approved indications for tocilizumab in CRS management through IL-6 receptor blockade.
 
 \textbf{Novelty compared to prior pharmacovigilance studies:}
 
-\begin{itemize}
-    \item \textbf{Prior work:} Traditional pharmacovigilance relies on disproportionality analysis (PRR, ROR, EBGM) for signal detection, producing ranked lists of drug-AE pairs.
-    
-    \item \textbf{Our contribution:} We extend beyond signal detection to:
-    \begin{enumerate}
-        \item Causal classification (not just correlation)
-        \item Severity prediction with patient-level risk scores
-        \item Multi-stage filtering to reduce false positive rare AE signals by 98.3\%
-        \item Interpretable ML explanations for clinical translation
-    \end{enumerate}
-    
-    \item \textbf{Prior ML in pharmacovigilance:} Random forests used for signal prioritization (e.g., FDA Sentinel Initiative), but typically without SHAP explanations or integration with causal inference.
-    
-    \item \textbf{Anomaly detection novelty:} Isolation Forest has been used in fraud detection and outlier detection, but application to rare AE detection with multi-stage clinical filtering (known AEs, indications) is novel to our knowledge.
-\end{itemize}
+\textbf{Novelty relative to prior pharmacovigilance studies:} Traditional pharmacovigilance relies primarily on disproportionality analysis metrics (Proportional Reporting Ratio, Reporting Odds Ratio, Empirical Bayes Geometric Mean) for signal detection, typically generating ranked lists of drug-adverse event pairs without mechanistic interpretation. The present work extends substantially beyond conventional signal detection by implementing causal classification distinguishing correlation from causation, developing severity prediction models with patient-level risk scores, employing multi-stage filtering that reduces false positive rare adverse event signals by 98.3\%, and providing interpretable machine learning explanations suitable for clinical translation. Prior machine learning applications in pharmacovigilance, such as random forest models deployed in the FDA Sentinel Initiative, typically lack SHAP-based explanations or integration with causal inference frameworks. The application of Isolation Forest anomaly detection to rare adverse event identification, while established in fraud detection contexts, represents a novel pharmacovigilance application when combined with multi-stage clinical filtering for known adverse events and disease indications.
 
-\textbf{External validation needs:}
-
-While the present results demonstrate consistency with published clinical trial findings, independent external validation is required utilizing:
-\begin{itemize}
-    \item Electronic health record (EHR) databases with denominator data
-    \item Other regulatory databases (EudraVigilance, JADER) with real data
-    \item Prospective cohort studies with standardized CRS grading (ASTCT criteria)
-\end{itemize}
+\textbf{External validation requirements:} While the present results demonstrate consistency with published clinical trial findings, rigorous independent external validation is required. Priority validation datasets include electronic health record databases providing exposure denominator data, alternative regulatory pharmacovigilance databases (EudraVigilance, JADER) with real-world international data, and prospective cohort studies employing standardized CRS grading systems such as American Society for Transplantation and Cellular Therapy criteria.
 
 
 \section{Conclusions}
@@ -524,44 +351,13 @@ External validation across multiple international pharmacovigilance databases re
 
 Advanced temporal modeling approaches could refine risk prediction through time-series clustering to identify distinct CRS onset patterns (hyperacute $<$24 hours, acute 1-7 days, delayed $>$7 days). Recurrent neural network architectures, specifically Long Short-Term Memory (LSTM) models, could enable sequential adverse event prediction capturing progression pathways (e.g., CRS evolving to severe CRS or immune effector cell-associated neurotoxicity syndrome). Implementation as a real-time early warning system with dynamic risk score updates based on evolving vital signs and laboratory values would require integration with hospital electronic health record systems via HL7 FHIR interoperability standards.
 
-\textbf{4. Clinical decision support tool deployment:}
+\textbf{4. Clinical decision support tool deployment:} Translation to clinical practice would involve development of an interactive web-based risk calculator featuring patient input forms capturing age, weight, medications, and comorbidities. The tool would generate quantitative risk scores (0-100\% scale), categorical risk stratification (Low/Medium/High designations), SHAP explanation visualizations, and evidence-based monitoring frequency recommendations. Technical implementation would employ Flask or Django backend frameworks with React frontend interface, deployed on HIPAA-compliant cloud infrastructure (Amazon Web Services or Microsoft Azure). User acceptance testing would be conducted through pilot implementations with oncology and hematology clinicians at partner academic institutions. The regulatory pathway would follow FDA Clinical Decision Support Software guidance, with potential classification as Software as Medical Device depending on intended use claims.
 
-\begin{itemize}
-    \item \textbf{Web interface:} Interactive risk calculator with patient input form (age, weight, medications, comorbidities)
-    \item \textbf{Output:} Risk score (0-100\%), risk category (Low/Medium/High), SHAP explanation plot, recommended monitoring frequency
-    \item \textbf{Technology stack:} Flask/Django backend, React frontend, deployed on HIPAA-compliant cloud (AWS/Azure)
-    \item \textbf{User acceptance testing:} Pilot with oncology/hematology clinicians at partner institutions
-    \item \textbf{Regulatory pathway:} Clinical Decision Support Software (CDS) FDA guidance, potentially Software as Medical Device (SaMD)
-\end{itemize}
+\textbf{5. Prospective validation study design:} Rigorous prospective validation would employ a multi-center design (3-5 academic medical centers) enrolling 200 patients receiving bispecific antibody therapy (sample size powered for detecting AUC difference of 0.85 versus null hypothesis 0.75, type I error 0.05, power 0.80). The primary endpoint would be C-statistic discriminating Grade 3 or higher CRS according to American Society for Transplantation and Cellular Therapy criteria. Secondary endpoints would assess calibration, decision curve analysis, and clinical utility metrics. Study duration would encompass 18-24 months enrollment period plus 6 months follow-up.
 
-\textbf{5. Prospective validation study design:}
+\textbf{6. Extension to other immunotherapy toxicities:} The analytical framework developed for CRS could be adapted to additional immunotherapy-associated toxicities. Immune effector cell-associated neurotoxicity syndrome represents a parallel neurological toxicity requiring similar prediction algorithms. Immune-related adverse events associated with checkpoint inhibitors (including colitis, pneumonitis, hepatitis) would benefit from analogous risk stratification approaches. Monoclonal antibody infusion reactions and hypersensitivity syndromes represent additional targets. Collectively, these extensions would establish a unified pharmacovigilance framework applicable across diverse immunotherapy classes.
 
-\begin{itemize}
-    \item \textbf{Objective:} Validate risk model on prospective cohort receiving bispecific antibodies
-    \item \textbf{Setting:} Multi-center (3-5 academic medical centers)
-    \item \textbf{Sample size:} n=200 patients (powered for AUC 0.85 vs. null 0.75, $\alpha$=0.05, $\beta$=0.20)
-    \item \textbf{Primary endpoint:} C-statistic for predicting Grade $\geq$3 CRS (ASTCT criteria)
-    \item \textbf{Secondary endpoints:} Calibration, decision curve analysis, clinical utility metrics
-    \item \textbf{Duration:} 18-24 months enrollment + 6 months follow-up
-\end{itemize}
-
-\textbf{6. Extension to other immunotherapy toxicities:}
-
-\begin{itemize}
-    \item \textbf{ICANS (Immune effector Cell-Associated Neurotoxicity Syndrome):} Adapt pipeline for neurological toxicity prediction
-    \item \textbf{Immune-related adverse events (irAEs):} Checkpoint inhibitor toxicities (colitis, pneumonitis, hepatitis)
-    \item \textbf{Infusion reactions:} Monoclonal antibody hypersensitivity
-    \item \textbf{Benefit:} Unified pharmacovigilance framework across immunotherapy classes
-\end{itemize}
-
-\textbf{7. Causal inference enhancements:}
-
-\begin{itemize}
-    \item \textbf{Instrumental variable analysis:} Use prescribing patterns as instruments for steroid use
-    \item \textbf{Regression discontinuity:} Exploit dose thresholds (e.g., 0.8 mg vs. 48 mg step-up dosing)
-    \item \textbf{Difference-in-differences:} Compare CRS rates before/after label updates recommending prophylaxis
-    \item \textbf{Mediation analysis:} Decompose total effect into direct and indirect pathways (Age $\rightarrow$ Dose $\rightarrow$ CRS)
-\end{itemize}
+\textbf{7. Advanced causal inference methodologies:} Future iterations could incorporate sophisticated causal inference techniques. Instrumental variable analysis could leverage prescribing pattern variations as instruments for steroid use, addressing confounding by indication. Regression discontinuity designs could exploit dose threshold discontinuities (e.g., 0.8 mg versus 48 mg step-up dosing protocols) to estimate causal dose-response relationships. Difference-in-differences analysis could evaluate temporal changes in CRS rates following regulatory label updates recommending prophylactic interventions. Mediation analysis would enable decomposition of total effects into direct and indirect causal pathways, such as the age-mediated pathway operating through dose adjustments influencing CRS incidence.
 
 
 \begin{ack}
