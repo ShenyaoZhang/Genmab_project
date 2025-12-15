@@ -211,7 +211,6 @@ epcoritamab-crs-analysis/
 │   └── example_usage.py               # Multiple drug-AE pair examples
 │
 ├── docs/                              # Documentation
-│   ├── VARIABLE_LIST.md               # Complete variable catalog
 │   ├── BIOMARKER_INTEGRATION.md       # Future biomarker integration strategy
 │   └── CLINICAL_GUIDELINES.md         # Risk stratification protocols
 │
@@ -228,7 +227,6 @@ epcoritamab-crs-analysis/
 │
 └── reports/                           # Technical reports
     ├── REQUIREMENT2_FINAL_REPORT.md   # English full report
-    └── REQUIREMENT2_FINAL_REPORT_CN.md # Chinese version
 ```
 
 ---
