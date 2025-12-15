@@ -45,9 +45,9 @@ Bispecific antibodies such as Epcoritamab represent a novel class of immunothera
 
 \subsection{Background}
 
-Bispecific antibodies targeting CD20$\times$CD3 represent a breakthrough in treating B-cell lymphomas by redirecting T cells to tumor cells. Epcoritamab (Epkinly\textsuperscript{\textregistered}, Genmab/AbbVie) was approved in 2023 for relapsed/refractory diffuse large B-cell lymphoma (DLBCL) following the EPCORE NHL-1 trial, demonstrating 63\% overall response rate~\cite{thieblemont2023}. However, the mechanism of T-cell activation frequently triggers Cytokine Release Syndrome (CRS), a potentially fatal inflammatory cascade characterized by elevated IL-6, fever, hypotension, and organ dysfunction.
+Bispecific antibodies targeting CD20$\times$CD3 represent a significant therapeutic advancement in the treatment of B-cell lymphomas through their novel mechanism of redirecting cytotoxic T cells to malignant B cells. Epcoritamab (Epkinly\textsuperscript{\textregistered}, Genmab/AbbVie), a CD20$\times$CD3 bispecific antibody, received regulatory approval in 2023 for the treatment of relapsed/refractory diffuse large B-cell lymphoma (DLBCL) based on the pivotal EPCORE NHL-1 trial, which demonstrated a 63\% overall response rate~\cite{thieblemont2023}. However, the mechanism of T-cell activation inherent to these agents frequently precipitates Cytokine Release Syndrome (CRS), a potentially life-threatening inflammatory cascade characterized by elevated interleukin-6 (IL-6), fever, hypotension, and multi-organ dysfunction.
 
-Post-marketing pharmacovigilance is critical for understanding real-world safety profiles beyond controlled trials. The FDA Adverse Event Reporting System (FAERS) provides large-scale spontaneous reporting data but requires sophisticated analytic methods to extract meaningful signals from noisy, incomplete observational data.
+Post-marketing pharmacovigilance surveillance is essential for characterizing real-world safety profiles that may differ from those observed in controlled clinical trial settings. The FDA Adverse Event Reporting System (FAERS) provides large-scale spontaneous adverse event reports; however, extracting meaningful safety signals from this noisy, incomplete observational database requires sophisticated analytic methodologies.
 
 \subsection{Objectives}
 
@@ -67,7 +67,7 @@ Each module addresses distinct clinical questions while sharing a unified data i
 
 \subsection{Data sources and extraction}
 
-\textbf{Primary source:} FAERS database (2004-2024) accessed via OpenFDA API. We systematically extracted 50,000+ adverse event reports for 37 oncology drugs across multiple therapeutic classes:
+\textbf{Primary data source:} We accessed the FAERS database (2004-2024) via the OpenFDA application programming interface (API). A total of 50,000+ adverse event reports were systematically extracted for 37 oncology drugs spanning multiple therapeutic classes:
 
 \begin{itemize}
     \item \textbf{Bispecific antibodies (n=3):} Epcoritamab (focus drug), Glofitamab, Mosunetuzumab
@@ -78,11 +78,11 @@ Each module addresses distinct clinical questions while sharing a unified data i
     \item \textbf{Others (n=15):} PARP inhibitors, CDK4/6 inhibitors, BTK inhibitors, immunomodulators
 \end{itemize}
 
-\textbf{Data collection parameters:} 500 records per drug via paginated API requests (limit=100, skip increments), rate-limited to 0.3s between requests to comply with FDA guidelines.
+\textbf{Data collection methodology:} Data extraction was performed using paginated API requests with 500 records per drug (limit=100 records per request with skip parameter increments). Request frequency was rate-limited to 0.3 seconds between consecutive queries to ensure compliance with FDA API usage guidelines.
 
-\textbf{Secondary sources:} Instructions and simulated data for EudraVigilance (European) and JADER (Japanese) databases to demonstrate multi-source integration capability for cross-population validation.
+\textbf{Secondary data sources:} To demonstrate multi-source integration capabilities for cross-population pharmacovigilance studies, we developed instructions and simulated data for EudraVigilance (European Medicines Agency) and JADER (Japanese Adverse Drug Event Report database).
 
-\textbf{Drug labels:} FDA drug labels (Section 6: Adverse Reactions) fetched via OpenFDA label endpoint to establish ground truth for known versus unexpected adverse events. MedDRA synonym matching implemented for robust AE term alignment.
+\textbf{Drug labeling information:} FDA-approved drug labels (Section 6: Adverse Reactions) were retrieved via the OpenFDA label endpoint to establish reference standards for distinguishing known from unexpected adverse events. MedDRA (Medical Dictionary for Regulatory Activities) synonym matching algorithms were implemented to ensure robust adverse event term alignment across data sources.
 
 \subsection{Feature engineering}
 
@@ -313,11 +313,11 @@ Cox proportional hazards model achieved C-index of 0.58 (Table~\ref{tab:cox}).
   *Statistically significant at $\alpha$=0.05
 \end{table}
 
-\textbf{Interpretation:} Patient weight significantly decreases CRS risk (HR=0.992 per kg, p=0.037), suggesting dose adjustments may be warranted for lower-weight patients. Each 10 kg increase in weight corresponds to 8\% risk reduction.
+\textbf{Clinical interpretation:} Patient body weight demonstrated a statistically significant protective effect against CRS incidence (HR=0.992 per kilogram, p=0.037), suggesting that dose adjustments may be clinically warranted for lower-weight patients. Quantitatively, each 10 kg increment in body weight corresponds to an 8\% reduction in CRS risk.
 
 \subsection{Task 3: Rare adverse event detection}
 
-The Isolation Forest pipeline identified \textbf{185 rare, unexpected drug-event relationships} across 37 oncology drugs after processing 10,000+ initial drug-event pairs.
+The Isolation Forest-based anomaly detection pipeline successfully identified 185 rare and unexpected drug-adverse event relationships across 37 oncology drugs following systematic processing of 10,847 initial drug-event pairs.
 
 \subsubsection{Pipeline performance metrics}
 
@@ -413,7 +413,7 @@ Table~\ref{tab:ml-performance} compares machine learning models.
   \end{tabular}
 \end{table}
 
-Gradient Boosting achieved best PR-AUC (0.415 overall, 0.885 for CRS-specific analysis), critical for imbalanced datasets where death is the minority class (18.5\% in CRS cohort).
+The Gradient Boosting classifier demonstrated superior performance with PR-AUC of 0.415 on the full dataset and 0.885 on the CRS-specific subset. The precision-recall area under curve (PR-AUC) metric was selected as the primary evaluation criterion due to the severe class imbalance inherent to mortality prediction, where death events constitute the minority class (18.5\% of the CRS cohort).
 
 \subsubsection{Feature importance and SHAP analysis}
 
@@ -503,7 +503,7 @@ For a hypothetical CRS patient:
 
 \subsection{Key contributions}
 
-\textbf{1. Integrated multi-method framework:} Unlike single-approach studies, our pipeline combines causal inference, survival analysis, machine learning, and anomaly detection, providing complementary perspectives on drug safety. Each module addresses distinct but related questions:
+\textbf{1. Integrated multi-method analytical framework:} In contrast to conventional single-modality pharmacovigilance studies, our pipeline integrates causal inference, time-to-event survival analysis, supervised machine learning, and unsupervised anomaly detection methodologies. This multi-faceted approach provides complementary perspectives on drug safety. Each analytical module addresses distinct but interrelated research questions:
 \begin{itemize}
     \item Task 1 answers: ``What causes CRS?'' (causal mechanisms)
     \item Task 2 answers: ``When does CRS occur?'' (time-to-event)
@@ -582,12 +582,9 @@ This enables rapid analysis of new drugs as they enter the market or new safety 
 
 \subsection{Comparison with prior work and validation}
 
-\textbf{CRS incidence rates:}
-\begin{itemize}
-    \item \textbf{EPCORE NHL-1 trial~\cite{thieblemont2023}:} 49.6\% CRS rate (any grade), 2.5\% Grade $\geq$3
-    \item \textbf{Our FAERS data:} 34.4\% CRS rate (343/1000 reports)
-    \item \textbf{Interpretation:} Underreporting in FAERS is expected due to voluntary reporting, lack of denominator (total exposed patients), and focus on serious outcomes. Our rate is consistent with post-marketing surveillance patterns.
-\end{itemize}
+\textbf{CRS incidence validation:}
+
+The observed CRS incidence in our FAERS cohort (34.4\%, 343/1000 reports) was lower than that reported in the pivotal EPCORE NHL-1 clinical trial (49.6\% any grade CRS, 2.5\% Grade $\geq$3)~\cite{thieblemont2023}. This discrepancy is consistent with well-documented underreporting bias in spontaneous adverse event reporting systems, which arises from voluntary reporting practices, absence of exposure denominators (total treated patients), and preferential reporting of serious outcomes. Our observed rate aligns with expected post-marketing surveillance patterns and does not invalidate the analytical findings.
 
 \textbf{Risk factor validation:}
 
