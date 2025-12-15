@@ -28,7 +28,7 @@ class InteractiveAnomalyQuery:
         """
         # Default paths
         script_dir = os.path.dirname(os.path.abspath(__file__))
-        data_dir = os.path.join(script_dir, '..', 'data')
+        data_dir = os.path.join(script_dir, 'data')
         
         if results_file is None:
             # Try different possible result files (prefer full results without cap)

@@ -51,7 +51,7 @@ def run_improved_pipeline(filter_known_aes=True, collect_new_data=False):
     print("Task 3 IMPROVED: Detect TRULY UNEXPECTED Drug-Event Relationships")
     print("=" * 80)
     
-    data_dir = os.path.join(script_dir, '..', 'data')
+    data_dir = os.path.join(script_dir, 'data')
     os.makedirs(data_dir, exist_ok=True)
     
     # Step 1: Data Collection (optional)

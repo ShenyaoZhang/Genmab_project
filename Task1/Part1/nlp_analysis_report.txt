@@ -4,9 +4,9 @@ NLP ANALYSIS REPORT: CRS Narrative Features
 
 1. DATA OVERVIEW
 --------------------------------------------------
-Total records: 100
-Records with narratives: 100
-Average narrative length: 25 chars
+Total records: 577
+Records with narratives: 536
+Average narrative length: 23 chars
 
 2. SEVERITY PATTERNS IN NARRATIVES
 --------------------------------------------------
@@ -16,8 +16,8 @@ Differential features (severe vs mild CRS):
 3. SEVERITY PREDICTION MODEL
 --------------------------------------------------
 
-Samples: 100
-Severe cases: 43
+Samples: 536
+Severe cases: 165
 Cross-validation AUC: 0.500 (±0.000)
 
 Top predictive features:

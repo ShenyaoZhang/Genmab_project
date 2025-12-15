@@ -9,6 +9,7 @@ Objectives:
 - Generate structured dataset suitable for anomaly detection
 """
 
+import os
 import requests
 import pandas as pd
 import json
@@ -203,7 +204,10 @@ def main():
         # Save intermediate results every 10 drugs
         if i % 10 == 0:
             temp_df = pd.DataFrame(all_data)
-            temp_df.to_csv(f'task3_data_temp_{i}.csv', index=False)
+            script_dir = os.path.dirname(os.path.abspath(__file__))
+            data_dir = os.path.join(script_dir, 'data')
+            os.makedirs(data_dir, exist_ok=True)
+            temp_df.to_csv(os.path.join(data_dir, f'task3_data_temp_{i}.csv'), index=False)
             print(f"💾 Intermediate results saved: {len(all_data)} records\n")
     
     # Convert to DataFrame
@@ -220,7 +224,10 @@ def main():
             df[col] = pd.to_numeric(df[col], errors='coerce').fillna(0).astype(int)
     
     # Save results
-    output_file = 'task3_oncology_drug_event_pairs.csv'
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    data_dir = os.path.join(script_dir, 'data')
+    os.makedirs(data_dir, exist_ok=True)
+    output_file = os.path.join(data_dir, 'task3_oncology_drug_event_pairs.csv')
     df.to_csv(output_file, index=False)
     
     print("\n" + "=" * 80)

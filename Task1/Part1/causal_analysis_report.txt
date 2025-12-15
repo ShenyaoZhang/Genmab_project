@@ -22,44 +22,44 @@ Effect Modifiers:
 --------------------------------------------------
 
 Variable Associations with Outcome:
-  • age: p=0.1395 
+  • age: p=0.0531 
     Interpretation: CONFOUNDER - Affects both treatment selection and outcome
-  • weight: p=0.1986 
+  • weight: p=0.0010 ***
     Interpretation: CONFOUNDER - Affects drug exposure and clearance
-  • max_dose_mg: p=0.9746 
+  • max_dose_mg: p=0.0277 ***
     Interpretation: LIKELY CAUSAL - Dose-response relationship established
-  • n_co_medications: p=0.0000 ***
+  • n_co_medications: p=0.1156 
     Interpretation: CORRELATION - Marker of disease severity
-  • n_doses: p=0.0000 ***
+  • n_doses: p=0.2267 
     Interpretation: LIKELY CAUSAL - Cumulative exposure effect
-  • sex_male: p=0.7136 
+  • sex_male: p=0.0652 
     Interpretation: UNCLEAR - Possible biological modifier
-  • has_rituximab: p=0.0000 ***
+  • has_rituximab: p=0.0007 ***
     Interpretation: CORRELATION - Marker of treatment line
-  • has_steroids: p=0.0000 ***
+  • has_steroids: p=0.0024 ***
     Interpretation: CAUSAL (protective) - Anti-inflammatory mechanism
-  • has_tocilizumab: p=0.0000 ***
+  • has_tocilizumab: p=0.0267 ***
     Interpretation: CAUSAL (protective) - IL-6 pathway blockade
-  • data_source: p=0.0000 ***
+  • data_source: p=0.0043 ***
     Interpretation: Cross-database heterogeneity assessment
 
 3. PROPENSITY SCORE ANALYSIS
 --------------------------------------------------
 
 Treatment: has_steroids
-N treated: 57, N control: 27
-Average Treatment Effect: 10.0%
-95% CI: [-12.2%, 32.2%]
-Interpretation: has_steroids may affect risk of outcome by 10.0 percentage points (not statistically significant). 95% CI: [-12.2%, 32.2%]
+N treated: 269, N control: 80
+Average Treatment Effect: -8.8%
+95% CI: [-28.5%, 6.5%]
+Interpretation: has_steroids may affect risk of outcome by 8.8 percentage points (not statistically significant). 95% CI: [-28.5%, 6.5%]
 
 4. SENSITIVITY ANALYSIS
 --------------------------------------------------
 
 Exposure: high_dose (>=24mg)
-Observed OR: 7.18 (95% CI: 1.55-33.24)
-E-value: 13.84
+Observed OR: 0.94 (95% CI: 0.56-1.57)
+E-value: 1.32
 
-An unmeasured confounder would need to be associated with both the exposure and outcome by a risk ratio of at least 13.84 to explain away the observed association. E-value for CI: 2.47.
+An unmeasured confounder would need to be associated with both the exposure and outcome by a risk ratio of at least 1.32 to explain away the observed association. E-value for CI: 1.00.
 
 5. SUMMARY: CAUSAL vs CORRELATIONAL
 --------------------------------------------------

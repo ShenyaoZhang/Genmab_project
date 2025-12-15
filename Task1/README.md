@@ -44,7 +44,7 @@ This pipeline analyzes safety data from multiple pharmacovigilance databases to:
 ```bash
 # 1. Clone repository
 git clone https://github.com/MengqiLiu-9543/capstone_project-33.git
-cd capstone_part1
+cd capstone_project-33/Task1/Part1
 
 # 2. Set up environment
 conda create -n crs_analysis python=3.10

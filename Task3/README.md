@@ -78,13 +78,13 @@ Create a `data/` directory and place:
 ### 2. Run Full Pipeline
 
    ```bash
-   cd task3
+   cd Task3
    python3 task3_improved_pipeline.py
    ```
 
 **Output Files:**
-- `data/task3_all_unexpected_no_cap.csv` - All rare & unexpected AEs (no limit, typically ~1386 results)
-- `data/task3_unexpected_anomalies.csv` - Top-K results with per-drug cap (max 5 per drug)
+- `Task3/data/task3_all_unexpected_no_cap.csv` - All rare & unexpected AEs (no limit, typically ~1386 results)
+- `Task3/data/task3_unexpected_anomalies.csv` - Top-K results with per-drug cap (max 5 per drug)
 
 ### 3. Interactive Query
 

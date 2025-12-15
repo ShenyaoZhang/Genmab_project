@@ -17,7 +17,7 @@ import pandas as pd
 def get_data_path():
     """Get the path to the data directory"""
     script_dir = os.path.dirname(os.path.abspath(__file__))
-    return os.path.join(script_dir, '..', 'data')
+    return os.path.join(script_dir, 'data')
 
 def load_results(use_all=False):
     """Load the results CSV file"""

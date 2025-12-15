@@ -116,7 +116,7 @@ pip install -r requirements.txt
 ### 3. Verify Installation
 
 ```bash
-cd task2
+cd Task2
 python3 check_environment.py
 ```
 
@@ -136,7 +136,7 @@ If all checks pass, you're ready to run!
 ### Example 1: Command Line
 
 ```bash
-cd task2
+cd Task2
 python3 run_survival_analysis.py \
     --drug epcoritamab \
     --adverse_event "cytokine release syndrome" \
@@ -172,7 +172,7 @@ Hazard Ratios:
 
 ```python
 # See examples/example_usage.py
-from task2.run_survival_analysis import run_pipeline
+from Task2.run_survival_analysis import run_pipeline
 
 # Analyze multiple drug-AE pairs
 pairs = [
@@ -197,7 +197,7 @@ epcoritamab-crs-analysis/
 ├── requirements.txt                   # Python dependencies
 ├── LICENSE                            # MIT license
 │
-├── task2/                             # Main analysis code
+├── Task2/                             # Main analysis code
 │   ├── run_survival_analysis.py      # Scalable pipeline (main entry point)
 │   ├── requirement2_epcoritamab_crs_analysis.py  # Original focused analysis
 │   ├── run_epcoritamab_analysis_simple.py  # Simplified one-command script
@@ -497,7 +497,7 @@ features = ['patient_age', 'patient_weight', 'total_drugs',
 
 ### Code Documentation
 
-- **Main Pipeline:** `task2/run_survival_analysis.py` - Extensively documented with docstrings
+- **Main Pipeline:** `Task2/run_survival_analysis.py` - Extensively documented with docstrings
 - **Example Usage:** `examples/example_usage.py` - Multiple drug-AE pair demonstrations
 
 ---
@@ -566,7 +566,7 @@ We welcome contributions! To add new features:
 **No code changes needed!** Just run:
 
 ```bash
-python task2/run_survival_analysis.py \
+python Task2/run_survival_analysis.py \
     --drug YOUR_DRUG \
     --adverse_event YOUR_AE
 ```
@@ -609,8 +609,8 @@ python3 run_survival_analysis.py ...
 
 **Solution:**
 ```bash
-# Make sure you're in the task2 directory
-cd task2
+# Make sure you're in the Task2 directory
+cd Task2
 python3 run_survival_analysis.py ...
 ```
 
@@ -651,7 +651,7 @@ pip install -r requirements.txt
 If you encounter any issues, run the diagnostic script:
 
 ```bash
-cd task2
+cd Task2
 python3 check_environment.py
 ```
 
