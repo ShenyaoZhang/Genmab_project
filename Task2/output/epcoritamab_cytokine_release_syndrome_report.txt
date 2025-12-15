@@ -1,0 +1,54 @@
+================================================================================
+SURVIVAL ANALYSIS REPORT
+Drug: epcoritamab
+Adverse Event: cytokine release syndrome
+Analysis Date: 2025-12-15T00:33:15.475034
+================================================================================
+
+DATA SUMMARY
+--------------------------------------------------------------------------------
+Total Records: 1000
+AE Cases: 344 (34.4%)
+
+COX PROPORTIONAL HAZARDS MODEL
+--------------------------------------------------------------------------------
+C-index: 0.5796
+
+Hazard Ratios (with interpretation):
+
+  patient_age:
+    HR = 0.995 [0.984-1.006]
+    p-value = 0.3470
+    → This feature decreases risk by 0.5%
+
+  patient_weight:
+    HR = 0.992 [0.985-1.000]
+    p-value = 0.0368
+    → This feature decreases risk by 0.8% (statistically significant)
+
+  total_drugs:
+    HR = 0.995 [0.980-1.010]
+    p-value = 0.4766
+    → This feature decreases risk by 0.5%
+
+  concomitant_drugs:
+    HR = 1.006 [0.990-1.023]
+    p-value = 0.4440
+    → This feature increases risk by 0.6%
+
+  polypharmacy:
+    HR = 0.616 [0.153-2.482]
+    p-value = 0.4953
+    → This feature decreases risk by 38.4%
+
+  is_lifethreatening:
+    HR = 1.100 [0.783-1.544]
+    p-value = 0.5837
+    → This feature increases risk by 10.0%
+
+  is_hospitalization:
+    HR = 1.432 [0.368-5.569]
+    p-value = 0.6045
+    → This feature increases risk by 43.2%
+
+================================================================================
