@@ -1,0 +1,207 @@
+
+================================================================================
+Running: Step 1: Data Extraction
+Script: 01_extract_data.py
+================================================================================
+
+✗ Step 1: Data Extraction failed with exit code 1
+
+================================================================================
+Running: Step 2: Data Inspection
+Script: 02_inspect_data.py
+================================================================================
+
+✗ Step 2: Data Inspection failed with exit code 1
+
+================================================================================
+Running: Step 3: Data Preprocessing
+Script: 03_preprocess_data.py
+================================================================================
+
+✗ Step 3: Data Preprocessing failed with exit code 1
+
+================================================================================
+Running: Step 4: Model Training
+Script: 04_train_models.py
+================================================================================
+
+✗ Step 4: Model Training failed with exit code 1
+
+================================================================================
+Running: Step 5: Feature Analysis
+Script: 05_analyze_features.py
+================================================================================
+
+✗ Step 5: Feature Analysis failed with exit code 1
+
+================================================================================
+Running: Step 6: Visualization
+Script: 06_visualize_results.py
+================================================================================
+
+✗ Step 6: Visualization failed with exit code 1
+
+================================================================================
+Running: Step 7: Explainability
+Script: 07_explainability.py
+================================================================================
+
+✗ Step 7: Explainability failed with exit code 1
+
+================================================================================
+Running: Step 8: Model Testing
+Script: 08_test_models.py
+================================================================================
+
+✗ Step 8: Model Testing failed with exit code 1
+
+================================================================================
+Running: Step 9: Epcoritamab Testing
+Script: 09_test_epcoritamab.py
+================================================================================
+
+✗ Step 9: Epcoritamab Testing failed with exit code 1
+
+================================================================================
+Running: Step 11: Granular CRS Analysis
+Script: 11_granular_crs_analysis.py
+================================================================================
+
+✗ Step 11: Granular CRS Analysis failed with exit code 1
+
+================================================================================
+Running: Step 12: CRS Model Training
+Script: 12_crs_model_training.py
+================================================================================
+
+✗ Step 12: CRS Model Training failed with exit code 1
+
+================================================================================
+Running: Step 13: CRS SHAP Analysis
+Script: 13_crs_shap_analysis.py
+================================================================================
+
+✗ Step 13: CRS SHAP Analysis failed with exit code 1
+
+================================================================================
+Running: Step Optional: Generate Charts
+Script: generate_presentation_charts.py
+================================================================================
+
+✗ Step Optional: Generate Charts failed with exit code 1
+
+================================================================================
+Pipeline execution complete!
+Successful: 0/13
+Failed: 13
+Full log saved to: pipeline_full_run.txt
+================================================================================
+
+s.py
+Time: 2025-12-14 16:43:05
+================================================================================
+
+
+[STDERR]
+  File "/Users/vivianj/Desktop/openfda-master/task5_severity_prediction/08_test_models.py", line 83
+    else:
+    ^
+SyntaxError: invalid syntax
+
+[Step completed with exit code 1]
+
+================================================================================
+Step 9: Epcoritamab Testing
+Script: 09_test_epcoritamab.py
+Time: 2025-12-14 16:43:05
+================================================================================
+
+
+[STDERR]
+  File "/Users/vivianj/Desktop/openfda-master/task5_severity_prediction/09_test_epcoritamab.py", line 53
+    f" Hospitalisation cases: {int(hosp_count){len(df_epc)} * 
+                                                              ^
+SyntaxError: EOL while scanning string literal
+
+[Step completed with exit code 1]
+
+================================================================================
+Step 11: Granular CRS Analysis
+Script: 11_granular_crs_analysis.py
+Time: 2025-12-14 16:43:05
+================================================================================
+
+
+[STDERR]
+  File "/Users/vivianj/Desktop/openfda-master/task5_severity_prediction/11_granular_crs_analysis.py", line 121
+    height_m = 1.65
+    ^
+IndentationError: expected an indented block
+
+[Step completed with exit code 1]
+
+================================================================================
+Step 12: CRS Model Training
+Script: 12_crs_model_training.py
+Time: 2025-12-14 16:43:05
+================================================================================
+
+
+[STDERR]
+  File "/Users/vivianj/Desktop/openfda-master/task5_severity_prediction/12_crs_model_training.py", line 101
+    f" Deaths in {ae_name} patients: {n_death}{ n_death /
+                                                         ^
+SyntaxError: EOL while scanning string literal
+
+[Step completed with exit code 1]
+
+================================================================================
+Step 13: CRS SHAP Analysis
+Script: 13_crs_shap_analysis.py
+Time: 2025-12-14 16:43:05
+================================================================================
+
+
+[STDERR]
+  File "/Users/vivianj/Desktop/openfda-master/task5_severity_prediction/13_crs_shap_analysis.py", line 175
+    
+    ^
+SyntaxError: invalid syntax
+
+[Step completed with exit code 1]
+
+================================================================================
+Step Optional: Generate Charts
+Script: generate_presentation_charts.py
+Time: 2025-12-14 16:43:05
+================================================================================
+
+
+[STDERR]
+  File "/Users/vivianj/Desktop/openfda-master/task5_severity_prediction/generate_presentation_charts.py", line 132
+    elif isinstance(shap_values, np.ndarray) and len(shap_values.shape) == 3:
+    ^
+SyntaxError: invalid syntax
+
+[Step completed with exit code 1]
+
+================================================================================
+Pipeline Execution Summary
+================================================================================
+Completed at: 2025-12-14 16:43:05
+Successful steps: 0/13
+Failed steps: 13
+  - Step 1: Data Extraction (01_extract_data.py): 1
+  - Step 2: Data Inspection (02_inspect_data.py): 1
+  - Step 3: Data Preprocessing (03_preprocess_data.py): 1
+  - Step 4: Model Training (04_train_models.py): 1
+  - Step 5: Feature Analysis (05_analyze_features.py): 1
+  - Step 6: Visualization (06_visualize_results.py): 1
+  - Step 7: Explainability (07_explainability.py): 1
+  - Step 8: Model Testing (08_test_models.py): 1
+  - Step 9: Epcoritamab Testing (09_test_epcoritamab.py): 1
+  - Step 11: Granular CRS Analysis (11_granular_crs_analysis.py): 1
+  - Step 12: CRS Model Training (12_crs_model_training.py): 1
+  - Step 13: CRS SHAP Analysis (13_crs_shap_analysis.py): 1
+  - Step Optional: Generate Charts (generate_presentation_charts.py): 1
+================================================================================
