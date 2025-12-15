@@ -43,7 +43,7 @@ This pipeline analyzes safety data from multiple pharmacovigilance databases to:
 
 ```bash
 # 1. Clone repository
-git clone <repository-url>
+git clone https://github.com/MengqiLiu-9543/capstone_project-33.git
 cd capstone_part1
 
 # 2. Set up environment

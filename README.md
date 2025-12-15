@@ -27,7 +27,7 @@ capstone_project-33/
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/MengqiLiu-9543/capstone_project-33.git
 cd capstone_project-33
 
 # Create virtual environment
