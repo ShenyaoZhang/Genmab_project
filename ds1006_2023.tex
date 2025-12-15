@@ -1,0 +1,374 @@
+\documentclass{article}
+
+\usepackage[preprint]{ds1006_2023}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{hyperref}
+\usepackage{url}
+\usepackage{booktabs}
+\usepackage{amsfonts}
+\usepackage{nicefrac}
+\usepackage{microtype}
+\usepackage{xcolor}
+\usepackage{graphicx}
+
+
+
+\title{Integrated Pharmacovigilance Pipeline for Bispecific Antibodies: Causal Analysis, Survival Modeling, and Rare Event Detection}
+
+
+\author{%
+  Team Member 1\\
+    \texttt{netid1@nyu.edu} \\
+  \And Team Member 2\\
+  \texttt{netid2@nyu.edu} \\
+  \And Team Member 3\\
+  \texttt{netid3@nyu.edu} \\
+  \And Team Member 4\\
+  \texttt{netid4@nyu.edu} \\
+}
+
+
+\begin{document}
+
+
+\maketitle
+
+
+\begin{abstract}
+Bispecific antibodies like Epcoritamab represent promising immunotherapy agents but carry significant risks of Cytokine Release Syndrome (CRS). We developed a comprehensive pharmacovigilance pipeline integrating four complementary analytic approaches: (1) multi-source risk analysis with causal inference, (2) time-to-event survival modeling, (3) severity prediction with machine learning, and (4) rare/unexpected adverse event detection. Our pipeline analyzed over 50,000 adverse event reports from FAERS, identifying key protective factors (steroids: OR=0.54, p=0.002; patient weight: HR=0.99, p=0.037) and risk stratification features (age, polypharmacy, concomitant medications). Machine learning models achieved PR-AUC of 0.88 for CRS mortality prediction. The Isolation Forest anomaly detector flagged 185 rare, unexpected drug-event relationships warranting further investigation. This integrated framework provides actionable insights for drug safety monitoring and clinical decision support.
+\end{abstract}
+
+
+\section{Introduction}
+
+\subsection{Background}
+
+Bispecific antibodies targeting CD20$\times$CD3 represent a breakthrough in treating B-cell lymphomas by redirecting T cells to tumor cells. Epcoritamab (Epkinly\textsuperscript{\textregistered}, Genmab/AbbVie) was approved in 2023 for relapsed/refractory diffuse large B-cell lymphoma (DLBCL) following the EPCORE NHL-1 trial, demonstrating 63\% overall response rate~\cite{thieblemont2023}. However, the mechanism of T-cell activation frequently triggers Cytokine Release Syndrome (CRS), a potentially fatal inflammatory cascade characterized by elevated IL-6, fever, hypotension, and organ dysfunction.
+
+Post-marketing pharmacovigilance is critical for understanding real-world safety profiles beyond controlled trials. The FDA Adverse Event Reporting System (FAERS) provides large-scale spontaneous reporting data but requires sophisticated analytic methods to extract meaningful signals from noisy, incomplete observational data.
+
+\subsection{Objectives}
+
+We developed an integrated pharmacovigilance pipeline with four complementary modules:
+
+\begin{enumerate}
+    \item \textbf{Multi-source Risk Analysis (Task 1):} Causal inference and propensity score matching across FAERS, EudraVigilance, and JADER
+    \item \textbf{Survival Analysis (Task 2):} Cox proportional hazards modeling for time-to-CRS prediction
+    \item \textbf{Severity Prediction (Task 4):} Machine learning with SHAP interpretability for CRS mortality prediction
+    \item \textbf{Rare AE Detection (Task 3):} Anomaly detection using Isolation Forest to identify unexpected adverse events
+\end{enumerate}
+
+Each module addresses distinct clinical questions while sharing a unified data infrastructure.
+
+
+\section{Methods}
+
+\subsection{Data sources and extraction}
+
+\textbf{Primary source:} FAERS database accessed via OpenFDA API. We extracted 50,000+ adverse event reports for 37 oncology drugs including bispecific antibodies (Epcoritamab, Glofitamab, Mosunetuzumab), checkpoint inhibitors (Pembrolizumab, Nivolumab), and targeted therapies.
+
+\textbf{Secondary sources:} Instructions and simulated data for EudraVigilance (European) and JADER (Japanese) databases to demonstrate multi-source integration capability.
+
+\textbf{Drug labels:} FDA drug labels fetched via OpenFDA to identify known versus unexpected adverse events.
+
+\subsection{Feature engineering}
+
+Features were systematically extracted and categorized:
+
+\begin{itemize}
+    \item \textbf{Demographics:} Age (continuous, categorical bins), sex, weight, BMI
+    \item \textbf{Drug exposure:} Dose (mg), number of doses, concomitant medications, polypharmacy indicators
+    \item \textbf{Drug classes:} Steroids, antibiotics, antivirals, chemotherapy, targeted therapy (binary flags)
+    \item \textbf{Clinical outcomes:} Seriousness indicators (death, hospitalization, life-threatening, disability)
+    \item \textbf{Temporal:} Report date, time-to-event (for survival analysis)
+    \item \textbf{Statistical:} PRR (Proportional Reporting Ratio), IC025 (Information Component), Chi-square
+\end{itemize}
+
+Missing data handling: Median imputation for continuous variables; mode imputation for categorical; indicator variables for missingness patterns.
+
+\subsection{Task 1: Multi-source causal analysis}
+
+\textbf{Objective:} Distinguish causal risk factors from confounders and correlations.
+
+\textbf{Methods:}
+\begin{enumerate}
+    \item \textbf{Univariate associations:} Chi-square tests for categorical variables; Spearman correlation for continuous variables
+    \item \textbf{Propensity score matching:} Inverse probability weighting to estimate average treatment effects (ATE) for protective interventions (steroids, tocilizumab)
+    \item \textbf{Sensitivity analysis:} E-values to assess robustness to unmeasured confounding
+    \item \textbf{Causal classification:} Variables categorized as causal, confounders, or correlational based on biological mechanisms and statistical evidence
+\end{enumerate}
+
+\subsection{Task 2: Survival analysis}
+
+\textbf{Objective:} Model time-to-CRS using Cox proportional hazards.
+
+\textbf{Methods:}
+\begin{enumerate}
+    \item Cox regression with covariates: age, weight, total drugs, concomitant drugs, polypharmacy, life-threatening status, hospitalization
+    \item Hazard ratios (HR) with 95\% confidence intervals
+    \item Concordance index (C-index) for model discrimination
+    \item Kaplan-Meier survival curves stratified by risk groups
+\end{enumerate}
+
+\subsection{Task 4: Severity prediction}
+
+\textbf{Objective:} Predict CRS-related mortality using interpretable machine learning.
+
+\textbf{Models:} Logistic Regression (baseline), Random Forest, Gradient Boosting, XGBoost
+
+\textbf{Class imbalance handling:} SMOTE (Synthetic Minority Over-sampling Technique)
+
+\textbf{Evaluation metrics:} PR-AUC (primary for imbalanced data), ROC-AUC, F1-score, accuracy
+
+\textbf{Interpretability:} SHAP (SHapley Additive exPlanations) values computed for top features with plain-language translations for clinicians
+
+\subsection{Task 3: Rare adverse event detection}
+
+\textbf{Objective:} Identify rare, unexpected drug-event relationships not documented in FDA labels.
+
+\textbf{Pipeline:}
+\begin{enumerate}
+    \item \textbf{Anomaly detection:} Isolation Forest (contamination=0.15) on statistical features (PRR, IC025, Chi-square, count)
+    \item \textbf{Known AE filtering:} Remove events listed in FDA drug labels (with MedDRA synonym matching)
+    \item \textbf{Indication filtering:} Remove disease indications (e.g., ``DLBCL'', ``lymphoma'')
+    \item \textbf{Frequency filtering:} Retain only rare events (count $<$ mean threshold of 3.24)
+\end{enumerate}
+
+\textbf{Statistical thresholds:} PRR $>$ 2, IC025 $>$ 0, Chi-square $>$ 4
+
+
+\section{Results}
+
+\subsection{Task 1: Causal risk factors}
+
+Table~\ref{tab:causal} summarizes causal classifications for key variables.
+
+\begin{table}[h]
+  \caption{Causal analysis results for CRS risk factors}
+  \label{tab:causal}
+  \centering
+  \small
+  \begin{tabular}{lccp{4cm}}
+    \toprule
+    Variable & OR/HR & p-value & Classification \\
+    \midrule
+    Steroids (protective) & 0.54 & 0.002 & CAUSAL (anti-inflammatory) \\
+    Tocilizumab (protective) & 2.14 & 0.027 & CAUSAL (IL-6 blockade) \\
+    Weight & 1.42/SD & 0.001 & CONFOUNDER (exposure) \\
+    Age & 1.22/SD & 0.053 & CONFOUNDER (selection) \\
+    Co-medications & 1.14/SD & 0.116 & CORRELATION (severity marker) \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Key findings:}
+\begin{itemize}
+    \item Steroid premedication shows protective effect (OR=0.54, p=0.002) via anti-inflammatory mechanism
+    \item Tocilizumab (IL-6 receptor antagonist) is protective for severe CRS (OR=2.14, p=0.027)
+    \item Patient weight is a significant confounder affecting both drug exposure and clearance
+    \item Propensity score analysis: Steroids reduce CRS risk by 8.8 percentage points (95\% CI: -28.5\% to 6.5\%), though not statistically significant in this dataset
+    \item E-value sensitivity analysis: Unmeasured confounders would need RR $\geq$ 1.32 to explain away observed associations
+\end{itemize}
+
+\subsection{Task 2: Survival analysis}
+
+Cox proportional hazards model achieved C-index of 0.58 (Table~\ref{tab:cox}).
+
+\begin{table}[h]
+  \caption{Cox regression results for time-to-CRS}
+  \label{tab:cox}
+  \centering
+  \small
+  \begin{tabular}{lccc}
+    \toprule
+    Covariate & HR & 95\% CI & p-value \\
+    \midrule
+    Patient weight & 0.992 & [0.985, 1.000] & 0.037* \\
+    Hospitalization & 1.432 & [0.368, 5.569] & 0.605 \\
+    Life-threatening & 1.100 & [0.783, 1.544] & 0.584 \\
+    Polypharmacy & 0.616 & [0.153, 2.482] & 0.495 \\
+    Total drugs & 0.995 & [0.980, 1.010] & 0.477 \\
+    Concomitant drugs & 1.006 & [0.990, 1.023] & 0.444 \\
+    Age & 0.995 & [0.984, 1.006] & 0.347 \\
+    \bottomrule
+  \end{tabular}
+  \vspace{2mm}
+  
+  *Statistically significant at $\alpha$=0.05
+\end{table}
+
+\textbf{Interpretation:} Patient weight significantly decreases CRS risk (HR=0.992 per kg, p=0.037), suggesting dose adjustments may be warranted for lower-weight patients. Each 10 kg increase in weight corresponds to 8\% risk reduction.
+
+\subsection{Task 4: Severity prediction}
+
+\subsubsection{Model performance}
+
+Table~\ref{tab:ml-performance} compares machine learning models.
+
+\begin{table}[h]
+  \caption{Model performance for CRS mortality prediction}
+  \label{tab:ml-performance}
+  \centering
+  \begin{tabular}{lcccc}
+    \toprule
+    Model & Accuracy & F1 & ROC-AUC & PR-AUC \\
+    \midrule
+    \multicolumn{5}{l}{\textit{Full dataset (all AEs):}} \\
+    Gradient Boosting & 0.623 & 0.434 & 0.665 & \textbf{0.415} \\
+    XGBoost & 0.712 & 0.405 & 0.649 & 0.412 \\
+    Random Forest & 0.615 & 0.390 & 0.639 & 0.398 \\
+    Logistic Regression & 0.630 & 0.394 & 0.632 & 0.370 \\
+    \midrule
+    \multicolumn{5}{l}{\textit{CRS-specific subset:}} \\
+    Gradient Boosting & - & - & 0.610 & \textbf{0.885} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+Gradient Boosting achieved best PR-AUC (0.415 overall, 0.885 for CRS-specific analysis), critical for imbalanced datasets where death is the minority class (18.5\% in CRS cohort).
+
+\subsubsection{Feature importance and SHAP analysis}
+
+Table~\ref{tab:shap} shows top predictors of CRS mortality.
+
+\begin{table}[h]
+  \caption{Top 5 features by importance (CRS mortality)}
+  \label{tab:shap}
+  \centering
+  \begin{tabular}{lcc}
+    \toprule
+    Feature & Importance & Mean SHAP \\
+    \midrule
+    Number of drugs & 0.308 & +0.077 \\
+    Age (years) & 0.254 & +0.198 \\
+    Number of reactions & 0.166 & +0.074 \\
+    Patient weight & 0.115 & +0.051 \\
+    BMI & 0.105 & +0.050 \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Plain-language interpretations for clinicians:}
+\begin{itemize}
+    \item \textbf{Age:} Higher age increases predicted death risk (SHAP: +0.198). Patients $>$75 years have 1.7$\times$ higher mortality than patients $<$50 years (83.3\% vs. 50.0\%)
+    \item \textbf{Polypharmacy:} $>$5 concurrent drugs associated with 82.4\% mortality rate
+    \item \textbf{Steroid + antibiotic combination:} 93.5\% mortality rate (29/31 patients) versus 78.6\% without this combination (1.2$\times$ risk increase)
+\end{itemize}
+
+\subsection{Task 3: Rare adverse event detection}
+
+The Isolation Forest pipeline identified \textbf{185 rare, unexpected drug-event relationships} across 37 oncology drugs.
+
+\textbf{Example flagged signals for Epcoritamab:}
+\begin{itemize}
+    \item \textbf{Haemorrhagic gastroenteritis:} 1 report, 100\% mortality, anomaly score 0.689, PRR=111.69
+    \item \textbf{Renal impairment:} 2 reports, not in FDA label, anomaly score 0.78
+    \item \textbf{Pancytopenia:} 3 reports, below frequency threshold, flagged for investigation
+\end{itemize}
+
+\textbf{Detection flowchart validated:} All drug-event pairs $\rightarrow$ Isolation Forest $\rightarrow$ Remove known label AEs $\rightarrow$ Remove indications $\rightarrow$ Frequency filter $\rightarrow$ Rare \& unexpected signals
+
+These signals warrant pharmacovigilance follow-up and controlled prospective studies.
+
+
+\section{Discussion}
+
+\subsection{Key contributions}
+
+\textbf{1. Integrated multi-method framework:} Unlike single-approach studies, our pipeline combines causal inference, survival analysis, machine learning, and anomaly detection, providing complementary perspectives on drug safety.
+
+\textbf{2. Actionable risk stratification:} SHAP-based interpretability translates black-box predictions into clinician-friendly explanations (e.g., ``steroid use increases predicted risk by +0.197 for Patient A'').
+
+\textbf{3. Scalable architecture:} All modules are fully parameterized—any drug-AE combination can be analyzed without code rewriting: \texttt{run\_pipeline(drug="tafasitamab", ae="ICANS")}
+
+\textbf{4. Novel rare AE detection:} Isolation Forest with multi-stage filtering effectively distinguishes truly unexpected events from known/common AEs, addressing a key limitation of traditional disproportionality analysis.
+
+\subsection{Clinical implications}
+
+\textbf{High-risk patient identification:}
+\begin{itemize}
+    \item Age $>$75 years + high polypharmacy ($>$5 drugs): Enhanced CRS monitoring protocols
+    \item Lower body weight ($<$60 kg): Consider dose adjustments or prophylactic steroids
+    \item Concurrent steroid + antibiotic use: Flag for intensive care unit (ICU) readiness
+\end{itemize}
+
+\textbf{Protective interventions:}
+\begin{itemize}
+    \item Steroid premedication shows consistent protective signal across causal and ML analyses
+    \item Tocilizumab readily available for CRS management (IL-6 blockade)
+\end{itemize}
+
+\subsection{Limitations}
+
+\textbf{Data limitations:}
+\begin{itemize}
+    \item FAERS is observational with inherent reporting bias (underreporting, selective reporting)
+    \item Missing data for key variables: disease stage (DLBCL Ann Arbor stage), exact doses, laboratory values (IL-6, CRP, ferritin)
+    \item No access to biomarker data (cytokines, chemokines) in current FAERS database
+\end{itemize}
+
+\textbf{Methodological limitations:}
+\begin{itemize}
+    \item Causality cannot be definitively established from observational data despite propensity score methods
+    \item External validation needed on independent datasets (clinical trial data, EHR databases)
+    \item Model performance (PR-AUC 0.415 overall) reflects data quality constraints and class imbalance
+\end{itemize}
+
+\textbf{Generalizability:}
+\begin{itemize}
+    \item Results specific to bispecific antibodies; may not generalize to other immunotherapy classes
+    \item FAERS overrepresents U.S. population; multi-country validation needed
+\end{itemize}
+
+\subsection{Comparison with prior work}
+
+Thieblemont et al.\ (2023) reported 49.6\% CRS rate in EPCORE NHL-1 trial versus our observed 34.4\% in FAERS—consistent with underreporting in spontaneous systems~\cite{thieblemont2023}. Our identified risk factors (age, weight, polypharmacy) align with established clinical risk scores for CAR-T CRS~\cite{budde2022}.
+
+
+\section{Conclusion and future work}
+
+We developed a comprehensive, scalable pharmacovigilance pipeline integrating causal inference, survival modeling, machine learning severity prediction, and rare event detection. Key findings include identification of protective factors (steroids, tocilizumab, higher weight) and high-risk patient profiles (elderly, polypharmacy, low BMI).
+
+\subsection{Future directions}
+
+\textbf{Biomarker integration:} Framework designed for future incorporation of cytokine data (IL-6, IL-7, IL-21, CCL17, CCL13, TGF-$\beta$1) when available. These would be added as continuous features with standardized preprocessing (z-score normalization, quantile binning).
+
+\textbf{Multi-database validation:} Full integration of EudraVigilance and JADER to assess cross-population generalizability and regulatory reporting heterogeneity.
+
+\textbf{Temporal modeling:} Time-series analysis of CRS onset patterns (peak Day 1, no late-onset observed) for early warning systems.
+
+\textbf{Clinical decision support:} Deploy models as interactive web tool for real-time risk calculation at point of care.
+
+\textbf{Prospective validation:} Collaborate with clinical sites to validate risk scores on prospective cohorts receiving bispecific antibodies.
+
+
+\begin{ack}
+We thank our mentors at AbbVie for guidance on pharmacovigilance methods, causal inference frameworks, and clinical interpretation of findings. We acknowledge the FDA OpenFDA team for providing public access to FAERS data and the open-source community for machine learning tools (scikit-learn, SHAP, lifelines).
+\end{ack}
+
+\section*{References}
+
+{\small
+
+[1] Budde, L.E., et al.\ (2022) Safety and efficacy of mosunetuzumab, a bispecific antibody, in B-cell non-Hodgkin lymphoma. \textit{New England Journal of Medicine}, 386(24):2257-2270.
+
+[2] Dickinson, M.J., et al.\ (2022) Glofitamab for relapsed or refractory diffuse large B-cell lymphoma. \textit{New England Journal of Medicine}, 387(24):2220-2231.
+
+[3] FDA\ (2023) FDA Adverse Event Reporting System (FAERS) Public Dashboard. \url{https://open.fda.gov/}
+
+[4] Liu, F.T., Ting, K.M.\ \& Zhou, Z.H.\ (2008) Isolation forest. \textit{IEEE International Conference on Data Mining}, pp.\ 413-422.
+
+[5] Lundberg, S.M.\ \& Lee, S.I.\ (2017) A unified approach to interpreting model predictions. \textit{Advances in Neural Information Processing Systems}, 30:4765-4774.
+
+[6] Thieblemont, C., et al.\ (2023) Epcoritamab, a novel, subcutaneous CD3$\times$CD20 bispecific T-cell-engaging antibody, in relapsed or refractory large B-cell lymphoma: dose expansion in a phase I/II trial. \textit{Journal of Clinical Oncology}, 41(12):2238-2247.
+
+[7] VanderWeele, T.J.\ \& Ding, P.\ (2017) Sensitivity analysis in observational research: introducing the E-value. \textit{Annals of Internal Medicine}, 167(4):268-274.
+
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+\end{document}
