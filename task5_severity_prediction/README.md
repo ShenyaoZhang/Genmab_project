@@ -223,17 +223,17 @@ See `requirements.txt` for Python dependencies. Key libraries:
 
 ## Key Features
 
-- ✅ **Exponential backoff** for API rate limiting
-- ✅ **4-field OR search** (generic_name, medicinalproduct, brand_name, activesubstance)
-- ✅ **Data deduplication** (within drug and globally)
-- ✅ **Age standardization** to years
-- ✅ **Severity normalization** to 0/1
-- ✅ **Class imbalance handling** (class_weight, scale_pos_weight)
-- ✅ **PR-AUC as primary metric** for imbalanced data
-- ✅ **Probability calibration** for reliable predictions
-- ✅ **SHAP explainability** with plain language mappings
-- ✅ **Granular analysis** with specific cutoffs
-- ✅ **Parameterized pipeline** for different drugs/AEs
+- **Exponential backoff** for API rate limiting
+- **4-field OR search** (generic_name, medicinalproduct, brand_name, activesubstance)
+- **Data deduplication** (within drug and globally)
+- **Age standardization** to years
+- **Severity normalization** to 0/1
+- **Class imbalance handling** (class_weight, scale_pos_weight)
+- **PR-AUC as primary metric** for imbalanced data
+- **Probability calibration** for reliable predictions
+- **SHAP explainability** with plain language mappings
+- **Granular analysis** with specific cutoffs
+- **Parameterized pipeline** for different drugs/AEs
 
 ---
 
