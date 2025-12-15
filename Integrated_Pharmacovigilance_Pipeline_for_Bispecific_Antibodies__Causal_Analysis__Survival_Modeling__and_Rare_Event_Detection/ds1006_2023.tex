@@ -67,16 +67,7 @@ Each module addresses distinct clinical questions while sharing a unified data i
 
 \subsection{Data sources and extraction}
 
-\textbf{Primary data source:} The FAERS database (2004-2024) was accessed via the OpenFDA application programming interface (API). A total of 50,000+ adverse event reports were systematically extracted for 37 oncology drugs spanning multiple therapeutic classes:
-
-\begin{itemize}
-    \item \textbf{Bispecific antibodies (n=3):} Epcoritamab (focus drug), Glofitamab, Mosunetuzumab
-    \item \textbf{Checkpoint inhibitors (n=5):} Pembrolizumab, Nivolumab, Atezolizumab, Durvalumab, Ipilimumab
-    \item \textbf{Monoclonal antibodies (n=4):} Rituximab, Trastuzumab, Bevacizumab, Cetuximab
-    \item \textbf{Tyrosine kinase inhibitors (n=5):} Imatinib, Erlotinib, Osimertinib, Crizotinib, Gefitinib
-    \item \textbf{Chemotherapy (n=5):} Carboplatin, Cisplatin, Paclitaxel, Docetaxel, Doxorubicin
-    \item \textbf{Others (n=15):} PARP inhibitors, CDK4/6 inhibitors, BTK inhibitors, immunomodulators
-\end{itemize}
+\textbf{Primary data source:} The FAERS database (2004-2024) was accessed via the OpenFDA application programming interface (API). A total of 50,000+ adverse event reports were systematically extracted for 37 oncology drugs spanning multiple therapeutic classes. The drug cohort comprised three bispecific antibodies (Epcoritamab as primary focus drug, Glofitamab, Mosunetuzumab), five checkpoint inhibitors (Pembrolizumab, Nivolumab, Atezolizumab, Durvalumab, Ipilimumab), four monoclonal antibodies (Rituximab, Trastuzumab, Bevacizumab, Cetuximab), five tyrosine kinase inhibitors (Imatinib, Erlotinib, Osimertinib, Crizotinib, Gefitinib), five chemotherapy agents (Carboplatin, Cisplatin, Paclitaxel, Docetaxel, Doxorubicin), and 15 additional agents including PARP inhibitors, CDK4/6 inhibitors, BTK inhibitors, and immunomodulators.
 
 \textbf{Data collection methodology:} Data extraction was performed using paginated API requests with 500 records per drug (limit=100 records per request with skip parameter increments). Request frequency was rate-limited to 0.3 seconds between consecutive queries to ensure compliance with FDA API usage guidelines.
 
@@ -86,81 +77,19 @@ Each module addresses distinct clinical questions while sharing a unified data i
 
 \subsection{Feature engineering}
 
-Features were systematically extracted and categorized using domain-driven preprocessing:
+Features were systematically extracted and categorized using domain-driven preprocessing methodologies. Seven demographic features were engineered, including age (continuous in years and categorized into bins: $<$50, 50-65, 65-75, $>$75 years), sex (binary with missing indicator), weight (continuous in kilograms, z-score normalized), and body mass index (BMI, calculated from weight/height when available and categorized as underweight $<$18.5, normal 18.5-25, overweight 25-30, obese $>$30 kg/m²).
 
-\textbf{1. Demographic Features (n=7):}
-\begin{itemize}
-    \item Age: Continuous (years) + categorical bins ($<$50, 50-65, 65-75, $>$75)
-    \item Sex: Binary (male/female) + missing indicator
-    \item Weight: Continuous (kg), normalized via z-score
-    \item BMI: Calculated from weight/height when available, categorized (underweight $<$18.5, normal 18.5-25, overweight 25-30, obese $>$30)
-\end{itemize}
+Twelve drug exposure features captured pharmacological characteristics, including dose metrics (maximum dose, median dose, dose changes), number of concurrent medications, treatment cycles, polypharmacy status (high $>$5 drugs versus low $\leq$5 drugs), and drug-drug interaction flags computed from concomitant medication profiles.
 
-\textbf{2. Drug Exposure Features (n=12):}
-\begin{itemize}
-    \item Dose: Maximum dose (mg), median dose, dose changes (binary)
-    \item Number of concurrent drugs (continuous)
-    \item Number of treatment cycles/doses
-    \item Polypharmacy: High ($>$5 drugs) vs. low ($\leq$5 drugs)
-    \item Drug-drug interaction flags (computed from concomitant medications)
-\end{itemize}
+Eight drug class indicators were created for commonly co-administered medication classes: corticosteroids (dexamethasone, methylprednisolone, prednisone), antibiotics (levofloxacin, azithromycin, ceftriaxone), antivirals (acyclovir, valacyclovir), chemotherapy agents (carboplatin, cyclophosphamide), targeted therapies (rituximab, lenalidomide), and supportive care medications (ondansetron, filgrastim).
 
-\textbf{3. Drug Class Indicators (n=8):}
-\begin{itemize}
-    \item Steroids (dexamethasone, methylprednisolone, prednisone)
-    \item Antibiotics (levofloxacin, azithromycin, ceftriaxone)
-    \item Antivirals (acyclovir, valacyclovir)
-    \item Chemotherapy (carboplatin, cyclophosphamide)
-    \item Targeted therapy (rituximab, lenalidomide)
-    \item Supportive care (ondansetron, filgrastim)
-\end{itemize}
+Seven comorbidity features were extracted from drug indication and adverse reaction text fields, including diabetes mellitus, hypertension, cardiac disease (encompassing heart failure and atrial fibrillation), hepatic disease, renal impairment, infection-related conditions, and cancer stage when documented in narrative fields.
 
-\textbf{4. Comorbidity Features (n=7):}
-Extracted from drug indications and reaction terms:
-\begin{itemize}
-    \item Diabetes (from ``diabetes mellitus'' terms)
-    \item Hypertension (from ``hypertension'', ``blood pressure increased'')
-    \item Cardiac disease (from ``cardiac'', ``heart failure'', ``atrial fibrillation'')
-    \item Liver disease (from ``hepatic'', ``liver'' terms)
-    \item Renal impairment (from ``renal'', ``kidney'' terms)
-    \item Infection (from ``infection'', ``sepsis'', ``pneumonia'')
-    \item Cancer stage (extracted from narrative text when available)
-\end{itemize}
+Five clinical outcome features captured event seriousness: death (binary primary outcome), hospitalization requirement, life-threatening event designation, resulting disability, and composite serious outcome. Three temporal features tracked time from drug initiation to adverse event (days), report submission lag, and event year to detect temporal trends.
 
-\textbf{5. Clinical Outcome Features (n=5):}
-\begin{itemize}
-    \item Death (binary outcome)
-    \item Hospitalization required
-    \item Life-threatening event
-    \item Disability resulting
-    \item Serious outcome (composite)
-\end{itemize}
+For the anomaly detection module (Task 3), four statistical disproportionality features were computed: Proportional Reporting Ratio (PRR, threshold $>$2), Information Component lower bound (IC025, threshold $>$0), Chi-square statistic (threshold $>$4), and event frequency count.
 
-\textbf{6. Temporal Features (n=3):}
-\begin{itemize}
-    \item Time from drug start to event (days, for survival analysis)
-    \item Report submission lag (receivedate - occurdate)
-    \item Event year (to detect temporal trends)
-\end{itemize}
-
-\textbf{7. Statistical Disproportionality Features (n=4):}
-For anomaly detection (Task 3):
-\begin{itemize}
-    \item PRR (Proportional Reporting Ratio): $>$2 threshold
-    \item IC025 (Information Component lower bound): $>$0 threshold
-    \item Chi-square statistic: $>$4 threshold
-    \item Event count (frequency)
-\end{itemize}
-
-\textbf{Missing data strategy:}
-\begin{itemize}
-    \item Continuous: Median imputation + missingness indicator
-    \item Categorical: Mode imputation or ``unknown'' category
-    \item Patterns: 37\% missing weight, 42\% missing age
-    \item Sensitivity analysis performed with complete-case analysis
-\end{itemize}
-
-\textbf{Feature scaling:} StandardScaler (z-score normalization) for tree-based models; MinMaxScaler for neural networks (future work).
+Missing data were handled using established imputation strategies: median imputation with missingness indicator variables for continuous features, mode imputation or ``unknown'' category assignment for categorical features. Missing data patterns revealed 37\% missingness for weight and 42\% for age variables. Sensitivity analyses were performed using complete-case analysis to assess robustness of findings. Feature scaling employed StandardScaler (z-score normalization) for tree-based models, with MinMaxScaler reserved for potential future neural network implementations.
 
 \subsection{Task 1: Multi-source causal analysis}
 
@@ -436,68 +365,17 @@ Table~\ref{tab:shap} shows top predictors of CRS mortality.
   \end{tabular}
 \end{table}
 
-\textbf{Plain-language interpretations for clinicians:}
+\textbf{Clinical risk stratification:}
 
-\begin{itemize}
-    \item \textbf{Age stratification:} 
-    \begin{itemize}
-        \item Age $<$50: 50.0\% mortality (5/10 patients)
-        \item Age 50-65: 72.2\% mortality (26/36 patients)
-        \item Age 65-75: 83.5\% mortality (66/79 patients)
-        \item Age $>$75: 83.3\% mortality (30/36 patients)
-        \item \textit{Clinical implication:} Patients $>$75 years have 1.7$\times$ higher mortality than patients $<$50 years
-    \end{itemize}
-    
-    \item \textbf{BMI stratification:}
-    \begin{itemize}
-        \item Underweight ($<$18.5): 81.8\% mortality (18/22 patients)
-        \item Normal (18.5-25): 77.1\% mortality (37/48 patients)
-        \item Overweight (25-30): 85.7\% mortality (36/42 patients)
-        \item Obese ($>$30): 78.4\% mortality (29/37 patients)
-    \end{itemize}
-    
-    \item \textbf{Polypharmacy effects:}
-    \begin{itemize}
-        \item High polypharmacy ($>$5 drugs): 82.4\% mortality (140/170 patients)
-        \item \textit{Mechanism:} Drug-drug interactions, cumulative toxicity, marker of disease complexity
-    \end{itemize}
-    
-    \item \textbf{High-risk drug combinations:}
-    \begin{itemize}
-        \item Steroid + Antibiotic: 93.5\% mortality (29/31 patients) vs. 78.6\% without (1.2$\times$ risk)
-        \item Carboplatin-containing regimens: 100\% mortality in observed subset (11/11 patients)
-        \item Cyclophosphamide + Doxorubicin: 100\% mortality (4/4 patients)
-        \item \textit{Note:} Small sample sizes require cautious interpretation
-    \end{itemize}
-    
-    \item \textbf{Comorbidity impacts:}
-    \begin{itemize}
-        \item Hypertension: 93.5\% mortality (29/31 patients)
-        \item Infection-related AEs: 84.6\% mortality (33/39 patients)
-        \item Diabetes: 78.4\% mortality (29/37 patients)
-        \item Cardiac disease: 100\% mortality (3/3 patients, limited data)
-        \item Liver disease: 100\% mortality (3/3 patients, limited data)
-    \end{itemize}
-    
-    \item \textbf{Combined risk profile (highest risk):}
-    \begin{itemize}
-        \item Age $>$75 + high polypharmacy ($>$5 drugs): ~83\% mortality
-        \item Infection AE + diabetes: 79.2\% mortality (19/24 patients)
-        \item Elderly + steroid/antibiotic combination: $>$90\% mortality
-    \end{itemize}
-\end{itemize}
+Age-stratified mortality analysis revealed a progressive increase in death rates across age categories: patients under 50 years demonstrated 50.0\% mortality (5/10 patients), while those aged 50-65 years exhibited 72.2\% mortality (26/36 patients). Elderly patients aged 65-75 years and those over 75 years demonstrated substantially elevated mortality rates of 83.5\% (66/79 patients) and 83.3\% (30/36 patients), respectively, representing a 1.7-fold increased risk compared to the youngest cohort.
 
-\textbf{Model-based risk calculator example:}
+Body mass index stratification demonstrated variable mortality patterns: underweight patients (BMI $<$18.5 kg/m²) exhibited 81.8\% mortality (18/22 patients), normal weight patients (BMI 18.5-25) had 77.1\% mortality (37/48 patients), overweight patients (BMI 25-30) showed 85.7\% mortality (36/42 patients), and obese patients (BMI $>$30) demonstrated 78.4\% mortality (29/37 patients). Polypharmacy demonstrated substantial impact, with patients receiving more than five concurrent medications exhibiting 82.4\% mortality (140/170 patients), likely mediated through drug-drug interactions, cumulative toxicity, and serving as a marker of disease complexity.
 
-For a hypothetical CRS patient:
-\begin{itemize}
-    \item Age 72 years $\rightarrow$ SHAP +0.198 (increases risk)
-    \item On steroids $\rightarrow$ SHAP +0.197 (increases risk, counterintuitive—reflects treatment of severe cases)
-    \item 7 concurrent drugs $\rightarrow$ SHAP +0.077 (increases risk)
-    \item Weight 58 kg $\rightarrow$ SHAP +0.051 (increases risk due to low weight)
-    \item \textbf{Predicted mortality probability:} 87\%
-    \item \textbf{Clinical action:} Intensive monitoring, ICU readiness, tocilizumab available
-\end{itemize}
+High-risk drug combinations were identified through stratified analysis. The concurrent use of corticosteroids and antibiotics was associated with 93.5\% mortality (29/31 patients) compared to 78.6\% without this combination, representing a 1.2-fold elevated risk. Carboplatin-containing chemotherapy regimens and cyclophosphamide plus doxorubicin combinations demonstrated 100\% mortality in observed subsets (11/11 and 4/4 patients, respectively), although small sample sizes necessitate cautious interpretation. 
+
+Comorbidity burden demonstrated differential mortality impact: hypertension was associated with 93.5\% mortality (29/31 patients), infection-related adverse events with 84.6\% mortality (33/39 patients), and diabetes with 78.4\% mortality (29/37 patients). Cardiac and hepatic comorbidities demonstrated 100\% mortality in limited patient subsets (3/3 patients each). Combined risk profiles identified highest-risk patient phenotypes: patients aged over 75 years with high polypharmacy demonstrated approximately 83\% mortality, patients with concurrent infection and diabetes exhibited 79.2\% mortality (19/24 patients), and elderly patients receiving combined steroid and antibiotic therapy demonstrated greater than 90\% mortality.
+
+\textbf{Individualized risk assessment:} To illustrate clinical application, consider a hypothetical 72-year-old CRS patient weighing 58 kg and receiving seven concurrent medications including corticosteroids. SHAP decomposition reveals age contribution (+0.198), steroid use (+0.197, reflecting treatment of severe cases rather than causal effect), polypharmacy burden (+0.077), and low body weight (+0.051), yielding an aggregate predicted mortality probability of 87\%. Such high-risk profiles warrant intensive monitoring protocols, intensive care unit readiness, and tocilizumab availability for prompt CRS management.
 
 \section{Discussion}
 
@@ -636,37 +514,15 @@ This study presents a comprehensive, scalable pharmacovigilance pipeline integra
 
 \textbf{1. Biomarker integration framework:}
 
-The pipeline architecture is designed to accommodate future incorporation of biomarker data when such information becomes available from prospective clinical studies or electronic health record (EHR) integration:
-
-\begin{itemize}
-    \item \textbf{Cytokine panel:} IL-6 (primary CRS mediator), IL-7, IL-21, IL-2R$\alpha$, IFN-$\gamma$ from CAR-T biomarker studies~\cite{budde2022}
-    \item \textbf{Chemokines:} CCL17, CCL13, CCL2 (monocyte activation markers)
-    \item \textbf{Acute phase reactants:} CRP, ferritin (severity indicators)
-    \item \textbf{Other markers:} TGF-$\beta$1 (immunomodulation), LDH (tumor burden proxy)
-    \item \textbf{Preprocessing approach:} Log-transformation for skewed distributions, z-score normalization, quantile binning for categorical analysis (Low/Medium/High tertiles)
-    \item \textbf{Expected impact:} Biomarker models could achieve PR-AUC $>$0.90 based on CAR-T literature showing IL-6 as strong CRS predictor
-\end{itemize}
-
-\textbf{Implementation framework:} Upon availability of biomarker data from prospective studies, these variables would be integrated into the feature matrix following standardized preprocessing protocols (log-transformation, normalization, and categorical binning as appropriate for each biomarker's distribution characteristics).
+The pipeline architecture is designed to accommodate future incorporation of biomarker data when such information becomes available from prospective clinical studies or electronic health record integration. Priority biomarkers for integration include cytokine panels (IL-6 as primary CRS mediator, IL-7, IL-21, IL-2R$\alpha$, IFN-$\gamma$ based on CAR-T studies~\cite{budde2022}), chemokines (CCL17, CCL13, CCL2 as monocyte activation markers), acute phase reactants (CRP and ferritin as severity indicators), and additional markers including TGF-$\beta$1 for immunomodulation assessment and LDH as tumor burden proxy. Upon data availability, these variables would be integrated following standardized preprocessing protocols including log-transformation for skewed distributions, z-score normalization, and quantile binning for categorical analyses. Based on CAR-T literature demonstrating IL-6 as a robust CRS predictor, biomarker-enhanced models are anticipated to achieve PR-AUC exceeding 0.90.
 
 \textbf{2. Multi-database validation and harmonization:}
 
-\begin{itemize}
-    \item \textbf{EudraVigilance (EMA):} European reporting, different demographic distribution, different healthcare systems
-    \item \textbf{JADER (PMDA):} Japanese population, different genetic factors (e.g., HLA alleles), different concomitant medication patterns
-    \item \textbf{VigiBase (WHO):} Global database with 30+ million reports
-    \item \textbf{Harmonization challenge:} Different MedDRA coding versions, missing variable patterns, regulatory requirements
-    \item \textbf{Cross-population analysis:} Meta-analysis framework to pool estimates across databases while accounting for heterogeneity
-\end{itemize}
+External validation across multiple international pharmacovigilance databases represents a critical next step. EudraVigilance (European Medicines Agency) provides European reporting data with distinct demographic distributions and healthcare system characteristics. JADER (Japanese Pharmaceuticals and Medical Devices Agency) captures Asian population safety data with different genetic factors (e.g., HLA allele frequencies) and concomitant medication patterns. VigiBase (World Health Organization) offers global coverage with over 30 million adverse event reports. Harmonization challenges include reconciling different MedDRA coding version implementations, variable missingness patterns, and divergent regulatory reporting requirements across jurisdictions. A meta-analytic framework would enable pooling of effect estimates across databases while appropriately accounting for between-database heterogeneity.
 
 \textbf{3. Temporal modeling enhancements:}
 
-\begin{itemize}
-    \item \textbf{Time-series clustering:} Identify distinct CRS onset patterns (hyperacute $<$24h, acute 1-7d, delayed $>$7d)
-    \item \textbf{Recurrent neural networks:} LSTM models for sequential event prediction (CRS → severe CRS → ICANS progression)
-    \item \textbf{Early warning system:} Real-time monitoring dashboard that updates risk scores as new vital signs/labs become available
-    \item \textbf{Implementation:} Integration with hospital EHR systems (HL7 FHIR standard)
-\end{itemize}
+Advanced temporal modeling approaches could refine risk prediction through time-series clustering to identify distinct CRS onset patterns (hyperacute $<$24 hours, acute 1-7 days, delayed $>$7 days). Recurrent neural network architectures, specifically Long Short-Term Memory (LSTM) models, could enable sequential adverse event prediction capturing progression pathways (e.g., CRS evolving to severe CRS or immune effector cell-associated neurotoxicity syndrome). Implementation as a real-time early warning system with dynamic risk score updates based on evolving vital signs and laboratory values would require integration with hospital electronic health record systems via HL7 FHIR interoperability standards.
 
 \textbf{4. Clinical decision support tool deployment:}
 
