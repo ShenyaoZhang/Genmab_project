@@ -6,3 +6,4 @@ Part1/capstone_part1/fda_drug_events.json
 *.csv
 *.json
 *.zip
+task5_severity_prediction/*.pkl
