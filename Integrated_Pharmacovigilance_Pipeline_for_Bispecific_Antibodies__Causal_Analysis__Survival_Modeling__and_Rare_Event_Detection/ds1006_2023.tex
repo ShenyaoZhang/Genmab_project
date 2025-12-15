@@ -315,6 +315,78 @@ Cox proportional hazards model achieved C-index of 0.58 (Table~\ref{tab:cox}).
 
 \textbf{Interpretation:} Patient weight significantly decreases CRS risk (HR=0.992 per kg, p=0.037), suggesting dose adjustments may be warranted for lower-weight patients. Each 10 kg increase in weight corresponds to 8\% risk reduction.
 
+\subsection{Task 3: Rare adverse event detection}
+
+The Isolation Forest pipeline identified \textbf{185 rare, unexpected drug-event relationships} across 37 oncology drugs after processing 10,000+ initial drug-event pairs.
+
+\subsubsection{Pipeline performance metrics}
+
+\begin{itemize}
+    \item \textbf{Initial dataset:} 10,847 unique drug-event pairs
+    \item \textbf{After Isolation Forest (contamination=0.15):} 1,627 anomalies flagged
+    \item \textbf{After known AE filtering:} 892 unexpected (not in FDA labels)
+    \item \textbf{After indication filtering:} 743 non-indication events
+    \item \textbf{After frequency filtering (count $<$ 3.24):} 185 rare \& unexpected signals
+    \item \textbf{Reduction rate:} 98.3\% of pairs filtered, retaining highest-priority signals
+\end{itemize}
+
+\subsubsection{Detailed example: Epcoritamab signals}
+
+Table~\ref{tab:rare-ae} shows rare/unexpected AEs flagged for Epcoritamab.
+
+\begin{table}[h]
+  \caption{Selected rare/unexpected AEs for Epcoritamab}
+  \label{tab:rare-ae}
+  \centering
+  \small
+  \begin{tabular}{lcccc}
+    \toprule
+    Adverse Event & Count & PRR & Anomaly Score & Outcome \\
+    \midrule
+    Haemorrhagic gastroenteritis & 1 & 111.69 & 0.689 & 100\% death \\
+    Renal impairment & 2 & 45.23 & 0.780 & Investigation \\
+    Pancytopenia & 3 & 28.14 & 0.652 & 67\% death \\
+    Hepatic failure & 2 & 52.87 & 0.723 & 100\% death \\
+    Cerebral haemorrhage & 1 & 89.42 & 0.701 & 100\% death \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+\textbf{Clinical interpretation of flagged signals:}
+
+\begin{itemize}
+    \item \textbf{Haemorrhagic gastroenteritis:} Single case with 100\% mortality, very high PRR (111.69), not documented in Epcoritamab label. \textit{Action:} Signal review, case narrative examination, regulatory reporting.
+    
+    \item \textbf{Renal impairment:} Two reports, not listed in label. \textit{Mechanism hypothesis:} Cytokine storm-induced acute kidney injury, tumor lysis syndrome. \textit{Action:} Monitor renal function in high-risk patients.
+    
+    \item \textbf{Pancytopenia:} Three reports with 67\% mortality. \textit{Mechanism:} Possible immune-mediated bone marrow suppression. \textit{Action:} Complete blood count monitoring.
+\end{itemize}
+
+\subsubsection{Cross-drug comparison}
+
+Rare AE detection extended to competitor bispecific antibodies:
+
+\begin{itemize}
+    \item \textbf{Glofitamab:} 42 rare/unexpected signals identified
+    \item \textbf{Mosunetuzumab:} 38 rare/unexpected signals identified
+    \item \textbf{Overlap analysis:} 12 shared signals across all three bispecifics suggest class effects (e.g., neutropenia, thrombocytopenia not labeled for all)
+    \item \textbf{Drug-specific signals:} 73\% of signals are drug-specific, warranting individual pharmacovigilance
+\end{itemize}
+
+\textbf{Validation against literature:}
+
+We compared our flagged signals against published case reports and clinical trial safety data:
+\begin{itemize}
+    \item 23\% of our flagged rare AEs (43/185) have subsequent case reports published after FAERS report dates
+    \item 8\% (15/185) were later added to drug label updates in 2023-2024
+    \item Demonstrates predictive validity of the anomaly detection approach
+\end{itemize}
+
+\textbf{Detection flowchart validated:} All drug-event pairs (10,847) $\rightarrow$ Isolation Forest (1,627 anomalies) $\rightarrow$ Remove known label AEs (892 unexpected) $\rightarrow$ Remove indications (743 non-indications) $\rightarrow$ Frequency filter (185 rare \& unexpected)
+
+These signals warrant pharmacovigilance follow-up, targeted case-control studies, and regulatory communication.
+
+
 \subsection{Task 4: Severity prediction}
 
 \subsubsection{Model performance}
@@ -426,78 +498,6 @@ For a hypothetical CRS patient:
     \item \textbf{Predicted mortality probability:} 87\%
     \item \textbf{Clinical action:} Intensive monitoring, ICU readiness, tocilizumab available
 \end{itemize}
-
-\subsection{Task 3: Rare adverse event detection}
-
-The Isolation Forest pipeline identified \textbf{185 rare, unexpected drug-event relationships} across 37 oncology drugs after processing 10,000+ initial drug-event pairs.
-
-\subsubsection{Pipeline performance metrics}
-
-\begin{itemize}
-    \item \textbf{Initial dataset:} 10,847 unique drug-event pairs
-    \item \textbf{After Isolation Forest (contamination=0.15):} 1,627 anomalies flagged
-    \item \textbf{After known AE filtering:} 892 unexpected (not in FDA labels)
-    \item \textbf{After indication filtering:} 743 non-indication events
-    \item \textbf{After frequency filtering (count $<$ 3.24):} 185 rare \& unexpected signals
-    \item \textbf{Reduction rate:} 98.3\% of pairs filtered, retaining highest-priority signals
-\end{itemize}
-
-\subsubsection{Detailed example: Epcoritamab signals}
-
-Table~\ref{tab:rare-ae} shows rare/unexpected AEs flagged for Epcoritamab.
-
-\begin{table}[h]
-  \caption{Selected rare/unexpected AEs for Epcoritamab}
-  \label{tab:rare-ae}
-  \centering
-  \small
-  \begin{tabular}{lcccc}
-    \toprule
-    Adverse Event & Count & PRR & Anomaly Score & Outcome \\
-    \midrule
-    Haemorrhagic gastroenteritis & 1 & 111.69 & 0.689 & 100\% death \\
-    Renal impairment & 2 & 45.23 & 0.780 & Investigation \\
-    Pancytopenia & 3 & 28.14 & 0.652 & 67\% death \\
-    Hepatic failure & 2 & 52.87 & 0.723 & 100\% death \\
-    Cerebral haemorrhage & 1 & 89.42 & 0.701 & 100\% death \\
-    \bottomrule
-  \end{tabular}
-\end{table}
-
-\textbf{Clinical interpretation of flagged signals:}
-
-\begin{itemize}
-    \item \textbf{Haemorrhagic gastroenteritis:} Single case with 100\% mortality, very high PRR (111.69), not documented in Epcoritamab label. \textit{Action:} Signal review, case narrative examination, regulatory reporting.
-    
-    \item \textbf{Renal impairment:} Two reports, not listed in label. \textit{Mechanism hypothesis:} Cytokine storm-induced acute kidney injury, tumor lysis syndrome. \textit{Action:} Monitor renal function in high-risk patients.
-    
-    \item \textbf{Pancytopenia:} Three reports with 67\% mortality. \textit{Mechanism:} Possible immune-mediated bone marrow suppression. \textit{Action:} Complete blood count monitoring.
-\end{itemize}
-
-\subsubsection{Cross-drug comparison}
-
-Rare AE detection extended to competitor bispecific antibodies:
-
-\begin{itemize}
-    \item \textbf{Glofitamab:} 42 rare/unexpected signals identified
-    \item \textbf{Mosunetuzumab:} 38 rare/unexpected signals identified
-    \item \textbf{Overlap analysis:} 12 shared signals across all three bispecifics suggest class effects (e.g., neutropenia, thrombocytopenia not labeled for all)
-    \item \textbf{Drug-specific signals:} 73\% of signals are drug-specific, warranting individual pharmacovigilance
-\end{itemize}
-
-\textbf{Validation against literature:}
-
-We compared our flagged signals against published case reports and clinical trial safety data:
-\begin{itemize}
-    \item 23\% of our flagged rare AEs (43/185) have subsequent case reports published after FAERS report dates
-    \item 8\% (15/185) were later added to drug label updates in 2023-2024
-    \item Demonstrates predictive validity of the anomaly detection approach
-\end{itemize}
-
-\textbf{Detection flowchart validated:} All drug-event pairs (10,847) $\rightarrow$ Isolation Forest (1,627 anomalies) $\rightarrow$ Remove known label AEs (892 unexpected) $\rightarrow$ Remove indications (743 non-indications) $\rightarrow$ Frequency filter (185 rare \& unexpected)
-
-These signals warrant pharmacovigilance follow-up, targeted case-control studies, and regulatory communication.
-
 
 \section{Discussion}
 
