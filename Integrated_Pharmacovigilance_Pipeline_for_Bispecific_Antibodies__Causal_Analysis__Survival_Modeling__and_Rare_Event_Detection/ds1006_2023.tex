@@ -37,7 +37,7 @@
 
 
 \begin{abstract}
-Bispecific antibodies such as Epcoritamab represent a novel class of immunotherapy agents that demonstrate substantial efficacy in treating relapsed/refractory B-cell lymphomas; however, these agents carry significant risks of Cytokine Release Syndrome (CRS). We developed a comprehensive pharmacovigilance pipeline integrating four complementary analytic approaches: (1) multi-source risk analysis with causal inference, (2) time-to-event survival modeling, (3) rare/unexpected adverse event detection, and (4) severity prediction with machine learning. Our pipeline analyzed over 50,000 adverse event reports from the FDA Adverse Event Reporting System (FAERS), identifying key protective factors (steroids: OR=0.54, p=0.002; patient weight: HR=0.99, p=0.037) and risk stratification features (age, polypharmacy, concomitant medications). Machine learning models achieved PR-AUC of 0.88 for CRS mortality prediction. The Isolation Forest anomaly detector successfully identified 185 rare, unexpected drug-event relationships warranting further pharmacovigilance investigation. This integrated framework provides actionable insights for real-world drug safety monitoring and clinical decision support.
+\textbf{Background:} Bispecific antibodies such as Epcoritamab represent a novel class of immunotherapy agents demonstrating substantial efficacy in relapsed/refractory B-cell lymphomas; however, these agents carry significant risks of Cytokine Release Syndrome (CRS). \textbf{Methods:} A comprehensive pharmacovigilance pipeline was developed integrating four complementary analytic approaches: (1) multi-source risk analysis with causal inference, (2) time-to-event survival modeling, (3) rare/unexpected adverse event detection, and (4) severity prediction with machine learning. Over 50,000 adverse event reports from the FDA Adverse Event Reporting System (FAERS) were analyzed. \textbf{Results:} Key protective factors were identified including steroids (OR=0.54, p=0.002) and patient weight (HR=0.99, p=0.037). Machine learning models achieved PR-AUC of 0.88 for CRS mortality prediction. The Isolation Forest anomaly detector successfully identified 185 rare, unexpected drug-event relationships. \textbf{Conclusions:} This integrated framework provides actionable insights for real-world drug safety monitoring and clinical decision support in the post-marketing surveillance of bispecific antibodies.
 \end{abstract}
 
 
@@ -49,9 +49,9 @@ Bispecific antibodies targeting CD20$\times$CD3 represent a significant therapeu
 
 Post-marketing pharmacovigilance surveillance is essential for characterizing real-world safety profiles that may differ from those observed in controlled clinical trial settings. The FDA Adverse Event Reporting System (FAERS) provides large-scale spontaneous adverse event reports; however, extracting meaningful safety signals from this noisy, incomplete observational database requires sophisticated analytic methodologies.
 
-\subsection{Objectives}
+\subsection{Study objectives}
 
-We developed an integrated pharmacovigilance pipeline with four complementary modules:
+The objective of this study was to develop an integrated pharmacovigilance pipeline comprising four complementary analytical modules:
 
 \begin{enumerate}
     \item \textbf{Multi-source Risk Analysis (Task 1):} Causal inference and propensity score matching across FAERS, EudraVigilance, and JADER
@@ -67,7 +67,7 @@ Each module addresses distinct clinical questions while sharing a unified data i
 
 \subsection{Data sources and extraction}
 
-\textbf{Primary data source:} We accessed the FAERS database (2004-2024) via the OpenFDA application programming interface (API). A total of 50,000+ adverse event reports were systematically extracted for 37 oncology drugs spanning multiple therapeutic classes:
+\textbf{Primary data source:} The FAERS database (2004-2024) was accessed via the OpenFDA application programming interface (API). A total of 50,000+ adverse event reports were systematically extracted for 37 oncology drugs spanning multiple therapeutic classes:
 
 \begin{itemize}
     \item \textbf{Bispecific antibodies (n=3):} Epcoritamab (focus drug), Glofitamab, Mosunetuzumab
@@ -80,7 +80,7 @@ Each module addresses distinct clinical questions while sharing a unified data i
 
 \textbf{Data collection methodology:} Data extraction was performed using paginated API requests with 500 records per drug (limit=100 records per request with skip parameter increments). Request frequency was rate-limited to 0.3 seconds between consecutive queries to ensure compliance with FDA API usage guidelines.
 
-\textbf{Secondary data sources:} To demonstrate multi-source integration capabilities for cross-population pharmacovigilance studies, we developed instructions and simulated data for EudraVigilance (European Medicines Agency) and JADER (Japanese Adverse Drug Event Report database).
+\textbf{Secondary data sources:} To demonstrate multi-source integration capabilities for cross-population pharmacovigilance studies, instructions and simulated data were developed for EudraVigilance (European Medicines Agency) and JADER (Japanese Adverse Drug Event Report database).
 
 \textbf{Drug labeling information:} FDA-approved drug labels (Section 6: Adverse Reactions) were retrieved via the OpenFDA label endpoint to establish reference standards for distinguishing known from unexpected adverse events. MedDRA (Medical Dictionary for Regulatory Activities) synonym matching algorithms were implemented to ensure robust adverse event term alignment across data sources.
 
@@ -375,7 +375,7 @@ Rare AE detection extended to competitor bispecific antibodies:
 
 \textbf{Validation against literature:}
 
-We compared our flagged signals against published case reports and clinical trial safety data:
+The flagged signals were systematically compared against published case reports and clinical trial safety data:
 \begin{itemize}
     \item 23\% of our flagged rare AEs (43/185) have subsequent case reports published after FAERS report dates
     \item 8\% (15/185) were later added to drug label updates in 2023-2024
@@ -620,7 +620,7 @@ Our machine learning-identified risk factors align with established clinical kno
 
 \textbf{External validation needs:}
 
-While our results align with clinical trial findings, independent validation is needed on:
+While the present results demonstrate consistency with published clinical trial findings, independent external validation is required utilizing:
 \begin{itemize}
     \item Electronic health record (EHR) databases with denominator data
     \item Other regulatory databases (EudraVigilance, JADER) with real data
@@ -628,15 +628,15 @@ While our results align with clinical trial findings, independent validation is 
 \end{itemize}
 
 
-\section{Conclusion and future work}
+\section{Conclusions}
 
-We developed a comprehensive, scalable pharmacovigilance pipeline integrating causal inference, survival modeling, machine learning severity prediction, and rare event detection. Key findings include identification of protective factors (steroids, tocilizumab, higher weight) and high-risk patient profiles (elderly, polypharmacy, low BMI).
+This study presents a comprehensive, scalable pharmacovigilance pipeline integrating causal inference, survival modeling, machine learning-based severity prediction, and rare event detection methodologies. Key findings include the identification of protective factors (corticosteroid premedication, tocilizumab administration, higher body weight) and high-risk patient profiles (advanced age, polypharmacy, extremes of body mass index). The analytical framework demonstrates the feasibility of multi-modal pharmacovigilance approaches for characterizing safety profiles of novel immunotherapeutic agents in real-world settings.
 
 \subsection{Future directions}
 
 \textbf{1. Biomarker integration framework:}
 
-Our pipeline is architecturally designed to incorporate biomarker data when available from clinical studies or EHR integration:
+The pipeline architecture is designed to accommodate future incorporation of biomarker data when such information becomes available from prospective clinical studies or electronic health record (EHR) integration:
 
 \begin{itemize}
     \item \textbf{Cytokine panel:} IL-6 (primary CRS mediator), IL-7, IL-21, IL-2R$\alpha$, IFN-$\gamma$ from CAR-T biomarker studies~\cite{budde2022}
@@ -647,11 +647,7 @@ Our pipeline is architecturally designed to incorporate biomarker data when avai
     \item \textbf{Expected impact:} Biomarker models could achieve PR-AUC $>$0.90 based on CAR-T literature showing IL-6 as strong CRS predictor
 \end{itemize}
 
-\textbf{Example implementation:} When biomarker data becomes available, simply add columns to feature matrix:
-\begin{verbatim}
-features['IL6_pg_ml'] = log_transform(biomarker_data['IL6'])
-features['IL6_tertile'] = qcut(features['IL6_pg_ml'], 3)
-\end{verbatim}
+\textbf{Implementation framework:} Upon availability of biomarker data from prospective studies, these variables would be integrated into the feature matrix following standardized preprocessing protocols (log-transformation, normalization, and categorical binning as appropriate for each biomarker's distribution characteristics).
 
 \textbf{2. Multi-database validation and harmonization:}
 
@@ -713,7 +709,7 @@ features['IL6_tertile'] = qcut(features['IL6_pg_ml'], 3)
 
 
 \begin{ack}
-We thank our mentors at AbbVie for guidance on pharmacovigilance methods, causal inference frameworks, and clinical interpretation of findings. We acknowledge the FDA OpenFDA team for providing public access to FAERS data and the open-source community for machine learning tools (scikit-learn, SHAP, lifelines).
+The authors gratefully acknowledge the guidance provided by mentors at AbbVie regarding pharmacovigilance methodologies, causal inference frameworks, and clinical interpretation of analytical findings. We further acknowledge the FDA OpenFDA team for maintaining public access to the FAERS database, and the open-source scientific computing community for developing the analytical tools utilized in this study (scikit-learn, SHAP, lifelines, pandas, NumPy).
 \end{ack}
 
 \section*{References}
