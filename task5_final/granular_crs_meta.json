@@ -1,0 +1,149 @@
+{
+  "timestamp": "2025-12-14 18:24:57",
+  "drug": "Epcoritamab",
+  "adverse_event": "CRS",
+  "n_total": 500,
+  "n_ae": 185,
+  "findings": [
+    {
+      "variable": "Age",
+      "category": ">65 years",
+      "death_rate": 0.8347826086956521,
+      "n_deaths": 96,
+      "n_total": 115
+    },
+    {
+      "variable": "Age",
+      "category": "≤65 years",
+      "death_rate": 0.6739130434782609,
+      "n_deaths": 31,
+      "n_total": 46
+    },
+    {
+      "variable": "BMI",
+      "category": "Obese (BMI>30)",
+      "death_rate": 0.7837837837837838,
+      "n_deaths": 29,
+      "n_total": 37
+    },
+    {
+      "variable": "BMI",
+      "category": "Non-obese",
+      "death_rate": 0.8175675675675675,
+      "n_deaths": 121,
+      "n_total": 148
+    },
+    {
+      "variable": "Comorbidity",
+      "category": "Diabetes",
+      "death_rate": 0.7837837837837838,
+      "n_deaths": 29,
+      "n_total": 37
+    },
+    {
+      "variable": "Comorbidity",
+      "category": "Hypertension",
+      "death_rate": 0.9354838709677419,
+      "n_deaths": 29,
+      "n_total": 31
+    },
+    {
+      "variable": "Comorbidity",
+      "category": "Infection",
+      "death_rate": 0.8461538461538461,
+      "n_deaths": 33,
+      "n_total": 39
+    },
+    {
+      "variable": "Comorbidity",
+      "category": "Cardiac",
+      "death_rate": 1.0,
+      "n_deaths": 3,
+      "n_total": 3
+    },
+    {
+      "variable": "Comorbidity",
+      "category": "Liver",
+      "death_rate": 1.0,
+      "n_deaths": 3,
+      "n_total": 3
+    },
+    {
+      "variable": "Comorbidity",
+      "category": "Cancer",
+      "death_rate": 0.8132530120481928,
+      "n_deaths": 135,
+      "n_total": 166
+    },
+    {
+      "variable": "Drug Combination",
+      "category": "Steroid + Antibiotic",
+      "death_rate": 0.9354838709677419,
+      "n_deaths": 29,
+      "n_total": 31
+    },
+    {
+      "variable": "Infection AE + Comorbidity",
+      "category": "Infection AE + Diabetes",
+      "death_rate": 0.7916666666666666,
+      "n_deaths": 19,
+      "n_total": 24
+    },
+    {
+      "variable": "Cancer Stage",
+      "category": "Stage I-II (Early)",
+      "death_rate": 0.875,
+      "n_deaths": 7,
+      "n_total": 8
+    },
+    {
+      "variable": "Cancer Stage",
+      "category": "Stage III-IV (Advanced)",
+      "death_rate": 0.8846153846153846,
+      "n_deaths": 23,
+      "n_total": 26
+    }
+  ],
+  "top_combinations": [
+    {
+      "drug1": "CARBOPLATIN",
+      "drug2": "CARBOPLATIN",
+      "n_total": 11,
+      "n_death": 11,
+      "n_survival": 0,
+      "death_rate": 1.0
+    },
+    {
+      "drug1": "DIPHENHYDRAMINE HYDROCHLORIDE",
+      "drug2": "GEMCITABINE HYDROCHLORIDE",
+      "n_total": 3,
+      "n_death": 3,
+      "n_survival": 0,
+      "death_rate": 1.0
+    },
+    {
+      "drug1": "METHYLPREDNISOLONE SODIUM SUCCINATE",
+      "drug2": "PREDNISONE",
+      "n_total": 4,
+      "n_death": 4,
+      "n_survival": 0,
+      "death_rate": 1.0
+    },
+    {
+      "drug1": "CYCLOPHOSPHAMIDE FOR INJECTION",
+      "drug2": "DOXORUBICIN HYDROCHLORIDE",
+      "n_total": 4,
+      "n_death": 4,
+      "n_survival": 0,
+      "death_rate": 1.0
+    },
+    {
+      "drug1": "METHYLPREDNISOLONE SODIUM SUCCINATE",
+      "drug2": "METHYLPREDNISOLONE SODIUM SUCCINATE",
+      "n_total": 11,
+      "n_death": 11,
+      "n_survival": 0,
+      "death_rate": 1.0
+    }
+  ]
+}
