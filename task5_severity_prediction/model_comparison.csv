@@ -1,5 +1,0 @@
-,accuracy,precision,recall,f1,roc_auc,pr_auc,best_threshold
-Gradient Boosting,0.6231,0.3352,0.6166,0.4343,0.6645,0.4146,0.2159
-XGBoost,0.7116,0.3923,0.4178,0.4047,0.6488,0.4119,0.5477
-Random Forest,0.6154,0.3107,0.5248,0.3903,0.6388,0.398,0.3222
-Logistic Regression,0.63,0.3198,0.5121,0.3937,0.632,0.3701,0.5124

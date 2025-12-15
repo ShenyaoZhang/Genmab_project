@@ -2,7 +2,7 @@
 SURVIVAL ANALYSIS REPORT
 Drug: epcoritamab
 Adverse Event: cytokine release syndrome
-Analysis Date: 2025-12-15T00:33:15.475034
+Analysis Date: 2025-12-15T00:52:32.752690
 ================================================================================
 
 DATA SUMMARY
