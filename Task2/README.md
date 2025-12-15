@@ -203,9 +203,6 @@ epcoritamab-crs-analysis/
 │   ├── run_epcoritamab_analysis_simple.py  # Simplified one-command script
 │   ├── check_environment.py          # Environment diagnostic tool
 │   ├── RUN_ANALYSIS.sh               # Shell script for easy execution
-│   ├── QUICK_COMMANDS.txt            # Quick command reference
-│   ├── FIX_AND_RUN.md                # Troubleshooting guide
-│   └── quick_start_guide_cn.md       # Quick start guide (Chinese)
 │
 ├── examples/                          # Usage examples
 │   └── example_usage.py               # Multiple drug-AE pair examples
