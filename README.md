@@ -198,6 +198,9 @@ Machine learning pipeline for predicting adverse event severity (death) with SHA
 ```bash
 cd Task4
 
+# Step 0: Extract data first (required, takes ~30 min)
+python3 01_extract_data.py
+
 # Scalable pipeline (recommended)
 python3 scalable_pipeline.py --drug epcoritamab --ae CRS
 python3 scalable_pipeline.py --drug tafasitamab --ae ICANS

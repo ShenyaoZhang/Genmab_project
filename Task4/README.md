@@ -1,4 +1,4 @@
-# Task 5: Adverse Event Severity Prediction
+# Task 4: Adverse Event Severity Prediction
 
 Machine learning pipeline for predicting adverse event severity (death) using OpenFDA FAERS data.
 
@@ -21,6 +21,19 @@ This pipeline performs end-to-end analysis from data extraction to model deploym
 ---
 
 ## Quick Start
+
+### Important: Extract Data First
+
+Before running the pipeline, you must first extract data from the OpenFDA API:
+
+```bash
+# Step 0: Extract data (required, takes ~30 minutes)
+python3 01_extract_data.py
+```
+
+This generates `main_data.csv` which is required by all other scripts.
+
+---
 
 ### One-Call Scalable Pipeline (recommended)
 
