@@ -37,7 +37,7 @@
 
 
 \begin{abstract}
-\textbf{Background:} Bispecific antibodies such as Epcoritamab represent a novel class of immunotherapy agents demonstrating substantial efficacy in relapsed/refractory B-cell lymphomas; however, these agents carry significant risks of Cytokine Release Syndrome (CRS). \textbf{Methods:} A comprehensive pharmacovigilance pipeline was developed integrating four complementary analytic approaches: (1) multi-source risk analysis with causal inference, (2) time-to-event survival modeling, (3) rare/unexpected adverse event detection, and (4) severity prediction with machine learning. Over 50,000 adverse event reports from the FDA Adverse Event Reporting System (FAERS) were analyzed. \textbf{Results:} Key protective factors were identified including steroids (OR=0.54, p=0.002) and patient weight (HR=0.99, p=0.037). Machine learning models achieved PR-AUC of 0.88 for CRS mortality prediction. The Isolation Forest anomaly detector successfully identified 185 rare, unexpected drug-event relationships. \textbf{Conclusions:} This integrated framework provides actionable insights for real-world drug safety monitoring and clinical decision support in the post-marketing surveillance of bispecific antibodies.
+\textbf{Background:} Bispecific antibodies such as Epcoritamab represent a novel class of immunotherapy agents demonstrating substantial efficacy in relapsed/refractory B-cell lymphomas; however, these agents carry significant risks of Cytokine Release Syndrome (CRS). \textbf{Methods:} A comprehensive pharmacovigilance pipeline was developed integrating four complementary analytic approaches: (1) multi-source risk analysis with causal inference, (2) time-to-event survival modeling, (3) rare/unexpected adverse event detection, and (4) severity prediction with machine learning. Over 50,000 adverse event reports from the FDA Adverse Event Reporting System (FAERS) were analyzed. \textbf{Results:} Key protective factors were identified including steroids (OR=0.54, p=0.002) and patient weight (HR=0.99, p=0.037). Machine learning models achieved PR-AUC of 0.885 for CRS mortality prediction. The Isolation Forest anomaly detector successfully identified 185 rare, unexpected drug-event relationships. \textbf{Conclusions:} This integrated framework provides actionable insights for real-world drug safety monitoring and clinical decision support in the post-marketing surveillance of bispecific antibodies.
 \end{abstract}
 
 
@@ -249,7 +249,7 @@ Table~\ref{tab:ml-performance} compares machine learning models.
   \end{tabular}
 \end{table}
 
-The Gradient Boosting classifier demonstrated superior performance with PR-AUC of 0.415 on the full dataset and 0.885 on the CRS-specific subset. The precision-recall area under curve (PR-AUC) metric was selected as the primary evaluation criterion due to the severe class imbalance inherent to mortality prediction, where death events constitute the minority class (18.5\% of the CRS cohort).
+In the full FAERS dataset, death events constitute a minority class (18.5\%). However, within the CRS-specific subset, mortality rates are substantially higher.
 
 \subsubsection{Feature importance and SHAP analysis}
 
