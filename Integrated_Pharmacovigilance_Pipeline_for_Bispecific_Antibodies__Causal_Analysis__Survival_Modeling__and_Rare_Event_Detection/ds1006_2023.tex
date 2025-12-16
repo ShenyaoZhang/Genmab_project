@@ -249,7 +249,7 @@ Table~\ref{tab:ml-performance} compares machine learning models.
   \end{tabular}
 \end{table}
 
-In the full FAERS dataset, death events constitute a minority class (18.5\%). However, within the CRS-specific subset, mortality rates are substantially higher.
+The Gradient Boosting classifier demonstrated the best performance, achieving a PR-AUC of 0.415 on the full FAERS dataset and 0.885 on the CRS-specific subset. We selected the precision-recall area under the curve (PR-AUC) as the primary metric because mortality prediction involves substantial class imbalance. In the full FAERS dataset, death events constitute a minority class (18.5\%). However, within the CRS-specific subset, mortality rates are substantially higher.
 
 \subsubsection{Feature importance and SHAP analysis}
 
